@@ -1,0 +1,47 @@
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+<> User: sgeuser111
+
+Host: compute-srv5.atme.in
+
+Report date: Thu 09 Mar 2023 06:21:46 IST
+
+Report options: -detail -metrics functional -out report/coverage.rpt -type * -all -assertionStatus -allAssertionCounters -aspect both
+
+Coverage database path: /home/sgeuser111/DrRSK/5_Interrupt_Control/cov_work/scope/test
+
+Coverage model files: /home/sgeuser111/DrRSK/5_Interrupt_Control/cov_work/scope/icc_5335a648_00000000.ucm
+
+Coverage data files: /home/sgeuser111/DrRSK/5_Interrupt_Control/cov_work/scope/test/icc_5335a648_00000000.ucd
+
+CCF files:  None
+
+
+Coverage database date: Thu 09 Mar 2023 06:17:50 IST
+
+*** There were no refinement files applied ***
+
+  <>
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+Coverage Table Legend
+---------------------
+  EXCL   excluded using refinement rule
+  P-EXCL excluded from parent
+  U-EXCL excluded and unreachable by IEV
+  T-EXCL excluded from type
+  S-EXCL smart excluded using refinement rule
+  EXCL(S) smart indirect excluded
+  EMPTY  all children are excluded
+  CONST  marked constant during simulation
+  IGN    marked ignored during simulation
+  UNG    marked ungradeable during simulation
+  DES    marked deselected during simulation
+  UNR    marked unreachable by IEV
+
+
+Covered+Uncovered+Excluded+UNR Assertion Detail Report, Type Based
+==================================================================
+
+Covered+Uncovered+Excluded+UNR CoverGroup Detail Report, Type Based
+===================================================================
+

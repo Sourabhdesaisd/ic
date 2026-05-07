@@ -1,0 +1,346 @@
+irun(64): 15.20-s051: (c) Copyright 1995-2018 Cadence Design Systems, Inc.
+TOOL:	irun(64)	15.20-s051: Started on Feb 26, 2023 at 02:42:10 IST
+irun
+	-access +rwc
+	-f ./compile.f
+		../../5_Interrupt_Control/ic_pkg.sv
+		../../5_Interrupt_Control/ic_top.sv
+		/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zilla_interrupt_control.v
+		/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_top.v
+		/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/interrupt_recieve.v
+		/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v
+		/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_irg.v
+		/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_mmr_top.v
+		/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_mmr_reg_file.v
+		/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_mmr_ctrl.v
+		/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_mmr_op_mux.v
+	-svseed 4034
+	+UVM_TESTNAME=ic_config_test
+	+define+UVM_REPORT_DISABLE_FILE_LINE
+	-uvmhome CDNS-1.1d
+	-coverage all
+	-covdut ic_top
+	-covworkdir /cov_work
+	-covoverwrite
+	-covfile ./cov_files/cov_cmd.cf
+ncsim: *E,CNDIR: Could not create/open directory /cov_work.
+Loading snapshot worklib.ic_top:sv .................... Done
+SVSEED set from command line: 4034
+ncsim: *W,DSEM2009: This SystemVerilog design is simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
+ncsim> source /tools/cadence/INCISIVE152/tools/inca/files/ncsimrc
+ncsim> source /tools/cadence/INCISIVE152/tools/methodology/UVM/CDNS-1.1d/additions/sv/files/tcl/uvm_sim.tcl
+ncsim> run
+----------------------------------------------------------------
+CDNS-UVM-1.1d (15.20-s051)
+(C) 2007-2013 Mentor Graphics Corporation
+(C) 2007-2013 Cadence Design Systems, Inc.
+(C) 2006-2013 Synopsys, Inc.
+(C) 2011-2013 Cypress Semiconductor Corp.
+----------------------------------------------------------------
+
+  ***********       IMPORTANT RELEASE NOTES         ************
+
+  You are using a version of the UVM library that has been compiled
+  with `UVM_NO_DEPRECATED undefined.
+  See http://www.eda.org/svdb/view.php?id=3313 for more details.
+
+  You are using a version of the UVM library that has been compiled
+  with `UVM_OBJECT_MUST_HAVE_CONSTRUCTOR undefined.
+  See http://www.eda.org/svdb/view.php?id=3770 for more details.
+
+      (Specify +UVM_NO_RELNOTES to turn off this notice)
+
+UVM_INFO @ 0: reporter [RNTST] Running test ic_config_test...
+-----------------------------------------------------
+Name                         Type         Size  Value
+-----------------------------------------------------
+item                         ic_seq_item  -     @4037
+  ic_mmr_read_data_o         integral     32    'h0  
+  ic_ack_int_id_o            integral     8     'h0  
+  interrupt_request_o        integral     1     'h0  
+  highest_pending_lvl_pr_o   integral     8     'h0  
+  ic_rst                     integral     1     'h0  
+  ic_mmr_write_en_i          integral     1     'h0  
+  ic_mmr_write_addr_i        integral     16    'h0  
+  ic_mmr_write_data_i        integral     32    'h0  
+  ic_mmr_read_en_i           integral     1     'h0  
+  ic_mmr_read_addr_i         integral     16    'h0  
+  ic_ack_read_valid_en       integral     1     'h0  
+  ic_eoi_valid_i             integral     1     'h0  
+  ic_eoi_id_i                integral     8     'h0  
+  active_lvl_pr_i            integral     8     'h0  
+  global_int_enable_bit_i    integral     48    'h0  
+  global_int_enable_valid_i  integral     1     'h0  
+  ext_int0_i                 integral     1     'h0  
+  ext_int1_i                 integral     1     'h0  
+  ext_int2_i                 integral     1     'h0  
+  ext_int3_i                 integral     1     'h0  
+  ext_int4_i                 integral     1     'h0  
+  ext_int5_i                 integral     1     'h0  
+  ext_int6_i                 integral     1     'h0  
+  ext_int7_i                 integral     1     'h0  
+  ext_int8_i                 integral     1     'h0  
+  ext_int9_i                 integral     1     'h0  
+  ext_int10_i                integral     1     'h0  
+  ext_int11_i                integral     1     'h0  
+  ext_int12_i                integral     1     'h0  
+  ext_int13_i                integral     1     'h0  
+  ext_int14_i                integral     1     'h0  
+  ext_int15_i                integral     1     'h0  
+  ext_int16_i                integral     1     'h0  
+  ext_int17_i                integral     1     'h0  
+  ext_int18_i                integral     1     'h0  
+  ext_int19_i                integral     1     'h0  
+  ext_int20_i                integral     1     'h0  
+  ext_int21_i                integral     1     'h0  
+  ext_int22_i                integral     1     'h0  
+  ext_int23_i                integral     1     'h0  
+  ext_int24_i                integral     1     'h0  
+  ext_int25_i                integral     1     'h0  
+  ext_int26_i                integral     1     'h0  
+  ext_int27_i                integral     1     'h0  
+  ext_int28_i                integral     1     'h0  
+  ext_int29_i                integral     1     'h0  
+  ext_int30_i                integral     1     'h0  
+  ext_int31_i                integral     1     'h0  
+  ext_int32_i                integral     1     'h0  
+  ext_int33_i                integral     1     'h0  
+  ext_int34_i                integral     1     'h0  
+  ext_int35_i                integral     1     'h0  
+  ext_int36_i                integral     1     'h0  
+  ext_int37_i                integral     1     'h0  
+  ext_int38_i                integral     1     'h0  
+  ext_int39_i                integral     1     'h0  
+  ext_int40_i                integral     1     'h0  
+  ext_int41_i                integral     1     'h0  
+  ext_int42_i                integral     1     'h0  
+  ext_int43_i                integral     1     'h0  
+  ext_int44_i                integral     1     'h0  
+  ext_int45_i                integral     1     'h0  
+  ext_int46_i                integral     1     'h0  
+  dbg_mode_valid_i           integral     1     'h0  
+-----------------------------------------------------
+UVM_INFO @ 50000: uvm_test_top.env.scb [SCB] 
+ [1;32m 50000 PASS::***MMR READ RESULTS MATCHED*** 
+ READ_ADDR:0x0000, ACT_MMR_Read_out:00000000000000000000000000000000, EXP_MMR_Read_out:00000000000000000000000000000000 [0m
+UVM_INFO @ 50000: uvm_test_top.env.scb [SCB] 
+ [1;32m 50000 PASS:: *** IRQ REQ: RESULTS MATCHED *** 
+ ACT_IRQ:0, EXP_IRQ:0 [0m
+UVM_INFO @ 50000: uvm_test_top.env.scb [SCB] 
+ [1;32m 50000 PASS:: *** HIGH_PEND_LVL_PR: RESULTS MATCHED *** 
+ ACT_lvl_pri:0x00, EXP_lvl_pri:0x00 [0m
+-----------------------------------------------------
+Name                         Type         Size  Value
+-----------------------------------------------------
+item                         ic_seq_item  -     @4405
+  ic_mmr_read_data_o         integral     32    'h7  
+  ic_ack_int_id_o            integral     8     'h0  
+  interrupt_request_o        integral     1     'h0  
+  highest_pending_lvl_pr_o   integral     8     'h0  
+  ic_rst                     integral     1     'h1  
+  ic_mmr_write_en_i          integral     1     'h0  
+  ic_mmr_write_addr_i        integral     16    'h0  
+  ic_mmr_write_data_i        integral     32    'h0  
+  ic_mmr_read_en_i           integral     1     'h1  
+  ic_mmr_read_addr_i         integral     16    'h0  
+  ic_ack_read_valid_en       integral     1     'h0  
+  ic_eoi_valid_i             integral     1     'h0  
+  ic_eoi_id_i                integral     8     'h0  
+  active_lvl_pr_i            integral     8     'h0  
+  global_int_enable_bit_i    integral     48    'h0  
+  global_int_enable_valid_i  integral     1     'h0  
+  ext_int0_i                 integral     1     'h0  
+  ext_int1_i                 integral     1     'h0  
+  ext_int2_i                 integral     1     'h0  
+  ext_int3_i                 integral     1     'h0  
+  ext_int4_i                 integral     1     'h0  
+  ext_int5_i                 integral     1     'h0  
+  ext_int6_i                 integral     1     'h0  
+  ext_int7_i                 integral     1     'h0  
+  ext_int8_i                 integral     1     'h0  
+  ext_int9_i                 integral     1     'h0  
+  ext_int10_i                integral     1     'h0  
+  ext_int11_i                integral     1     'h0  
+  ext_int12_i                integral     1     'h0  
+  ext_int13_i                integral     1     'h0  
+  ext_int14_i                integral     1     'h0  
+  ext_int15_i                integral     1     'h0  
+  ext_int16_i                integral     1     'h0  
+  ext_int17_i                integral     1     'h0  
+  ext_int18_i                integral     1     'h0  
+  ext_int19_i                integral     1     'h0  
+  ext_int20_i                integral     1     'h0  
+  ext_int21_i                integral     1     'h0  
+  ext_int22_i                integral     1     'h0  
+  ext_int23_i                integral     1     'h0  
+  ext_int24_i                integral     1     'h0  
+  ext_int25_i                integral     1     'h0  
+  ext_int26_i                integral     1     'h0  
+  ext_int27_i                integral     1     'h0  
+  ext_int28_i                integral     1     'h0  
+  ext_int29_i                integral     1     'h0  
+  ext_int30_i                integral     1     'h0  
+  ext_int31_i                integral     1     'h0  
+  ext_int32_i                integral     1     'h0  
+  ext_int33_i                integral     1     'h0  
+  ext_int34_i                integral     1     'h0  
+  ext_int35_i                integral     1     'h0  
+  ext_int36_i                integral     1     'h0  
+  ext_int37_i                integral     1     'h0  
+  ext_int38_i                integral     1     'h0  
+  ext_int39_i                integral     1     'h0  
+  ext_int40_i                integral     1     'h0  
+  ext_int41_i                integral     1     'h0  
+  ext_int42_i                integral     1     'h0  
+  ext_int43_i                integral     1     'h0  
+  ext_int44_i                integral     1     'h0  
+  ext_int45_i                integral     1     'h0  
+  ext_int46_i                integral     1     'h0  
+  dbg_mode_valid_i           integral     1     'h0  
+-----------------------------------------------------
+UVM_INFO @ 100000: uvm_test_top.env.scb [SCB] Int_Enabled:0x000000000000
+UVM_INFO @ 100000: uvm_test_top.env.scb [SCB] Int_Pending:0x000000000000
+UVM_INFO @ 100000: uvm_test_top.env.scb [EOI] EoI_ID:0x00
+UVM_INFO @ 100000: uvm_test_top.env.scb [PR] High_lp:0x00, High_lp_ID:0x00
+UVM_INFO @ 100000: uvm_test_top.env.scb [PRO_ACK] Current_ACK_Int_ID:0x00
+UVM_INFO @ 100000: uvm_test_top.env.scb [SCB] Latched ack_id: 0x00
+UVM_INFO @ 100000: uvm_test_top.env.scb [NXT_PEND] next_LP:0x00, next_ID:0x00, nxtp_id:0x10
+UVM_INFO @ 100000: uvm_test_top.env.scb [IRG] IRQ_out:0, High_Pending_lvl_pr:0x00
+UVM_INFO @ 100000: uvm_test_top.env.scb [SCB] 
+ [1;32m 100000 PASS::***MMR READ RESULTS MATCHED*** 
+ READ_ADDR:0x0000, ACT_MMR_Read_out:00000000000000000000000000000111, EXP_MMR_Read_out:00000000000000000000000000000111 [0m
+UVM_INFO @ 100000: uvm_test_top.env.scb [SCB] 
+ [1;32m 100000 PASS:: *** IRQ REQ: RESULTS MATCHED *** 
+ ACT_IRQ:0, EXP_IRQ:0 [0m
+UVM_INFO @ 100000: uvm_test_top.env.scb [SCB] 
+ [1;32m 100000 PASS:: *** HIGH_PEND_LVL_PR: RESULTS MATCHED *** 
+ ACT_lvl_pri:0x00, EXP_lvl_pri:0x00 [0m
+--------------------------------------------------------
+Name                         Type         Size  Value   
+--------------------------------------------------------
+item                         ic_seq_item  -     @4043   
+  ic_mmr_read_data_o         integral     32    'hc00030
+  ic_ack_int_id_o            integral     8     'h0     
+  interrupt_request_o        integral     1     'h0     
+  highest_pending_lvl_pr_o   integral     8     'h0     
+  ic_rst                     integral     1     'h1     
+  ic_mmr_write_en_i          integral     1     'h0     
+  ic_mmr_write_addr_i        integral     16    'h0     
+  ic_mmr_write_data_i        integral     32    'h0     
+  ic_mmr_read_en_i           integral     1     'h1     
+  ic_mmr_read_addr_i         integral     16    'h4     
+  ic_ack_read_valid_en       integral     1     'h0     
+  ic_eoi_valid_i             integral     1     'h0     
+  ic_eoi_id_i                integral     8     'h0     
+  active_lvl_pr_i            integral     8     'h0     
+  global_int_enable_bit_i    integral     48    'h0     
+  global_int_enable_valid_i  integral     1     'h0     
+  ext_int0_i                 integral     1     'h0     
+  ext_int1_i                 integral     1     'h0     
+  ext_int2_i                 integral     1     'h0     
+  ext_int3_i                 integral     1     'h0     
+  ext_int4_i                 integral     1     'h0     
+  ext_int5_i                 integral     1     'h0     
+  ext_int6_i                 integral     1     'h0     
+  ext_int7_i                 integral     1     'h0     
+  ext_int8_i                 integral     1     'h0     
+  ext_int9_i                 integral     1     'h0     
+  ext_int10_i                integral     1     'h0     
+  ext_int11_i                integral     1     'h0     
+  ext_int12_i                integral     1     'h0     
+  ext_int13_i                integral     1     'h0     
+  ext_int14_i                integral     1     'h0     
+  ext_int15_i                integral     1     'h0     
+  ext_int16_i                integral     1     'h0     
+  ext_int17_i                integral     1     'h0     
+  ext_int18_i                integral     1     'h0     
+  ext_int19_i                integral     1     'h0     
+  ext_int20_i                integral     1     'h0     
+  ext_int21_i                integral     1     'h0     
+  ext_int22_i                integral     1     'h0     
+  ext_int23_i                integral     1     'h0     
+  ext_int24_i                integral     1     'h0     
+  ext_int25_i                integral     1     'h0     
+  ext_int26_i                integral     1     'h0     
+  ext_int27_i                integral     1     'h0     
+  ext_int28_i                integral     1     'h0     
+  ext_int29_i                integral     1     'h0     
+  ext_int30_i                integral     1     'h0     
+  ext_int31_i                integral     1     'h0     
+  ext_int32_i                integral     1     'h0     
+  ext_int33_i                integral     1     'h0     
+  ext_int34_i                integral     1     'h0     
+  ext_int35_i                integral     1     'h0     
+  ext_int36_i                integral     1     'h0     
+  ext_int37_i                integral     1     'h0     
+  ext_int38_i                integral     1     'h0     
+  ext_int39_i                integral     1     'h0     
+  ext_int40_i                integral     1     'h0     
+  ext_int41_i                integral     1     'h0     
+  ext_int42_i                integral     1     'h0     
+  ext_int43_i                integral     1     'h0     
+  ext_int44_i                integral     1     'h0     
+  ext_int45_i                integral     1     'h0     
+  ext_int46_i                integral     1     'h0     
+  dbg_mode_valid_i           integral     1     'h0     
+--------------------------------------------------------
+UVM_INFO @ 150000: uvm_test_top.env.scb [SCB] Int_Enabled:0x000000000000
+UVM_INFO @ 150000: uvm_test_top.env.scb [SCB] Int_Pending:0x000000000000
+UVM_INFO @ 150000: uvm_test_top.env.scb [EOI] EoI_ID:0x00
+UVM_INFO @ 150000: uvm_test_top.env.scb [PR] High_lp:0x00, High_lp_ID:0x00
+UVM_INFO @ 150000: uvm_test_top.env.scb [PRO_ACK] Current_ACK_Int_ID:0x00
+UVM_INFO @ 150000: uvm_test_top.env.scb [SCB] Latched ack_id: 0x00
+UVM_INFO @ 150000: uvm_test_top.env.scb [NXT_PEND] next_LP:0x00, next_ID:0x00, nxtp_id:0x10
+UVM_INFO @ 150000: uvm_test_top.env.scb [IRG] IRQ_out:0, High_Pending_lvl_pr:0x00
+UVM_INFO @ 150000: uvm_test_top.env.scb [SCB] 
+ [1;32m 150000 PASS::***MMR READ RESULTS MATCHED*** 
+ READ_ADDR:0x0004, ACT_MMR_Read_out:00000000110000000000000000110000, EXP_MMR_Read_out:00000000110000000000000000110000 [0m
+UVM_INFO @ 150000: uvm_test_top.env.scb [SCB] 
+ [1;32m 150000 PASS:: *** IRQ REQ: RESULTS MATCHED *** 
+ ACT_IRQ:0, EXP_IRQ:0 [0m
+UVM_INFO @ 150000: uvm_test_top.env.scb [SCB] 
+ [1;32m 150000 PASS:: *** HIGH_PEND_LVL_PR: RESULTS MATCHED *** 
+ ACT_lvl_pri:0x00, EXP_lvl_pri:0x00 [0m
+UVM_INFO @ 150000: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+
+--- UVM Report catcher Summary ---
+
+
+Number of demoted UVM_FATAL reports  :    0
+Number of demoted UVM_ERROR reports  :    0
+Number of demoted UVM_WARNING reports:    0
+Number of caught UVM_FATAL reports   :    0
+Number of caught UVM_ERROR reports   :    0
+Number of caught UVM_WARNING reports :    0
+
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO :   27
+UVM_WARNING :    0
+UVM_ERROR :    0
+UVM_FATAL :    0
+** Report counts by id
+[EOI]     2
+[IRG]     2
+[NXT_PEND]     2
+[PR]     2
+[PRO_ACK]     2
+[RNTST]     1
+[SCB]    15
+[TEST_DONE]     1
+Simulation complete via $finish(1) at time 150 NS + 50
+/tools/cadence/INCISIVE152/tools/methodology/UVM/CDNS-1.1d/sv/src/base/uvm_root.svh:457     $finish;
+ncsim> exit
+ncsim: *W,CGDEFN: Default name "uvm_pkg.uvm_test_top.env.subscr.cg" will be generated for covergroup instance "worklib.ic_pkg::ic_subscr::cg@3032_2" as the name of the covergroup instance is not specified explicitly: ../ic_subscr.sv, 9.
+
+coverage setup:
+  workdir  :  ./cov_work
+  dutinst  :  ic_top(ic_top)
+  scope    :  scope
+  testname :  test_sv4034
+
+coverage files:
+  model(design data) :  ./cov_work/scope/icc_605f044d_5f0bac50.ucm (reused)
+  data               :  ./cov_work/scope/test_sv4034/icc_605f044d_5f0bac50.ucd
+TOOL:	irun(64)	15.20-s051: Exiting on Feb 26, 2023 at 02:42:10 IST  (total: 00:00:00)

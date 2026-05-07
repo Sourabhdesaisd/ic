@@ -1,0 +1,28 @@
+xrun(64): 20.09-s009: (c) Copyright 1995-2021 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	20.09-s009: Started on Jan 20, 2026 at 19:27:50 IST
+xrun
+	-access +rwc
+	-f ../UVME/zic_comp_file.f
+		../../RTL_SOURCE_FILES/zilla_interrupt_control.v
+		../../RTL_SOURCE_FILES/zic_top.v
+		../../RTL_SOURCE_FILES/interrupt_recieve.v
+		../../RTL_SOURCE_FILES/priority_resolve.v
+		../../RTL_SOURCE_FILES/zic_irg.v
+		../../RTL_SOURCE_FILES/zic_mmr_top.v
+		../../RTL_SOURCE_FILES/zic_mmr_reg_file.v
+		../../RTL_SOURCE_FILES/zic_mmr_ctrl.v
+		../../RTL_SOURCE_FILES/zic_mmr_op_mux.v
+		../UVME/ZIC_TOP/zic_interface.sv
+		../UVME/ZIC_PACKAGES/zic_package.sv
+		../UVME/ZIC_TOP/zic_test_top.sv
+	+UVM_TESTNAME=zic_test
+	+TEST_CASE=zic_test
+
+   User defined plus("+") options:
+	+TEST_CASE=zic_test
+
+xrun: *E,FILEMIS: Cannot find the provided file ../../RTL_SOURCE_FILES/zic_mmr_top.v.
+xrun: *E,FILEMIS: Cannot find the provided file ../../RTL_SOURCE_FILES/zic_mmr_reg_file.v.
+xrun: *E,FILEMIS: Cannot find the provided file ../../RTL_SOURCE_FILES/zic_mmr_ctrl.v.
+xrun: *E,FILEMIS: Cannot find the provided file ../../RTL_SOURCE_FILES/zic_mmr_op_mux.v.
+TOOL:	xrun(64)	20.09-s009: Exiting on Jan 20, 2026 at 19:27:51 IST  (total: 00:00:01)

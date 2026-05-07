@@ -1,0 +1,15 @@
+../../5_Interrupt_Control/ic_pkg.sv
+../../5_Interrupt_Control/ic_top.sv
+
+//List of RTL_Files
+"/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zilla_interrupt_control.v"
+"/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_top.v"
+"/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/interrupt_recieve.v"
+"/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v"
+"/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_irg.v"
+"/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_mmr_top.v"
+"/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_mmr_reg_file.v"
+"/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_mmr_ctrl.v"
+"/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/zic_mmr_op_mux.v"
+
+

@@ -1,0 +1,23 @@
+//
+// File created by:  irun
+// Do not modify this file
+//
+-access
++rwc
+-f
+./compile.f
+-svseed
+24229
++UVM_TESTNAME=ic_rst_test
++define+UVM_REPORT_DISABLE_FILE_LINE
+-uvmhome
+CDNS-1.1d
+-coverage
+all
+-covdut
+ic_top
+-covworkdir
+/cov_work
+-covoverwrite
+-covfile
+./cov_files/cov_cmd.cf

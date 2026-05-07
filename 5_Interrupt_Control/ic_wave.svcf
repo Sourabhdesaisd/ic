@@ -1,0 +1,118 @@
+# SimVision Command Script (Tue Feb 21 12:11:43 AM IST 2023)
+#
+# Version 15.20.s051
+#
+# You can restore this configuration with:
+#
+#     simvision -input ic_wave.svcf
+#  or simvision -input ic_wave.svcf database1 database2 ...
+#
+
+
+#
+# Preferences
+#
+preferences set plugin-enable-svdatabrowser-new 1
+preferences set toolbar-Standard-Console {
+  usual
+  position -pos 1
+}
+preferences set toolbar-Search-Console {
+  usual
+  position -pos 2
+}
+preferences set toolbar-Standard-WaveWindow {
+  usual
+  position -pos 1
+}
+preferences set plugin-enable-groupscope 0
+preferences set plugin-enable-interleaveandcompare 0
+preferences set plugin-enable-waveformfrequencyplot 0
+preferences set whats-new-dont-show-at-startup 1
+
+#
+# Databases
+#
+array set dbNames ""
+set dbNames(realName1) [ database require waves -hints {
+	file ./waves.shm/waves.trn
+	file /home/sgeuser111/DrRSK/5_Interrupt_Control/waves.shm/waves.trn
+}]
+if {$dbNames(realName1) == ""} {
+    set dbNames(realName1) waves
+}
+
+#
+# Mnemonic Maps
+#
+mmap new -reuse -name {Boolean as Logic} -radix %b -contents {{%c=FALSE -edgepriority 1 -shape low}
+{%c=TRUE -edgepriority 1 -shape high}}
+mmap new -reuse -name {Example Map} -radix %x -contents {{%b=11???? -bgcolor orange -label REG:%x -linecolor yellow -shape bus}
+{%x=1F -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=2C -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=* -label %x -linecolor gray -shape bus}}
+
+#
+# Waveform windows
+#
+if {[catch {window new WaveWindow -name "Waveform 1" -geometry 1366x665+-1+27}] != ""} {
+    window geometry "Waveform 1" 1366x665+-1+27
+}
+window target "Waveform 1" on
+waveform using {Waveform 1}
+waveform sidebar visibility partial
+waveform set \
+    -primarycursor TimeA \
+    -signalnames name \
+    -signalwidth 195 \
+    -units ns \
+    -valuewidth 75
+waveform baseline set -time 0
+
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.ic_clk}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.ic_rst}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.global_int_enable_bit_i[47:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.global_int_enable_valid_i}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.ic_ack_read_valid_en}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.ext_int0_i}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.ic_mmr_read_en_i}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.ic_mmr_read_addr_i[15:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.interrupt_request_o}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.ic_ack_int_id_o[7:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.highest_pending_lvl_pr_o[7:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{$dbNames(realName1)::[format {ic_top.intf.ic_mmr_read_data_o[31:0]}]}
+	} ]]
+
+waveform xview limits 0 240ns
+
+#
+# Waveform Window Links
+#
+
+#
+# Layout selection
+#
+

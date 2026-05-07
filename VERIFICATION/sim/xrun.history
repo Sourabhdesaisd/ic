@@ -1,0 +1,1 @@
+s1(20Jan2026:19:27:51):  xrun -access +rwc -f ../UVME/zic_comp_file.f +UVM_TESTNAME=zic_test +TEST_CASE=zic_test 

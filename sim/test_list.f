@@ -1,0 +1,6 @@
+zic_mem_rand_test 1000
+zic_mem_test 1000
+zic_memtest 1000
+zic_mem_ack_block223_test 1000
+zic_mem_block214_test 1000
+zic_mem_uncovered_test 1000

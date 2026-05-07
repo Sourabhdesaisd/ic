@@ -1,0 +1,207 @@
+<HTML>
+<HEAD>
+<link type="text/css" rel="stylesheet" href="../../imc.css"></link>
+<script type="text/javascript" src="../../sortable.js"></script>
+<TITLE>IMC Report: ./cov_report_html</TITLE></HEAD>
+<BODY>
+<A NAME="_topcov"></A>
+<P class="summary_title">Coverage   Summary Report, Instance-Based</P>
+
+<P class="fs"><A STYLE="float: left" class="namet" HREF="../../index.html">Top Level Summary</A><A STYLE="float: right" class="namet" HREF="../../legend.html">Legend and Help</A></P>
+<BR>
+<TABLE class="detail_header"><TR class="detail"><TD>
+
+<B>Instance name: </B><A HREF="../dir_1/summ_4_t1.html" class="namet">ic_top</A><A HREF="../dir_1/summ_6_t1.html" class="namet">.dut</A><A HREF="../dir_1/summ_67_t1.html" class="namet">.zic_top_inst</A><A HREF="../dir_1/summ_69_t1.html" class="namet">.priority_resolve_inst</A>.st0_int2_int3_comp<BR>
+
+<B>Type name: </B>lvl_pr_compare<BR>
+
+<B>File name: </B><A HREF="/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v" TARGET="_blank">/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v</A><BR>
+
+</TD></TR></TABLE>
+
+<BR>
+<P class="subtitle">Coverage Summary Report, Instance-Based</P>
+<TABLE class="sortable sml summary_table" id="totalTable">
+
+
+<TR><TH class="wht">Overall</TH>
+<TH class="wht">Overall Covered</TH>
+<TH class="wht">Block</TH>
+<TH class="wht">Expression</TH>
+<TH class="wht">Toggle</TH>
+<TH class="wht">FSM&nbsp;State</TH>
+<TH class="wht">FSM&nbsp;Transition</TH>
+<TH class="wht">Assertion</TH>
+<TH class="wht">CoverGroup</TH>
+<TH class="wht">CoverGroup Covered</TH>
+<TH class="wht">name</TH>
+
+</TR>
+
+<TR><TD class="range70to74"><A HREF="">73.38%</A></TD>
+<TD class="range55to59"><A HREF="">55.38%&nbsp;(36/65)</A></TD>
+<TD class="range85to89"><A HREF="#_Blockcov">88.89%&nbsp;(8/9)</A></TD>
+<TD class="range85to89"><A HREF="#_Expressioncov">87.50%&nbsp;(7/8)</A></TD>
+<TD class="range40to44"><A HREF="#_Togglecov">43.75%&nbsp;(21/48)</A></TD>
+<TD class="rangenone">n/a</TD>
+<TD class="rangenone">n/a</TD>
+<TD class="rangenone">n/a</TD>
+<TD class="rangenone">n/a</TD>
+<TD class="rangenone">n/a</TD>
+<TD class="namecell">st0_int2_int3_comp</TD>
+
+</TR>
+
+
+</TABLE>
+<BR><BR><A NAME="_Blockcov"></A>
+<P class="detail_title">     Uncovered Block Detail Report, Instance Based</P>
+<P class="fs"><A STYLE="float: right" class="namet" HREF="#_topcov">To Top</A></P><BR>
+
+<TABLE class="detail_header"><TR class="detail"><TD>
+<B>Instance name: </B>ic_top.dut.zic_top_inst.priority_resolve_inst.st0_int2_int3_comp<BR>
+<B>Type name: </B>lvl_pr_compare<BR>
+<B>File name: </B><A HREF="/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v" TARGET="_blank">/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v</A><BR><B>Number of uncovered blocks: </B>1 of 9<BR>
+<B>Number of unreachable blocks: </B>0<BR>
+
+
+</TD></TR></TABLE>
+
+<PRE class="detail_report_text">
+Count  Block Line  Kind                 Origin Source Code                    
+------------------------------------------------------------------------------
+0      6     836   false part of        830    begin                          
+
+</PRE>
+<A NAME="_Expressioncov"></A>
+<P class="detail_title">     Uncovered Expression Detail Report, Instance Based</P>
+<P class="fs"><A STYLE="float: right" class="namet" HREF="#_topcov">To Top</A></P><BR>
+
+<TABLE class="detail_header"><TR class="detail"><TD>
+<B>Instance name: </B>ic_top.dut.zic_top_inst.priority_resolve_inst.st0_int2_int3_comp<BR>
+<B>Type name: </B>lvl_pr_compare<BR>
+<B>File name: </B><A HREF="/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v" TARGET="_blank">/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v</A><BR><B>Number of uncovered expressions: </B>1 of 8<BR>
+<B>Number of unreachable expressions: </B>0<BR>
+
+
+</TD></TR></TABLE>
+
+<PRE class="detail_report_text">
+index  | grade         | line   | expression                                         
+-------------------------------------------------------------------------------------
+3.1    | 50.00% (1/2)  | 830    | val_in_1[4:2] &gt; val_in_2[4:2]                   
+
+<B>index: </B><B>3.1</B><B> grade: </B><B>50.00% (1/2)</B><B> line: </B><B>830</B><B> source: </B><B>else if(val_in_1[4:2] > val_in_2[4:2])</B>
+
+val_in_1[4:2] > val_in_2[4:2]<BR>
+<B><</B>-----<B>1</B>-----<B>></B>   <B><</B>-----<B>2</B>-----<B>></B>
+
+index     | hit   | &lt;1&gt; &lt;2&gt; 
+-------------------------------- '>'
+3.1.2     | 0     | lhs &lt;= rhs 
+
+
+</PRE>
+<A NAME="_Togglecov"></A>
+<P class="detail_title">     Uncovered Toggle Detail Report, Instance Based</P>
+<P class="fs"><A STYLE="float: right" class="namet" HREF="#_topcov">To Top</A></P><BR>
+
+<TABLE class="detail_header"><TR class="detail"><TD>
+<B>Instance name: </B>ic_top.dut.zic_top_inst.priority_resolve_inst.st0_int2_int3_comp<BR>
+<B>Type name: </B>lvl_pr_compare<BR>
+<B>File name: </B><A HREF="/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v" TARGET="_blank">/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v</A><BR><B>Number of uncovered signal bits: </B>27 of 48<BR>
+<B>Number of unreachable signal bits: </B>0<BR>
+<B>Number of signal bits partially toggled(rise): </B>0 of 48<BR>
+<B>Number of signal bits partially toggled(fall): </B>0 of 48<BR>
+
+
+</TD></TR></TABLE>
+
+<PRE class="detail_report_text">
+Hit(Full)  Hit(Rise)  Hit(Fall)  Signal                    
+-----------------------------------------------------------
+0          0          0          val_in_1[3]               
+0          0          0          val_in_2[3]               
+0          0          0          val_in_2[2]               
+0          0          0          val1_id[7]                
+0          0          0          val1_id[6]                
+0          0          0          val1_id[5]                
+0          0          0          val1_id[4]                
+0          0          0          val1_id[3]                
+0          0          0          val1_id[2]                
+0          0          0          val1_id[1]                
+0          0          0          val1_id[0]                
+0          0          0          val2_id[7]                
+0          0          0          val2_id[6]                
+0          0          0          val2_id[5]                
+0          0          0          val2_id[4]                
+0          0          0          val2_id[3]                
+0          0          0          val2_id[2]                
+0          0          0          val2_id[1]                
+0          0          0          val2_id[0]                
+0          0          0          out_id[7]                 
+0          0          0          out_id[6]                 
+0          0          0          out_id[5]                 
+0          0          0          out_id[4]                 
+0          0          0          out_id[3]                 
+0          0          0          out_id[2]                 
+0          0          0          out_id[1]                 
+0          0          0          val_out[3]                
+
+</PRE>
+<A NAME="_Fsmcov"></A>
+<P class="detail_title">     Uncovered Fsm Detail Report, Instance Based</P>
+<P class="fs"><A STYLE="float: right" class="namet" HREF="#_topcov">To Top</A></P><BR>
+
+<TABLE class="detail_header"><TR class="detail"><TD>
+<B>Instance name: </B>ic_top.dut.zic_top_inst.priority_resolve_inst.st0_int2_int3_comp<BR>
+<B>Type name: </B>lvl_pr_compare<BR>
+<B>File name: </B><A HREF="/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v" TARGET="_blank">/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v</A><BR>
+
+</TD></TR></TABLE>
+
+<PRE class="detail_report_text">
+
+0 items found
+
+</PRE>
+<A NAME="_Assertioncov"></A>
+<P class="detail_title">     Uncovered Assertion Detail Report, Instance Based</P>
+<P class="fs"><A STYLE="float: right" class="namet" HREF="#_topcov">To Top</A></P><BR>
+
+<TABLE class="detail_header"><TR class="detail"><TD>
+<B>Instance name: </B>ic_top.dut.zic_top_inst.priority_resolve_inst.st0_int2_int3_comp<BR>
+<B>Type name: </B>lvl_pr_compare<BR>
+<B>File name: </B><A HREF="/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v" TARGET="_blank">/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v</A><BR><B>Number of uncovered assertions: </B>0 of 0<BR>
+
+
+</TD></TR></TABLE>
+
+<PRE class="detail_report_text">
+Finished Failed Assertion                      Line  Source Code                    
+------------------------------------------------------------------------------------
+
+0 items found
+
+</PRE>
+<A NAME="_CoverGroupcov"></A>
+<P class="detail_title">     Covered+Uncovered+Excluded+UNR CoverGroup Detail Report, Instance Based</P>
+<P class="fs"><A STYLE="float: right" class="namet" HREF="#_topcov">To Top</A></P><BR>
+
+<TABLE class="detail_header"><TR class="detail"><TD>
+<B>Instance name: </B>ic_top.dut.zic_top_inst.priority_resolve_inst.st0_int2_int3_comp<BR>
+<B>Type name: </B>lvl_pr_compare<BR>
+<B>File name: </B><A HREF="/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v" TARGET="_blank">/home/sgeuser111/DrRSK/5_Interrupt_Control/rtl/priority_resolve.v</A><BR><B>Number of covered cover bins: </B>0 of 0<BR>
+<B>Number of uncovered cover bins: </B>0 of 0<BR>
+<B>Number of excluded cover bins: </B>0<BR>
+
+
+</TD></TR></TABLE>
+
+</TD></TR></TABLE>
+
+<PRE class="detail_report_text">
+
+0 items found
+
+</PRE>
