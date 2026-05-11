@@ -1,5 +1,5 @@
 xrun(64): 20.09-s009: (c) Copyright 1995-2021 Cadence Design Systems, Inc.
-TOOL:	xrun(64)	20.09-s009: Started on May 11, 2026 at 11:40:44 IST
+TOOL:	xrun(64)	20.09-s009: Started on May 11, 2026 at 12:00:34 IST
 xrun
 	-sv
 	-uvm
@@ -21,131 +21,8 @@ xrun
 		./rtl/zic_mmr_reg_file.v
 		./rtl/zilla_interrupt_control.v
 	+UVM_TESTNAME=int_base_test
-Recompiling... reason: file './verification/int_seq.sv' is newer than expected.
-	expected: Sun May 10 17:19:48 2026
-	actual:   Mon May 11 11:40:11 2026
-Compiling UVM packages (uvm_pkg.sv cdns_uvm_pkg.sv) using uvmhome location /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d
-file: ./verification/int_pkg.sv
-	package worklib.int_pkg:sv
-		errors: 0, warnings: 0
-file: ./verification/tb_top.sv
-	module worklib.tb_top:sv
-		errors: 0, warnings: 0
-file: ./rtl/zilla_interrupt_control.v
-xmvlog: *W,SPDUSD: Include directory ./rtl given but not used.
-	Total errors/warnings found outside modules and primitives:
-		errors: 0, warnings: 1
-		Caching library 'worklib' ....... Done
-	Elaborating the design hierarchy:
-	Top level design units:
-		uvm_pkg
-		cdns_uvmapi
-		cdns_assert2uvm_pkg
-		cdns_uvm_pkg
-		int_pkg
-		tb_top
-xmelab: *W,DSEMEL: This SystemVerilog design will be simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
-	Building instance overlay tables: .................... Done
-	Generating native compiled code:
-		worklib.uvm_pkg:sv <0x307b27ca>
-			streams:  24, words: 30394
-		worklib.uvm_pkg:sv <0x1b50bb96>
-			streams:  24, words: 33978
-		worklib.uvm_pkg:sv <0x0fbbb775>
-			streams:  24, words: 29684
-		worklib.uvm_pkg:sv <0x746da488>
-			streams:  24, words: 30456
-		worklib.uvm_pkg:sv <0x6c092e27>
-			streams:  25, words: 31775
-		worklib.uvm_pkg:sv <0x57475556>
-			streams:  24, words: 29468
-		worklib.uvm_pkg:sv <0x1cf0ee99>
-			streams:  24, words: 25910
-		worklib.uvm_pkg:sv <0x646e973f>
-			streams:  24, words: 27544
-		worklib.uvm_pkg:sv <0x73a6fe87>
-			streams:  25, words: 34205
-		worklib.uvm_pkg:sv <0x1cd61e65>
-			streams:  22, words: 51121
-		worklib.uvm_pkg:sv <0x70b642b3>
-			streams:  22, words: 44135
-		worklib.uvm_pkg:sv <0x120248a6>
-			streams:  22, words: 36360
-		worklib.uvm_pkg:sv <0x59e99e4b>
-			streams:  30, words: 45749
-		worklib.uvm_pkg:sv <0x315ef9f6>
-			streams:  22, words: 47493
-		worklib.uvm_pkg:sv <0x13f3e11a>
-			streams:  22, words: 37057
-		worklib.uvm_pkg:sv <0x6ac4f5a8>
-			streams:  22, words: 47444
-		worklib.uvm_pkg:sv <0x0867f473>
-			streams:  22, words: 17409
-		worklib.uvm_pkg:sv <0x75d94202>
-			streams:  22, words: 19561
-		worklib.uvm_pkg:sv <0x42c0375d>
-			streams:  22, words: 19917
-		worklib.uvm_pkg:sv <0x3ae71e7e>
-			streams:  86, words: 94736
-		worklib.uvm_pkg:sv <0x661bf958>
-			streams: 111, words: 139206
-		worklib.uvm_pkg:sv <0x410eef90>
-			streams:  27, words: 36248
-		worklib.uvm_pkg:sv <0x7f98e94d>
-			streams:  29, words: 29844
-		worklib.uvm_pkg:sv <0x339bc2d9>
-			streams: 180, words: 212583
-		worklib.uvm_pkg:sv <0x1e6eb0f4>
-			streams:  22, words: 20688
-		worklib.tb_top:sv <0x34ee61ed>
-			streams: 125, words: 91447
-		worklib.int_pkg:sv <0x13f16c22>
-			streams:   0, words:     0
-	Building instance specific data structures.
-.debug_ndm_reset_i              (dbg_ndmrst_i               ),
-                                            |
-xmelab: *W,CSINFI (./rtl/zilla_interrupt_control.v,213|44): implicit wire has no fanin (tb_top.dut.dbg_ndmrst_i).
-.debug_mode_reset_i             (dbg_hart_only_rst_i        ),
-                                                   |
-xmelab: *W,CSINFI (./rtl/zilla_interrupt_control.v,212|51): implicit wire has no fanin (tb_top.dut.dbg_hart_only_rst_i).
-.debug_ndm_reset_i              (dbg_ndmrst_w               )
-                                            |
-xmelab: *W,CSINFI (./rtl/zic_mmr_top.v,294|44): implicit wire has no fanin (tb_top.dut.zic_mmr_top_inst.dbg_ndmrst_w).
-.debug_mode_reset_i             (dbg_hart_only_rst_w        ),
-                                                   |
-xmelab: *W,CSINFI (./rtl/zic_mmr_top.v,293|51): implicit wire has no fanin (tb_top.dut.zic_mmr_top_inst.dbg_hart_only_rst_w).
-.debug_mode_valid_i             (debug_mode_valid_w         ),
-                                                  |
-xmelab: *W,CSINFI (./rtl/zic_mmr_top.v,292|50): implicit wire has no fanin (tb_top.dut.zic_mmr_top_inst.debug_mode_valid_w).
-.debug_ndm_reset_i              (dbg_ndmrst_i                       )
-                                            |
-xmelab: *W,CSINFI (./rtl/zic_top.v,270|44): implicit wire has no fanin (tb_top.dut.zic_top_inst.dbg_ndmrst_i).
-.debug_mode_reset_i             (dbg_hart_only_rst_i               ),
-                                                   |
-xmelab: *W,CSINFI (./rtl/zic_top.v,269|51): implicit wire has no fanin (tb_top.dut.zic_top_inst.dbg_hart_only_rst_i).
-	Loading native compiled code:     .................... Done
-	Design hierarchy summary:
-		                       Instances  Unique
-		Modules:                     113      20
-		Interfaces:                    1       1
-		Verilog packages:              5       5
-		Registers:                 15158   10736
-		Scalar wires:                138       -
-		Expanded wires:               96       2
-		Vectored wires:              311       -
-		Named events:                  4      12
-		Always blocks:               256      22
-		Initial blocks:              331     171
-		Parallel blocks:              26      27
-		Cont. assignments:           206     167
-		Pseudo assignments:          117     117
-		Assertions:                    2       2
-		SV Class declarations:       214     328
-		SV Class specializations:    413     413
-		Simulation timescale:        1ps
-	Writing initial simulation snapshot: worklib.tb_top:sv
 Loading snapshot worklib.tb_top:sv .................... Done
-SVSEED set randomly from command line: 390994671
+SVSEED set randomly from command line: -772884704
 xmsim: *W,RNDXCELON: A newer version of the SystemVerilog constraint solver is being used which has better support for array-solving, new solve-order mechanism, and seed stability enhancements..
 xmsim: *W,DSEM2009: This SystemVerilog design is simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
 xcelium> source /tools/cadence_march2021/XCELIUM2009/tools/xcelium/files/xmsimrc
@@ -196,7 +73,7 @@ uvm_test_top               int_base_test           -     @2705
 --------------------------------------------------------------
 
 UVM_INFO ./verification/int_driver.sv(117) @ 0: uvm_test_top.env.agent.drv [DRV] Driver run_phase started
-UVM_INFO ./verification/int_seq.sv(61) @ 0: uvm_test_top.env.agent.sqr@@seq [RAND48_SEQ] Random all-48 test: irq_mask=0xe37234c4f4e1 expected_irq=13 expected_ack=0x1d expected_prio=0xf5
+UVM_INFO ./verification/int_seq.sv(61) @ 0: uvm_test_top.env.agent.sqr@@seq [RAND48_SEQ] Random all-48 test: irq_mask=0x5d150f39236d expected_irq=5 expected_ack=0x15 expected_prio=0xf7
 UVM_INFO ./verification/int_driver.sv(54) @ 0: uvm_test_top.env.agent.drv [DRV] RESET transaction received
 UVM_INFO ./verification/int_monitor.sv(201) @ 5000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_monitor.sv(201) @ 15000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
@@ -209,192 +86,207 @@ UVM_INFO ./verification/int_monitor.sv(201) @ 75000: uvm_test_top.env.agent.mon 
 UVM_INFO ./verification/int_driver.sv(70) @ 85000: uvm_test_top.env.agent.drv [DRV] RESET done
 UVM_INFO ./verification/int_monitor.sv(201) @ 85000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 85000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 95000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ0 CTL mirror updated: addr=0x1003 data=0x33
+UVM_INFO ./verification/int_monitor.sv(108) @ 95000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ0 CTL mirror updated: addr=0x1003 data=0x8d
 UVM_INFO ./verification/int_monitor.sv(201) @ 95000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 95000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 105000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ1 CTL mirror updated: addr=0x1007 data=0x8a
+UVM_INFO ./verification/int_monitor.sv(108) @ 105000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ1 CTL mirror updated: addr=0x1007 data=0xf7
 UVM_INFO ./verification/int_monitor.sv(201) @ 105000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 105000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 115000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ2 CTL mirror updated: addr=0x100b data=0xb9
+UVM_INFO ./verification/int_monitor.sv(108) @ 115000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ2 CTL mirror updated: addr=0x100b data=0xc3
 UVM_INFO ./verification/int_monitor.sv(201) @ 115000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 115000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 125000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ3 CTL mirror updated: addr=0x100f data=0x38
+UVM_INFO ./verification/int_monitor.sv(108) @ 125000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ3 CTL mirror updated: addr=0x100f data=0x60
 UVM_INFO ./verification/int_monitor.sv(201) @ 125000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 125000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 135000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ4 CTL mirror updated: addr=0x1013 data=0xf8
+UVM_INFO ./verification/int_monitor.sv(108) @ 135000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ4 CTL mirror updated: addr=0x1013 data=0xb
 UVM_INFO ./verification/int_monitor.sv(201) @ 135000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 135000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 145000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ5 CTL mirror updated: addr=0x1017 data=0xb
+UVM_INFO ./verification/int_monitor.sv(108) @ 145000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ5 CTL mirror updated: addr=0x1017 data=0xf7
 UVM_INFO ./verification/int_monitor.sv(201) @ 145000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 145000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 155000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ6 CTL mirror updated: addr=0x101b data=0xc
+UVM_INFO ./verification/int_monitor.sv(108) @ 155000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ6 CTL mirror updated: addr=0x101b data=0x19
 UVM_INFO ./verification/int_monitor.sv(201) @ 155000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 155000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 165000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ7 CTL mirror updated: addr=0x101f data=0x28
+UVM_INFO ./verification/int_monitor.sv(108) @ 165000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ7 CTL mirror updated: addr=0x101f data=0x6d
 UVM_INFO ./verification/int_monitor.sv(201) @ 165000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 165000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 175000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ8 CTL mirror updated: addr=0x1023 data=0x6b
+UVM_INFO ./verification/int_monitor.sv(108) @ 175000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ8 CTL mirror updated: addr=0x1023 data=0x78
 UVM_INFO ./verification/int_monitor.sv(201) @ 175000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 175000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 185000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ9 CTL mirror updated: addr=0x1027 data=0xd8
+UVM_INFO ./verification/int_monitor.sv(108) @ 185000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ9 CTL mirror updated: addr=0x1027 data=0x25
 UVM_INFO ./verification/int_monitor.sv(201) @ 185000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 185000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 195000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ10 CTL mirror updated: addr=0x102b data=0xf1
+UVM_INFO ./verification/int_monitor.sv(108) @ 195000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ10 CTL mirror updated: addr=0x102b data=0x33
 UVM_INFO ./verification/int_monitor.sv(201) @ 195000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 195000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 205000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ11 CTL mirror updated: addr=0x102f data=0xdd
+UVM_INFO ./verification/int_monitor.sv(108) @ 205000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ11 CTL mirror updated: addr=0x102f data=0x19
 UVM_INFO ./verification/int_monitor.sv(201) @ 205000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 205000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 215000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ12 CTL mirror updated: addr=0x1033 data=0xd
+UVM_INFO ./verification/int_monitor.sv(108) @ 215000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ12 CTL mirror updated: addr=0x1033 data=0x11
 UVM_INFO ./verification/int_monitor.sv(201) @ 215000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 215000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 225000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ13 CTL mirror updated: addr=0x1037 data=0xf5
+UVM_INFO ./verification/int_monitor.sv(108) @ 225000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ13 CTL mirror updated: addr=0x1037 data=0x8d
 UVM_INFO ./verification/int_monitor.sv(201) @ 225000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 225000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 235000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ14 CTL mirror updated: addr=0x103b data=0xed
+UVM_INFO ./verification/int_monitor.sv(108) @ 235000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ14 CTL mirror updated: addr=0x103b data=0x31
 UVM_INFO ./verification/int_monitor.sv(201) @ 235000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 235000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 245000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ15 CTL mirror updated: addr=0x103f data=0x6a
+UVM_INFO ./verification/int_monitor.sv(108) @ 245000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ15 CTL mirror updated: addr=0x103f data=0x11
 UVM_INFO ./verification/int_monitor.sv(201) @ 245000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 245000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 255000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ16 CTL mirror updated: addr=0x1043 data=0xd6
+UVM_INFO ./verification/int_monitor.sv(108) @ 255000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ16 CTL mirror updated: addr=0x1043 data=0x9e
 UVM_INFO ./verification/int_monitor.sv(201) @ 255000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 255000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 265000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ17 CTL mirror updated: addr=0x1047 data=0x67
+UVM_INFO ./verification/int_monitor.sv(108) @ 265000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ17 CTL mirror updated: addr=0x1047 data=0xe0
 UVM_INFO ./verification/int_monitor.sv(201) @ 265000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 265000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 275000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ18 CTL mirror updated: addr=0x104b data=0x2f
+UVM_INFO ./verification/int_monitor.sv(108) @ 275000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ18 CTL mirror updated: addr=0x104b data=0x66
 UVM_INFO ./verification/int_monitor.sv(201) @ 275000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 275000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 285000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ19 CTL mirror updated: addr=0x104f data=0xe0
+UVM_INFO ./verification/int_monitor.sv(108) @ 285000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ19 CTL mirror updated: addr=0x104f data=0x64
 UVM_INFO ./verification/int_monitor.sv(201) @ 285000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 285000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 295000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ20 CTL mirror updated: addr=0x1053 data=0x16
+UVM_INFO ./verification/int_monitor.sv(108) @ 295000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ20 CTL mirror updated: addr=0x1053 data=0x57
 UVM_INFO ./verification/int_monitor.sv(201) @ 295000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 295000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 305000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ21 CTL mirror updated: addr=0x1057 data=0xb
+UVM_INFO ./verification/int_monitor.sv(108) @ 305000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ21 CTL mirror updated: addr=0x1057 data=0xe2
 UVM_INFO ./verification/int_monitor.sv(201) @ 305000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 305000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 315000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ22 CTL mirror updated: addr=0x105b data=0x8d
+UVM_INFO ./verification/int_monitor.sv(108) @ 315000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ22 CTL mirror updated: addr=0x105b data=0xd8
 UVM_INFO ./verification/int_monitor.sv(201) @ 315000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 315000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 325000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ23 CTL mirror updated: addr=0x105f data=0xbc
+UVM_INFO ./verification/int_monitor.sv(108) @ 325000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ23 CTL mirror updated: addr=0x105f data=0x15
 UVM_INFO ./verification/int_monitor.sv(201) @ 325000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 325000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 335000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ24 CTL mirror updated: addr=0x1063 data=0x23
+UVM_INFO ./verification/int_monitor.sv(108) @ 335000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ24 CTL mirror updated: addr=0x1063 data=0x67
 UVM_INFO ./verification/int_monitor.sv(201) @ 335000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 335000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 345000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ25 CTL mirror updated: addr=0x1067 data=0xd6
+UVM_INFO ./verification/int_monitor.sv(108) @ 345000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ25 CTL mirror updated: addr=0x1067 data=0x35
 UVM_INFO ./verification/int_monitor.sv(201) @ 345000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 345000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 355000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ26 CTL mirror updated: addr=0x106b data=0x9c
+UVM_INFO ./verification/int_monitor.sv(108) @ 355000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ26 CTL mirror updated: addr=0x106b data=0x12
 UVM_INFO ./verification/int_monitor.sv(201) @ 355000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 355000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 365000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ27 CTL mirror updated: addr=0x106f data=0x45
+UVM_INFO ./verification/int_monitor.sv(108) @ 365000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ27 CTL mirror updated: addr=0x106f data=0xaa
 UVM_INFO ./verification/int_monitor.sv(201) @ 365000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 365000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 375000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ28 CTL mirror updated: addr=0x1073 data=0x65
+UVM_INFO ./verification/int_monitor.sv(108) @ 375000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ28 CTL mirror updated: addr=0x1073 data=0xbc
 UVM_INFO ./verification/int_monitor.sv(201) @ 375000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 375000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 385000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ29 CTL mirror updated: addr=0x1077 data=0xf2
+UVM_INFO ./verification/int_monitor.sv(108) @ 385000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ29 CTL mirror updated: addr=0x1077 data=0x61
 UVM_INFO ./verification/int_monitor.sv(201) @ 385000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 385000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 395000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ30 CTL mirror updated: addr=0x107b data=0x87
+UVM_INFO ./verification/int_monitor.sv(108) @ 395000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ30 CTL mirror updated: addr=0x107b data=0x4c
 UVM_INFO ./verification/int_monitor.sv(201) @ 395000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 395000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 405000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ31 CTL mirror updated: addr=0x107f data=0x75
+UVM_INFO ./verification/int_monitor.sv(108) @ 405000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ31 CTL mirror updated: addr=0x107f data=0x76
 UVM_INFO ./verification/int_monitor.sv(201) @ 405000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 405000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 415000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ32 CTL mirror updated: addr=0x1083 data=0x31
+UVM_INFO ./verification/int_monitor.sv(108) @ 415000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ32 CTL mirror updated: addr=0x1083 data=0x49
 UVM_INFO ./verification/int_monitor.sv(201) @ 415000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 415000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 425000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ33 CTL mirror updated: addr=0x1087 data=0x9c
+UVM_INFO ./verification/int_monitor.sv(108) @ 425000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ33 CTL mirror updated: addr=0x1087 data=0xd2
 UVM_INFO ./verification/int_monitor.sv(201) @ 425000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 425000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 435000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ34 CTL mirror updated: addr=0x108b data=0xfb
+UVM_INFO ./verification/int_monitor.sv(108) @ 435000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ34 CTL mirror updated: addr=0x108b data=0xac
 UVM_INFO ./verification/int_monitor.sv(201) @ 435000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 435000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 445000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ35 CTL mirror updated: addr=0x108f data=0xe1
+UVM_INFO ./verification/int_monitor.sv(108) @ 445000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ35 CTL mirror updated: addr=0x108f data=0x8c
 UVM_INFO ./verification/int_monitor.sv(201) @ 445000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 445000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 455000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ36 CTL mirror updated: addr=0x1093 data=0x80
+UVM_INFO ./verification/int_monitor.sv(108) @ 455000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ36 CTL mirror updated: addr=0x1093 data=0xc7
 UVM_INFO ./verification/int_monitor.sv(201) @ 455000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 455000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 465000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ37 CTL mirror updated: addr=0x1097 data=0xb8
+UVM_INFO ./verification/int_monitor.sv(108) @ 465000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ37 CTL mirror updated: addr=0x1097 data=0x59
 UVM_INFO ./verification/int_monitor.sv(201) @ 465000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 465000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 475000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ38 CTL mirror updated: addr=0x109b data=0x9f
+UVM_INFO ./verification/int_monitor.sv(108) @ 475000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ38 CTL mirror updated: addr=0x109b data=0xea
 UVM_INFO ./verification/int_monitor.sv(201) @ 475000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 475000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 485000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ39 CTL mirror updated: addr=0x109f data=0xe2
+UVM_INFO ./verification/int_monitor.sv(108) @ 485000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ39 CTL mirror updated: addr=0x109f data=0xcf
 UVM_INFO ./verification/int_monitor.sv(201) @ 485000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 485000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 495000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ40 CTL mirror updated: addr=0x10a3 data=0x4
+UVM_INFO ./verification/int_monitor.sv(108) @ 495000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ40 CTL mirror updated: addr=0x10a3 data=0xc0
 UVM_INFO ./verification/int_monitor.sv(201) @ 495000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 495000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 505000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ41 CTL mirror updated: addr=0x10a7 data=0x60
+UVM_INFO ./verification/int_monitor.sv(108) @ 505000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ41 CTL mirror updated: addr=0x10a7 data=0xf0
 UVM_INFO ./verification/int_monitor.sv(201) @ 505000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 505000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 515000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ42 CTL mirror updated: addr=0x10ab data=0xdf
+UVM_INFO ./verification/int_monitor.sv(108) @ 515000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ42 CTL mirror updated: addr=0x10ab data=0xe9
 UVM_INFO ./verification/int_monitor.sv(201) @ 515000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 515000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 525000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ43 CTL mirror updated: addr=0x10af data=0x2e
+UVM_INFO ./verification/int_monitor.sv(108) @ 525000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ43 CTL mirror updated: addr=0x10af data=0x59
 UVM_INFO ./verification/int_monitor.sv(201) @ 525000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 525000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 535000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ44 CTL mirror updated: addr=0x10b3 data=0xc6
+UVM_INFO ./verification/int_monitor.sv(108) @ 535000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ44 CTL mirror updated: addr=0x10b3 data=0xb2
 UVM_INFO ./verification/int_monitor.sv(201) @ 535000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 535000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 545000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ45 CTL mirror updated: addr=0x10b7 data=0x25
+UVM_INFO ./verification/int_monitor.sv(108) @ 545000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ45 CTL mirror updated: addr=0x10b7 data=0x2
 UVM_INFO ./verification/int_monitor.sv(201) @ 545000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 545000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 555000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ46 CTL mirror updated: addr=0x10bb data=0x59
+UVM_INFO ./verification/int_monitor.sv(108) @ 555000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ46 CTL mirror updated: addr=0x10bb data=0xa6
 UVM_INFO ./verification/int_monitor.sv(201) @ 555000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 555000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(108) @ 565000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ47 CTL mirror updated: addr=0x10bf data=0xad
+UVM_INFO ./verification/int_monitor.sv(108) @ 565000: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ47 CTL mirror updated: addr=0x10bf data=0x1d
 UVM_INFO ./verification/int_monitor.sv(201) @ 565000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x0 en=0x0 | EXP valid=0 irq=0 ack=0x0 lvl_pr=0x0 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 565000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 575000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=0 ack=0x0 lvl_pr=0x0
+UVM_INFO ./verification/int_monitor.sv(201) @ 575000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 575000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 585000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=0 ack=0x0 lvl_pr=0x0
+UVM_INFO ./verification/int_monitor.sv(201) @ 585000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 585000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 595000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=0 ack=0x0 lvl_pr=0x0
+UVM_INFO ./verification/int_monitor.sv(201) @ 595000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=0 ack=0x0 lvl_pr=0x0
 UVM_INFO ./verification/int_driver.sv(129) @ 595000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 605000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
+UVM_INFO ./verification/int_monitor.sv(201) @ 605000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
 UVM_INFO ./verification/int_driver.sv(129) @ 605000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 615000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
+UVM_INFO ./verification/int_monitor.sv(201) @ 615000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
 UVM_INFO ./verification/int_driver.sv(129) @ 615000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 625000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
+UVM_INFO ./verification/int_monitor.sv(201) @ 625000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
 UVM_INFO ./verification/int_driver.sv(129) @ 625000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 635000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=1 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=1 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x1d lvl_pr=0xf5
-UVM_INFO ./verification/int_scoreboard.sv(88) @ 635000: uvm_test_top.env.scb [ZIC_SCB] PASS ACK: ACK_ID=0x1d LVL_PR=0xf5
+UVM_INFO ./verification/int_monitor.sv(201) @ 635000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=1 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=1 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x15 lvl_pr=0xf7
+UVM_INFO ./verification/int_scoreboard.sv(88) @ 635000: uvm_test_top.env.scb [ZIC_SCB] PASS ACK: ACK_ID=0x15 LVL_PR=0xf7
 UVM_INFO ./verification/int_driver.sv(129) @ 635000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 645000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
+UVM_INFO ./verification/int_monitor.sv(201) @ 645000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
 UVM_INFO ./verification/int_driver.sv(129) @ 645000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 655000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf2
+UVM_INFO ./verification/int_monitor.sv(201) @ 655000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xe9
 UVM_INFO ./verification/int_driver.sv(129) @ 655000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
-UVM_INFO ./verification/int_monitor.sv(201) @ 665000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 675000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 685000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 695000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 705000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 715000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 725000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 735000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 745000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 755000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 765000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 775000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 785000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 795000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 805000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 815000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 825000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 835000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 845000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_monitor.sv(201) @ 855000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/base/uvm_objection.svh(1268) @ 865000: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
-UVM_INFO ./verification/int_monitor.sv(201) @ 865000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x637234c4f4e1 en=0xffffffffffff | EXP valid=0 irq=1 ack=0x1d lvl_pr=0xf5 | ACT irq=1 ack=0x0 lvl_pr=0xf5
-UVM_INFO ./verification/int_scoreboard.sv(102) @ 865000: uvm_test_top.env.scb [ZIC_SCB_REPORT] PASS_COUNT=1 FAIL_COUNT=0
+UVM_INFO ./verification/int_monitor.sv(201) @ 665000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_driver.sv(129) @ 665000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(201) @ 675000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_driver.sv(129) @ 675000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(201) @ 685000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_driver.sv(129) @ 685000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(201) @ 695000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_driver.sv(129) @ 695000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(201) @ 705000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=1 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=1 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x15 lvl_pr=0xf7
+UVM_INFO ./verification/int_scoreboard.sv(88) @ 705000: uvm_test_top.env.scb [ZIC_SCB] PASS ACK: ACK_ID=0x15 LVL_PR=0xf7
+UVM_INFO ./verification/int_driver.sv(129) @ 705000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(201) @ 715000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_driver.sv(129) @ 715000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(201) @ 725000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xe9
+UVM_INFO ./verification/int_driver.sv(129) @ 725000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(201) @ 735000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 745000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 755000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 765000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 775000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 785000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 795000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 805000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 815000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 825000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 835000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 845000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 855000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 865000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 875000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 885000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 895000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 905000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 915000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_monitor.sv(201) @ 925000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/base/uvm_objection.svh(1268) @ 935000: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+UVM_INFO ./verification/int_monitor.sv(201) @ 935000: uvm_test_top.env.agent.mon [MON_PREDICT] ack_compare=0 pending=0 ext_int=0x5d150f39236d en=0xffffffffffff | EXP valid=0 irq=1 ack=0x15 lvl_pr=0xf7 | ACT irq=1 ack=0x0 lvl_pr=0xf7
+UVM_INFO ./verification/int_scoreboard.sv(102) @ 935000: uvm_test_top.env.scb [ZIC_SCB_REPORT] PASS_COUNT=2 FAIL_COUNT=0
 
 --- UVM Report catcher Summary ---
 
@@ -409,21 +301,21 @@ Number of caught UVM_WARNING reports :    0
 --- UVM Report Summary ---
 
 ** Report counts by severity
-UVM_INFO :  202
+UVM_INFO :  217
 UVM_WARNING :    0
 UVM_ERROR :    0
 UVM_FATAL :    0
 ** Report counts by id
-[DRV]    61
+[DRV]    68
 [MON_MIRROR]    48
-[MON_PREDICT]    87
+[MON_PREDICT]    94
 [RAND48_SEQ]     1
 [RNTST]     1
 [TEST_DONE]     1
 [UVMTOP]     1
-[ZIC_SCB]     1
+[ZIC_SCB]     2
 [ZIC_SCB_REPORT]     1
-Simulation complete via $finish(1) at time 865 NS + 45
+Simulation complete via $finish(1) at time 935 NS + 45
 /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/base/uvm_root.svh:457     $finish;
 xcelium> exit
-TOOL:	xrun(64)	20.09-s009: Exiting on May 11, 2026 at 11:40:48 IST  (total: 00:00:04)
+TOOL:	xrun(64)	20.09-s009: Exiting on May 11, 2026 at 12:00:35 IST  (total: 00:00:01)
