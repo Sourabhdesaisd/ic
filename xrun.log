@@ -1,5 +1,5 @@
 xrun(64): 20.09-s009: (c) Copyright 1995-2021 Cadence Design Systems, Inc.
-TOOL:	xrun(64)	20.09-s009: Started on May 12, 2026 at 18:52:43 IST
+TOOL:	xrun(64)	20.09-s009: Started on May 12, 2026 at 19:08:40 IST
 xrun
 	-sv
 	-uvm
@@ -21,63 +21,17 @@ xrun
 		./rtl/zic_mmr_reg_file.v
 		./rtl/zilla_interrupt_control.v
 	+UVM_TESTNAME=int_base_test
+Recompiling... reason: file './verification/int_scoreboard.sv' is newer than expected.
+	expected: Tue May 12 19:02:14 2026
+	actual:   Tue May 12 19:08:38 2026
 Compiling UVM packages (uvm_pkg.sv cdns_uvm_pkg.sv) using uvmhome location /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d
-file: ./verification/intf.sv
-	interface worklib.intf:sv
-		errors: 0, warnings: 0
 file: ./verification/int_pkg.sv
 	package worklib.int_pkg:sv
 		errors: 0, warnings: 0
 file: ./verification/tb_top.sv
 	module worklib.tb_top:sv
 		errors: 0, warnings: 0
-file: ./rtl/interrupt_recieve.v
-	module worklib.interrupt_recieve:v
-		errors: 0, warnings: 0
-file: ./rtl/zic_irg.v
-	module worklib.zic_irg:v
-		errors: 0, warnings: 0
-file: ./rtl/zic_mmr_op_mux.v
-	module worklib.zic_mmr_op_mux:v
-		errors: 0, warnings: 0
-file: ./rtl/zic_mmr_top.v
-	module worklib.zic_mmr_top:v
-		errors: 0, warnings: 0
-file: ./rtl/zic_top.v
-	module worklib.zic_top:v
-		errors: 0, warnings: 0
-file: ./rtl/priority_resolve.v
-	module worklib.priority_resolve:v
-		errors: 0, warnings: 0
-	module worklib.lvl_pr_compare:v
-		errors: 0, warnings: 0
-file: ./rtl/zic_mmr_ctrl.v
-	module worklib.zic_mmr_ctrl:v
-		errors: 0, warnings: 0
-	module worklib.irq_ctrl:v
-		errors: 0, warnings: 0
-file: ./rtl/zic_mmr_reg_file.v
-	module worklib.zic_mmr_reg_file:v
-		errors: 0, warnings: 0
-	module worklib.zic_mmr_ack:v
-		errors: 0, warnings: 0
-	module worklib.zic_mmr_cfg:v
-		errors: 0, warnings: 0
-	module worklib.zic_mmr_info:v
-		errors: 0, warnings: 0
-	module worklib.zic_mmr_eoi:v
-		errors: 0, warnings: 0
-	module worklib.zic_mmr_nxtp:v
-		errors: 0, warnings: 0
-	module worklib.wdt_mmr_csr:v
-		errors: 0, warnings: 0
-	module worklib.WDT_REG_FILE:v
-		errors: 0, warnings: 0
-	module worklib.WDT_COUNTER:v
-		errors: 0, warnings: 0
 file: ./rtl/zilla_interrupt_control.v
-	module worklib.zilla_interrupt_control:v
-		errors: 0, warnings: 0
 xmvlog: *W,SPDUSD: Include directory ./rtl given but not used.
 	Total errors/warnings found outside modules and primitives:
 		errors: 0, warnings: 1
@@ -93,198 +47,6 @@ xmvlog: *W,SPDUSD: Include directory ./rtl given but not used.
 xmelab: *W,DSEMEL: This SystemVerilog design will be simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
 	Building instance overlay tables: .................... Done
 	Generating native compiled code:
-		worklib.zic_irg:v <0x1c9a2edc>
-			streams:   8, words:  2407
-		worklib.lvl_pr_compare:v <0x4ed3df5d>
-			streams:   1, words:  2096
-		worklib.priority_resolve:v <0x3478abd3>
-			streams:  99, words: 22865
-		worklib.interrupt_recieve:v <0x436b8456>
-			streams:  52, words: 24205
-		worklib.zic_top:v <0x59bb4b24>
-			streams:   2, words:   328
-		worklib.zic_mmr_op_mux:v <0x41a25450>
-			streams:   3, words: 10928
-		worklib.irq_ctrl:v <0x2a94450c>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x55d61ec8>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x7ea0f1ed>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x2b52a940>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x61304dea>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x1e72162e>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x3504f90b>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x01b4dbe2>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x7bc6233d>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x157112b6>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x054294b5>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x6bf5a53e>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x30622bdb>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x5ed51a50>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x2f6d2338>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x502f78fc>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x78f362e0>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x2d013a4d>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x0677d568>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x79358eac>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x33576a06>
-			streams:   7, words:  2911
-		worklib.irq_ctrl:v <0x37927223>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x0d11f749>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x63a6c6c2>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x33643d74>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x5dd30cff>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x67508995>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x09e7b81e>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x350f8ef8>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x5bb8bf73>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x4b8b3970>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x253c08fb>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x47f51a11>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x29422b9a>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x5833d7dd>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x27718c19>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x6d1368b3>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x38e1301e>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x1397df3b>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x6cd584ff>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x0752166f>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x332bf1a9>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x09a874c3>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x671f4548>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x1638c8c4>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x788ff94f>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x420c7c25>
-			streams:   7, words:  2914
-		worklib.irq_ctrl:v <0x2cbb4dae>
-			streams:   7, words:  2914
-		worklib.zic_mmr_ctrl:v <0x09d8fb20>
-			streams:   1, words:  2133
-		worklib.zic_mmr_nxtp:v <0x5aaa7a89>
-			streams:   2, words:   675
-		worklib.zic_mmr_eoi:v <0x10434a21>
-			streams:   2, words:   675
-		worklib.zic_mmr_info:v <0x4ee611c5>
-			streams:   1, words:   191
-		worklib.zic_mmr_cfg:v <0x5a1223b7>
-			streams:   1, words:   209
-		worklib.WDT_REG_FILE:v <0x3145cfd7>
-			streams:   8, words:  5838
-		worklib.WDT_COUNTER:v <0x789cf615>
-			streams:  13, words:  4214
-		worklib.zic_mmr_ack:v <0x646d9102>
-			streams:   2, words:   675
-		worklib.zic_mmr_reg_file:v <0x304c037f>
-			streams:   1, words:   212
-		worklib.zic_mmr_top:v <0x1e45d071>
-			streams:  48, words:  8352
-		worklib.uvm_pkg:sv <0x67cb1e34>
-			streams:   6, words:  3460
-		worklib.uvm_pkg:sv <0x546b71a4>
-			streams:   6, words:  3120
-		worklib.uvm_pkg:sv <0x53186a80>
-			streams:   5, words:  2530
-		worklib.uvm_pkg:sv <0x0ff05300>
-			streams:   7, words:  1927
-		worklib.uvm_pkg:sv <0x71d24a1a>
-			streams:   8, words:  2774
-		worklib.uvm_pkg:sv <0x575be906>
-			streams:  21, words: 50384
-		worklib.uvm_pkg:sv <0x4db47460>
-			streams:   7, words:  1927
-		worklib.uvm_pkg:sv <0x258d3747>
-			streams:  24, words: 20005
-		worklib.uvm_pkg:sv <0x02802104>
-			streams:  24, words: 19057
-		worklib.uvm_pkg:sv <0x3621bd4b>
-			streams:  20, words: 18548
-		worklib.uvm_pkg:sv <0x489af850>
-			streams:  11, words:  4487
-		worklib.uvm_pkg:sv <0x16f73213>
-			streams:  23, words: 28699
-		worklib.uvm_pkg:sv <0x0f097fe6>
-			streams:   7, words:  2431
-		worklib.uvm_pkg:sv <0x55d31bdb>
-			streams:  12, words: 16092
-		worklib.uvm_pkg:sv <0x753c9679>
-			streams:  23, words: 24178
-		worklib.uvm_pkg:sv <0x51c586d2>
-			streams:  22, words: 51194
-		worklib.uvm_pkg:sv <0x1aa234b1>
-			streams:  25, words: 32248
-		worklib.uvm_pkg:sv <0x4f992521>
-			streams:  24, words: 46655
-		worklib.uvm_pkg:sv <0x10c5d342>
-			streams:  25, words: 35031
-		worklib.uvm_pkg:sv <0x69252a20>
-			streams:  23, words: 52165
-		worklib.uvm_pkg:sv <0x1b8e3461>
-			streams:  25, words: 37109
-		worklib.uvm_pkg:sv <0x5810923c>
-			streams:  23, words: 57796
-		worklib.uvm_pkg:sv <0x0a611c09>
-			streams:  25, words: 41735
-		worklib.uvm_pkg:sv <0x1026ee32>
-			streams:  23, words: 50753
-		worklib.uvm_pkg:sv <0x43d94aff>
-			streams:  23, words: 53731
-		worklib.uvm_pkg:sv <0x4bd1338b>
-			streams:  25, words: 34315
-		worklib.uvm_pkg:sv <0x74527c90>
-			streams:  23, words: 50381
-		worklib.uvm_pkg:sv <0x086d5e10>
-			streams:  25, words: 77049
-		worklib.uvm_pkg:sv <0x6107aed9>
-			streams:  53, words: 73144
-		worklib.cdns_uvm_pkg:sv <0x2a36bd00>
-			streams:  26, words: 34197
-		worklib.cdns_uvm_pkg:sv <0x5bbdffea>
-			streams:   8, words:  4031
-		worklib.cdns_uvm_pkg:sv <0x4ef84503>
-			streams:  10, words:  8705
 		worklib.uvm_pkg:sv <0x3b1de52f>
 			streams:  25, words: 34480
 		worklib.uvm_pkg:sv <0x2cb1048e>
@@ -321,26 +83,18 @@ xmelab: *W,DSEMEL: This SystemVerilog design will be simulated as per IEEE 1800-
 			streams:  22, words: 47444
 		worklib.uvm_pkg:sv <0x7955d0e2>
 			streams:  22, words: 17409
-		worklib.uvm_pkg:sv <0x08b68a58>
-			streams:   7, words:  3099
 		worklib.uvm_pkg:sv <0x7fb9039d>
 			streams:  22, words: 19561
 		worklib.uvm_pkg:sv <0x205c6df7>
 			streams:  22, words: 19917
-		worklib.uvm_pkg:sv <0x56e66be5>
-			streams:   8, words:  4212
 		worklib.uvm_pkg:sv <0x2e7220c6>
 			streams:  86, words: 94736
 		worklib.uvm_pkg:sv <0x5c1455de>
 			streams: 111, words: 139206
 		worklib.uvm_pkg:sv <0x495d1dda>
 			streams:  31, words: 49966
-		worklib.uvm_pkg:sv <0x3f0a8aec>
-			streams:   7, words:  3099
 		worklib.uvm_pkg:sv <0x11a6dce8>
-			streams:  29, words: 26913
-		worklib.uvm_pkg:sv <0x072da1e9>
-			streams:   7, words:  3099
+			streams:  29, words: 26938
 		worklib.uvm_pkg:sv <0x397db386>
 			streams: 182, words: 229166
 		worklib.uvm_pkg:sv <0x1e6eb0f4>
@@ -349,14 +103,6 @@ xmelab: *W,DSEMEL: This SystemVerilog design will be simulated as per IEEE 1800-
 			streams: 125, words: 91447
 		worklib.int_pkg:sv <0x13f16c22>
 			streams:   0, words:     0
-		worklib.cdns_uvm_pkg:sv <0x2d402a40>
-			streams: 128, words: 240666
-		worklib.cdns_uvmapi:svp <0x2f0b4014>
-			streams:  27, words: 31790
-		worklib.cdns_assert2uvm_pkg:sv <0x1f8570d4>
-			streams:   3, words:  2239
-		worklib.uvm_pkg:sv <0x0d8adbf7>
-			streams: 3937, words: 6483729
 	Building instance specific data structures.
 .debug_ndm_reset_i              (dbg_ndmrst_i               ),
                                             |
@@ -1147,4 +893,4 @@ UVM_FATAL :    0
 Simulation complete via $finish(1) at time 2945 NS + 45
 /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/base/uvm_root.svh:457     $finish;
 xcelium> exit
-TOOL:	xrun(64)	20.09-s009: Exiting on May 12, 2026 at 18:52:51 IST  (total: 00:00:08)
+TOOL:	xrun(64)	20.09-s009: Exiting on May 12, 2026 at 19:08:45 IST  (total: 00:00:05)
