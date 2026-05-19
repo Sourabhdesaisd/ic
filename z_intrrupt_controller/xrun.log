@@ -1,0 +1,1393 @@
+xrun(64): 20.09-s009: (c) Copyright 1995-2021 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	20.09-s009: Started on May 18, 2026 at 18:03:57 IST
+xrun
+	-sv
+	-uvm
+	+svseed=-1009303894
+	-access +rwc
+	-f compile.f
+		+incdir+./verification
+		+incdir+./rtl
+		./verification/intf.sv
+		./verification/int_pkg.sv
+		./verification/tb_top.sv
+		./rtl/interrupt_recieve.v
+		./rtl/zic_irg.v
+		./rtl/zic_mmr_op_mux.v
+		./rtl/zic_mmr_top.v
+		./rtl/zic_top.v
+		./rtl/priority_resolve.v
+		./rtl/zic_mmr_ctrl.v
+		./rtl/zic_mmr_reg_file.v
+		./rtl/zilla_interrupt_control.v
+	+UVM_TESTNAME=int_base_test
+Recompiling... reason: file './verification/int_test.sv' is newer than expected.
+	expected: Mon May 18 17:58:58 2026
+	actual:   Mon May 18 18:00:24 2026
+Compiling UVM packages (uvm_pkg.sv cdns_uvm_pkg.sv) using uvmhome location /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d
+file: ./verification/int_pkg.sv
+      #1step;
+           |
+xmvlog: *W,SAWSTP (./verification/int_monitor.sv,139|11): Time unit "step" seen in literal - using local precision.
+(`include file: ./verification/int_monitor.sv line 139, file: ./verification/int_pkg.sv line 16)
+    reset_internal_model();
+                       |
+xmvlog: *W,BADTIF (./verification/int_monitor.sv,34|23): a function cannot enable a task [10.3.4(IEEE)].
+file: ./verification/tb_top.sv
+	module worklib.tb_top:sv
+		errors: 0, warnings: 0
+file: ./rtl/zilla_interrupt_control.v
+xmvlog: *W,SPDUSD: Include directory ./rtl given but not used.
+	Total errors/warnings found outside modules and primitives:
+		errors: 0, warnings: 1
+		Caching library 'worklib' ....... Done
+	Elaborating the design hierarchy:
+	Top level design units:
+		uvm_pkg
+		cdns_uvmapi
+		cdns_assert2uvm_pkg
+		cdns_uvm_pkg
+		int_pkg
+		tb_top
+xmelab: *W,DSEMEL: This SystemVerilog design will be simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
+    reset_internal_model();
+                       |
+xmelab: *W,NOTVFW (./verification/int_monitor.sv,34|23): Expecting a SystemVerilog void function name. The task 'reset_internal_model' should be made a void function, not a task. Currently this is treated as a warning for backward compatibility but be aware that calling a task in this context is illegal SystemVerilog and can give unpredictable results. Further, this condition may be treated as an error in the future.
+	Building instance overlay tables: .................... Done
+	Generating native compiled code:
+		worklib.uvm_pkg:sv <0x422ffa93>
+			streams:  22, words: 17409
+		worklib.uvm_pkg:sv <0x33a552ee>
+			streams:  22, words: 20414
+		worklib.uvm_pkg:sv <0x3070ae56>
+			streams:  22, words: 19917
+		worklib.uvm_pkg:sv <0x75284ce5>
+			streams:  86, words: 94938
+		worklib.uvm_pkg:sv <0x0a465979>
+			streams:  31, words: 45169
+		worklib.tb_top:sv <0x3424cad0>
+			streams: 126, words: 91807
+	Building instance specific data structures.
+.debug_ndm_reset_i              (dbg_ndmrst_i               ),
+                                            |
+xmelab: *W,CSINFI (./rtl/zilla_interrupt_control.v,214|44): implicit wire has no fanin (tb_top.dut.dbg_ndmrst_i).
+.debug_mode_reset_i             (dbg_hart_only_rst_i        ),
+                                                   |
+xmelab: *W,CSINFI (./rtl/zilla_interrupt_control.v,213|51): implicit wire has no fanin (tb_top.dut.dbg_hart_only_rst_i).
+.debug_ndm_reset_i              (dbg_ndmrst_w               )
+                                            |
+xmelab: *W,CSINFI (./rtl/zic_mmr_top.v,294|44): implicit wire has no fanin (tb_top.dut.zic_mmr_top_inst.dbg_ndmrst_w).
+.debug_mode_reset_i             (dbg_hart_only_rst_w        ),
+                                                   |
+xmelab: *W,CSINFI (./rtl/zic_mmr_top.v,293|51): implicit wire has no fanin (tb_top.dut.zic_mmr_top_inst.dbg_hart_only_rst_w).
+.debug_mode_valid_i             (debug_mode_valid_w         ),
+                                                  |
+xmelab: *W,CSINFI (./rtl/zic_mmr_top.v,292|50): implicit wire has no fanin (tb_top.dut.zic_mmr_top_inst.debug_mode_valid_w).
+.debug_ndm_reset_i              (dbg_ndmrst_i                       )
+                                            |
+xmelab: *W,CSINFI (./rtl/zic_top.v,270|44): implicit wire has no fanin (tb_top.dut.zic_top_inst.dbg_ndmrst_i).
+.debug_mode_reset_i             (dbg_hart_only_rst_i               ),
+                                                   |
+xmelab: *W,CSINFI (./rtl/zic_top.v,269|51): implicit wire has no fanin (tb_top.dut.zic_top_inst.dbg_hart_only_rst_i).
+	Loading native compiled code:     .................... Done
+	Design hierarchy summary:
+		                       Instances  Unique
+		Modules:                     113      20
+		Interfaces:                    1       1
+		Verilog packages:              5       5
+		Registers:                 15816   11217
+		Scalar wires:                138       -
+		Expanded wires:               96       2
+		Vectored wires:              312       -
+		Named events:                  4      12
+		Always blocks:               256      22
+		Initial blocks:              361     181
+		Parallel blocks:              26      27
+		Cont. assignments:           207     168
+		Pseudo assignments:          117     117
+		Assertions:                    2       2
+		Covergroup Instances:          0       1
+		SV Class declarations:       225     338
+		SV Class specializations:    435     435
+		Simulation timescale:        1ps
+	Writing initial simulation snapshot: worklib.tb_top:sv
+Loading snapshot worklib.tb_top:sv .................... Done
+SVSEED set from command line: -1009303894
+xmsim: *W,RNDXCELON: A newer version of the SystemVerilog constraint solver is being used which has better support for array-solving, new solve-order mechanism, and seed stability enhancements..
+xmsim: *W,DSEM2009: This SystemVerilog design is simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
+xcelium> source /tools/cadence_march2021/XCELIUM2009/tools/xcelium/files/xmsimrc
+xcelium> source /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/additions/sv/files/tcl/uvm_sim.tcl
+xcelium> run
+----------------------------------------------------------------
+CDNS-UVM-1.1d (20.09-s009)
+(C) 2007-2013 Mentor Graphics Corporation
+(C) 2007-2013 Cadence Design Systems, Inc.
+(C) 2006-2013 Synopsys, Inc.
+(C) 2011-2013 Cypress Semiconductor Corp.
+----------------------------------------------------------------
+
+  ***********       IMPORTANT RELEASE NOTES         ************
+
+  You are using a version of the UVM library that has been compiled
+  with `UVM_NO_DEPRECATED undefined.
+  See http://www.eda.org/svdb/view.php?id=3313 for more details.
+
+  You are using a version of the UVM library that has been compiled
+  with `UVM_OBJECT_MUST_HAVE_CONSTRUCTOR undefined.
+  See http://www.eda.org/svdb/view.php?id=3770 for more details.
+
+      (Specify +UVM_NO_RELNOTES to turn off this notice)
+
+UVM_INFO @ 0: reporter [RNTST] Running test int_base_test...
+UVM_INFO @ 0: reporter [UVMTOP] UVM testbench topology:
+--------------------------------------------------------------
+Name                       Type                    Size  Value
+--------------------------------------------------------------
+uvm_test_top               int_base_test           -     @2744
+  env                      int_env                 -     @2803
+    agent                  int_agent               -     @2834
+      drv                  int_driver              -     @3664
+        rsp_port           uvm_analysis_port       -     @3763
+        seq_item_port      uvm_seq_item_pull_port  -     @3714
+      mon                  int_monitor             -     @3743
+        mon_ap             uvm_analysis_port       -     @3842
+      sqr                  int_sequencer           -     @3027
+        rsp_export         uvm_analysis_export     -     @3085
+        seq_item_export    uvm_seq_item_pull_imp   -     @3633
+        arbitration_queue  array                   0     -    
+        lock_queue         array                   0     -    
+        num_last_reqs      integral                32    'd1  
+        num_last_rsps      integral                32    'd1  
+    cov                    int_coverage            -     @2944
+      analysis_imp         uvm_analysis_imp        -     @2994
+    scb                    int_scoreboard          -     @2864
+      sb_imp               uvm_analysis_imp        -     @2913
+--------------------------------------------------------------
+
+UVM_INFO ./verification/int_driver.sv(117) @ 0: uvm_test_top.env.agent.drv [DRV] Driver run_phase started
+UVM_INFO ./verification/int_seq.sv(273) @ 0: uvm_test_top.env.agent.sqr@@seq [RAND_STORM_SEQ] Starting random interrupt storm test, cycles=50
+UVM_INFO ./verification/int_driver.sv(54) @ 0: uvm_test_top.env.agent.drv [DRV] RESET transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 55001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 65001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 75001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(70) @ 85000: uvm_test_top.env.agent.drv [DRV] RESET done
+UVM_INFO ./verification/int_driver.sv(129) @ 85000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 85001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ0 CTL updated addr=0x1003 ctl=0xd7 level=0xd7 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 85001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 95000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 95001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ1 CTL updated addr=0x1007 ctl=0xbd level=0xbd pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 95001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 105000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 105001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ2 CTL updated addr=0x100b ctl=0x36 level=0x36 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 105001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 115000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 115001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ3 CTL updated addr=0x100f ctl=0xa5 level=0xa5 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 115001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 125000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 125001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ4 CTL updated addr=0x1013 ctl=0xc7 level=0xc7 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 125001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 135000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 135001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ5 CTL updated addr=0x1017 ctl=0xd0 level=0xd0 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 135001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 145000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 145001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ6 CTL updated addr=0x101b ctl=0x97 level=0x97 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 145001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 155000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 155001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ7 CTL updated addr=0x101f ctl=0x8b level=0x8b pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 155001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 165000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 165001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ8 CTL updated addr=0x1023 ctl=0x38 level=0x38 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 165001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 175000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 175001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ9 CTL updated addr=0x1027 ctl=0xa6 level=0xa6 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 175001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 185000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 185001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ10 CTL updated addr=0x102b ctl=0x25 level=0x25 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 185001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 195000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 195001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ11 CTL updated addr=0x102f ctl=0xe7 level=0xe7 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 195001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 205000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 205001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ12 CTL updated addr=0x1033 ctl=0x4a level=0x4a pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 205001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 215000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 215001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ13 CTL updated addr=0x1037 ctl=0xd2 level=0xd2 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 215001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 225000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 225001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ14 CTL updated addr=0x103b ctl=0x7b level=0x7b pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 225001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 235000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 235001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ15 CTL updated addr=0x103f ctl=0x48 level=0x48 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 235001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 245000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 245001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ16 CTL updated addr=0x1043 ctl=0x37 level=0x37 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 245001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 255000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 255001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ17 CTL updated addr=0x1047 ctl=0xd6 level=0xd6 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 255001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 265000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 265001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ18 CTL updated addr=0x104b ctl=0xba level=0xba pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 265001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 275000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 275001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ19 CTL updated addr=0x104f ctl=0x84 level=0x84 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 275001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 285000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 285001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ20 CTL updated addr=0x1053 ctl=0xc0 level=0xc0 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 285001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 295000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 295001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ21 CTL updated addr=0x1057 ctl=0x8e level=0x8e pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 295001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 305000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 305001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ22 CTL updated addr=0x105b ctl=0x15 level=0x15 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 305001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 315000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 315001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ23 CTL updated addr=0x105f ctl=0x76 level=0x76 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 315001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 325000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 325001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ24 CTL updated addr=0x1063 ctl=0x46 level=0x46 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 325001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 335000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 335001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ25 CTL updated addr=0x1067 ctl=0xc level=0xc pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 335001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 345000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 345001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ26 CTL updated addr=0x106b ctl=0x15 level=0x15 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 345001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 355000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 355001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ27 CTL updated addr=0x106f ctl=0x29 level=0x29 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 355001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 365000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 365001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ28 CTL updated addr=0x1073 ctl=0x58 level=0x58 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 365001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 375000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 375001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ29 CTL updated addr=0x1077 ctl=0xcc level=0xcc pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 375001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 385000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 385001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ30 CTL updated addr=0x107b ctl=0x7b level=0x7b pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 385001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 395000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 395001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ31 CTL updated addr=0x107f ctl=0x8c level=0x8c pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 395001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 405000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 405001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ32 CTL updated addr=0x1083 ctl=0x5f level=0x5f pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 405001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 415000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 415001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ33 CTL updated addr=0x1087 ctl=0x87 level=0x87 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 415001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 425000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 425001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ34 CTL updated addr=0x108b ctl=0x59 level=0x59 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 425001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 435000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 435001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ35 CTL updated addr=0x108f ctl=0x64 level=0x64 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 435001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 445000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 445001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ36 CTL updated addr=0x1093 ctl=0x5b level=0x5b pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 445001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 455000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 455001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ37 CTL updated addr=0x1097 ctl=0xbc level=0xbc pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 455001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 465000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 465001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ38 CTL updated addr=0x109b ctl=0xf5 level=0xf5 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 465001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 475000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 475001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ39 CTL updated addr=0x109f ctl=0xf0 level=0xf0 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 475001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 485000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 485001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ40 CTL updated addr=0x10a3 ctl=0x8 level=0x8 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 485001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 495000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 495001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ41 CTL updated addr=0x10a7 ctl=0xea level=0xea pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 495001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 505000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 505001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ42 CTL updated addr=0x10ab ctl=0x8b level=0x8b pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 505001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 515000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 515001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ43 CTL updated addr=0x10af ctl=0x1a level=0x1a pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 515001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 525000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 525001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ44 CTL updated addr=0x10b3 ctl=0x52 level=0x52 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 525001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 535000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 535001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ45 CTL updated addr=0x10b7 ctl=0x3d level=0x3d pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 535001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 545000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 545001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ46 CTL updated addr=0x10bb ctl=0x78 level=0x78 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 545001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 555000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(224) @ 555001: uvm_test_top.env.agent.mon [MON_MIRROR] IRQ47 CTL updated addr=0x10bf ctl=0x16 level=0x16 pri=0x0
+UVM_INFO ./verification/int_monitor.sv(326) @ 555001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 565000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 565001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 575000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 575001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 585000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 585001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x0 ACT_ACK=0x0 ACK_W=0x0
+UVM_INFO ./verification/int_driver.sv(129) @ 595000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 595001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 605000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 605001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 615000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 615001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x39 ACT_ACK=0x39 ACK_W=0x39
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 615001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x39 exp_lvl_pr=0xea act_lvl_pr=0xea
+UVM_INFO ./verification/int_driver.sv(129) @ 625000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 625001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 635000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 635001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 645000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 645001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 655000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 655001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 665000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 665001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 675000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 675001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 685000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 685001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 695000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 695001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 705000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 705001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 715000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 715001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 725000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 725001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x37 ACT_ACK=0x36 ACK_W=0x37
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 725001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf0
+UVM_INFO ./verification/int_driver.sv(129) @ 735000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 735001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 745000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 745001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 755000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 755001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 765000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 765001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 775000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 775001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 785000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 785001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 795000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 795001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 805000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 805001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 815000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 815001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 825000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 825001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 835000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 835001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 845000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 845001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x37 ACT_ACK=0x37 ACK_W=0x37
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 845001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x37 exp_lvl_pr=0xf0 act_lvl_pr=0xf0
+UVM_INFO ./verification/int_driver.sv(129) @ 855000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 855001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 865000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 865001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 875000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 875001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 885000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 885001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 895000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 895001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 905000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 905001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 915000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 915001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 915001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 925000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 925001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 935000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 935001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 945000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 945001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 955000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 955001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 965000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 965001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 975000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 975001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 985000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 985001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 995000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 995001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 995001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 1005000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1005001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1015000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1015001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1025000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1025001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1035000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1035001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1045000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1045001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1055000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1055001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1065000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1065001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1075000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1075001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1085000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1085001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_driver.sv(129) @ 1095000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1095001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x11 ACT_ACK=0x0 ACK_W=0x11
+UVM_INFO ./verification/int_driver.sv(129) @ 1105000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1105001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x11 ACT_ACK=0x11 ACK_W=0x11
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1105001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x11 exp_lvl_pr=0xbd act_lvl_pr=0xbd
+UVM_INFO ./verification/int_driver.sv(129) @ 1115000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1115001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x11 ACT_ACK=0x0 ACK_W=0x11
+UVM_INFO ./verification/int_driver.sv(129) @ 1125000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1125001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 1135000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1135001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x11 ACT_ACK=0x0 ACK_W=0x11
+UVM_INFO ./verification/int_driver.sv(129) @ 1145000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1145001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1155000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1155001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1165000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1165001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1175000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1175001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1185000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1185001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1195000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1195001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1195001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 1205000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1205001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1215000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1215001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 1225000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1225001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1235000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1235001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1245000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1245001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1255000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1255001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1265000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1265001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1275000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1275001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x1b ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1275001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 1285000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1285001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1295000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1295001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x35 ACT_ACK=0x0 ACK_W=0x35
+UVM_INFO ./verification/int_driver.sv(129) @ 1305000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1305001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1315000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1315001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1325000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1325001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1335000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1335001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x35 ACT_ACK=0x0 ACK_W=0x35
+UVM_INFO ./verification/int_driver.sv(129) @ 1345000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1345001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x35 ACT_ACK=0x0 ACK_W=0x35
+UVM_INFO ./verification/int_driver.sv(129) @ 1355000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1355001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x35 ACT_ACK=0x0 ACK_W=0x35
+UVM_INFO ./verification/int_driver.sv(129) @ 1365000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1365001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x35 ACT_ACK=0x0 ACK_W=0x35
+UVM_INFO ./verification/int_driver.sv(129) @ 1375000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1375001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x35 ACT_ACK=0x0 ACK_W=0x35
+UVM_INFO ./verification/int_driver.sv(129) @ 1385000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1385001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1395000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1395001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1405000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1405001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1405001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 1415000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1415001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1425000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1425001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1435000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1435001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1445000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1445001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1455000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1455001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1465000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1465001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1475000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1475001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1485000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1485001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1495000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1495001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 1505000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1505001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1515000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1515001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1525000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1525001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1535000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1535001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1545000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1545001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1555000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1555001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x39 ACT_ACK=0x39 ACK_W=0x39
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1555001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x39 exp_lvl_pr=0xea act_lvl_pr=0xea
+UVM_INFO ./verification/int_driver.sv(129) @ 1565000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1565001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1575000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1575001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1585000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1585001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1595000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1595001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1605000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1605001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1615000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1615001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1625000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1625001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1635000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1635001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 1645000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1645001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1655000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1655001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x1b ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1655001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 1665000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1665001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1675000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1675001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 1685000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1685001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1695000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1695001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 1705000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1705001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 1715000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1715001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 1725000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1725001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 1735000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1735001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 1745000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1745001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x37 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1745001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x37 exp_lvl_pr=0xf0 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 1755000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1755001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1765000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1765001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1775000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1775001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1785000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1785001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1795000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1795001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 1805000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1805001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 1815000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1815001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 1825000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1825001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 1835000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1835001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 1845000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1845001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1855000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1855001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1865000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1865001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1865001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 1875000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1875001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1885000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1885001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 1895000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1895001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 1905000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1905001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 1915000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1915001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x10 ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1915001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x10 exp_lvl_pr=0xd7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 1925000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1925001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1935000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1935001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1945000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1945001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1955000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1955001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 1965000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1965001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 1975000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1975001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 1985000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1985001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x39 ACT_ACK=0x1b ACK_W=0x39
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 1985001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xea
+UVM_INFO ./verification/int_driver.sv(129) @ 1995000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 1995001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 2005000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2005001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 2015000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2015001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 2025000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2025001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2035000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2035001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2045000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2045001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 2055000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2055001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 2065000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2065001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x15 ACT_ACK=0x15 ACK_W=0x15
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 2065001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x15 exp_lvl_pr=0xd0 act_lvl_pr=0xd0
+UVM_INFO ./verification/int_driver.sv(129) @ 2075000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2075001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 2085000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2085001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x35 ACT_ACK=0x0 ACK_W=0x35
+UVM_INFO ./verification/int_driver.sv(129) @ 2095000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2095001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 2105000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2105001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 2115000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2115001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2125000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2125001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2135000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2135001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2145000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2145001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2155000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2155001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2165000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2165001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 2165001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 2175000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2175001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2185000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2185001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2195000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2195001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2205000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2205001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2215000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2215001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2225000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2225001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2235000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2235001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2245000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2245001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2255000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2255001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x37 ACT_ACK=0x37 ACK_W=0x37
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 2255001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x37 exp_lvl_pr=0xf0 act_lvl_pr=0xf0
+UVM_INFO ./verification/int_driver.sv(129) @ 2265000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2265001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2275000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2275001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 2285000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2285001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2295000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2295001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2305000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2305001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2315000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2315001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 2325000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2325001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 2335000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2335001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 2345000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2345001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 2355000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2355001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 2365000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2365001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2375000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2375001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 2375001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 2385000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2385001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2395000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2395001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2405000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2405001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2415000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2415001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2425000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2425001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2435000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2435001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2445000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2445001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2455000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2455001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x37 ACT_ACK=0x37 ACK_W=0x37
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 2455001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x37 exp_lvl_pr=0xf0 act_lvl_pr=0xf0
+UVM_INFO ./verification/int_driver.sv(129) @ 2465000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2465001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2475000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2475001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2485000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2485001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2495000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2495001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2505000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2505001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2515000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2515001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2525000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2525001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2535000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2535001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x1b ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 2535001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 2545000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2545001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2555000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2555001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2565000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2565001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2575000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2575001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2585000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2585001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2595000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2595001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2605000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2605001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2615000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2615001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2625000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2625001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2635000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2635001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2645000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2645001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2655000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2655001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2665000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2665001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2675000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2675001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2685000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2685001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x1b ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 2685001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 2695000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2695001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2705000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2705001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x11 ACT_ACK=0x0 ACK_W=0x11
+UVM_INFO ./verification/int_driver.sv(129) @ 2715000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2715001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2725000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2725001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2735000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2735001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x11 ACT_ACK=0x0 ACK_W=0x11
+UVM_INFO ./verification/int_driver.sv(129) @ 2745000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2745001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x11 ACT_ACK=0x0 ACK_W=0x11
+UVM_INFO ./verification/int_driver.sv(129) @ 2755000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2755001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2765000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2765001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2775000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2775001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2785000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2785001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2795000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2795001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x37 ACT_ACK=0x37 ACK_W=0x37
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 2795001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x37 exp_lvl_pr=0xf0 act_lvl_pr=0xf0
+UVM_INFO ./verification/int_driver.sv(129) @ 2805000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2805001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2815000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2815001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2825000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2825001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2835000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2835001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 2845000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2845001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 2855000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2855001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x1b ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 2855001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 2865000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2865001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2875000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2875001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2885000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2885001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2895000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2895001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2905000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2905001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 2915000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2915001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2925000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2925001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2935000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2935001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2945000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2945001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2955000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2955001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2965000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2965001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 2975000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2975001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2985000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2985001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 2995000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 2995001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3005000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3005001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3015000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3015001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x21 ACT_ACK=0x21 ACK_W=0x21
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3015001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x21 exp_lvl_pr=0xd6 act_lvl_pr=0xd6
+UVM_INFO ./verification/int_driver.sv(129) @ 3025000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3025001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3035000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3035001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2f ACT_ACK=0x0 ACK_W=0x2f
+UVM_INFO ./verification/int_driver.sv(129) @ 3045000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3045001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3055000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3055001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3065000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3065001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3075000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3075001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3085000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3085001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3095000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3095001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3095001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 3105000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3105001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3115000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3115001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3125000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3125001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3135000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3135001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3145000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3145001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3155000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3155001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3165000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3165001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3175000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3175001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3185000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3185001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3195000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3195001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3205000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3205001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3215000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3215001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3225000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3225001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3225001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 3235000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3235001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3245000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3245001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3255000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3255001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3265000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3265001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3275000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3275001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3285000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3285001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3295000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3295001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3305000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3305001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3315000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3315001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3325000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3325001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3335000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3335001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3345000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3345001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3355000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3355001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3365000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3365001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x37 ACT_ACK=0x37 ACK_W=0x37
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3365001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x37 exp_lvl_pr=0xf0 act_lvl_pr=0xf0
+UVM_INFO ./verification/int_driver.sv(129) @ 3375000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3375001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3385000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3385001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 3395000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3395001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3405000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3405001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3415000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3415001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3425000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3425001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3435000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3435001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3445000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3445001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3455000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3455001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3455001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 3465000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3465001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3475000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3475001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3485000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3485001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3495000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3495001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3505000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3505001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3515000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3515001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3525000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3525001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3535000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3535001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 3545000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3545001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3555000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3555001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x36 ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3555001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 3565000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3565001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3575000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3575001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3585000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3585001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3595000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3595001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3605000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3605001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 3615000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3615001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 3625000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3625001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 3635000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3635001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 3645000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3645001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3655000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3655001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3665000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3665001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x37 ACT_ACK=0x37 ACK_W=0x37
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3665001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x37 exp_lvl_pr=0xf0 act_lvl_pr=0xf0
+UVM_INFO ./verification/int_driver.sv(129) @ 3675000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3675001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3685000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3685001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_driver.sv(129) @ 3695000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3695001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3705000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3705001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 3715000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3715001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_driver.sv(129) @ 3725000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3725001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_driver.sv(129) @ 3735000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3735001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3745000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3745001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3755000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3755001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3765000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3765001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3775000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3775001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3785000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3785001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x1b ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3785001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 3795000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3795001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3805000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3805001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3815000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3815001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3825000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3825001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3835000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3835001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3845000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3845001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3855000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3855001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3865000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3865001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3875000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3875001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 3885000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3885001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3895000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3895001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3905000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3905001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x21 ACT_ACK=0x21 ACK_W=0x21
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3905001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x21 exp_lvl_pr=0xd6 act_lvl_pr=0xd6
+UVM_INFO ./verification/int_driver.sv(129) @ 3915000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3915001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3925000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3925001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x24 ACT_ACK=0x0 ACK_W=0x24
+UVM_INFO ./verification/int_driver.sv(129) @ 3935000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3935001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 3945000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3945001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 3955000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3955001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3965000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3965001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3975000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3975001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3985000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3985001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 3995000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 3995001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 3995001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 4005000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4005001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4015000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4015001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 4025000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4025001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4035000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4035001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 4045000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4045001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4055000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4055001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4065000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4065001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4075000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4075001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4085000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4085001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x1b ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4085001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 4095000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4095001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4105000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4105001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 4115000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4115001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4125000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4125001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 4135000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4135001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 4145000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4145001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 4155000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4155001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x22 ACT_ACK=0x0 ACK_W=0x22
+UVM_INFO ./verification/int_driver.sv(129) @ 4165000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4165001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 4175000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4175001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 4185000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4185001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 4195000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4195001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x21 ACT_ACK=0x21 ACK_W=0x21
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4195001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x21 exp_lvl_pr=0xd6 act_lvl_pr=0xd6
+UVM_INFO ./verification/int_driver.sv(129) @ 4205000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4205001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 4215000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4215001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 4225000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4225001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 4235000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4235001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 4245000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4245001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 4255000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4255001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 4265000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4265001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 4275000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4275001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 4285000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4285001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 4295000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4295001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4305000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4305001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4315000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4315001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4315001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 4325000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4325001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4335000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4335001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4345000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4345001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4355000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4355001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4365000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4365001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4375000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4375001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4385000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4385001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4395000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4395001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4395001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 4405000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4405001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4415000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4415001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 4425000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4425001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4435000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4435001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4445000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4445001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4455000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4455001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4465000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4465001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4465001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 4475000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4475001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4485000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4485001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 4495000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4495001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4505000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4505001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4515000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4515001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4515001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 4525000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4525001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4535000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4535001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4545000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4545001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4555000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4555001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4565000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4565001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4575000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4575001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4585000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4585001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 4595000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4595001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4605000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4605001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4615000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4615001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x1b ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4615001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 4625000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4625001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4635000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4635001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 4645000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4645001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4655000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4655001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4665000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4665001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 4675000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4675001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 4685000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4685001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 4695000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4695001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x37 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4695001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x37 exp_lvl_pr=0xf0 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 4705000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4705001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4715000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4715001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4725000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4725001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4735000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4735001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4745000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4745001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 4755000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4755001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 4765000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4765001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 4775000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4775001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 4785000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4785001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 4795000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4795001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x37 ACT_ACK=0x37 ACK_W=0x37
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4795001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x37 exp_lvl_pr=0xf0 act_lvl_pr=0xf0
+UVM_INFO ./verification/int_driver.sv(129) @ 4805000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4805001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 4815000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4815001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 4825000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4825001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 4835000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4835001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4845000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4845001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x2d ACT_ACK=0x1b ACK_W=0x2d
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4845001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xcc
+UVM_INFO ./verification/int_driver.sv(129) @ 4855000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4855001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_driver.sv(129) @ 4865000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4865001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_driver.sv(129) @ 4875000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4875001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_driver.sv(129) @ 4885000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4885001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_driver.sv(129) @ 4895000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4895001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_driver.sv(129) @ 4905000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4905001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 4915000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4915001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4925000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4925001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4935000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4935001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4945000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4945001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4955000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4955001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x1b ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 4955001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 4965000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4965001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4975000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4975001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x24 ACT_ACK=0x0 ACK_W=0x24
+UVM_INFO ./verification/int_driver.sv(129) @ 4985000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4985001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 4995000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 4995001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x10 ACT_ACK=0x0 ACK_W=0x10
+UVM_INFO ./verification/int_driver.sv(129) @ 5005000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5005001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x14 ACT_ACK=0x0 ACK_W=0x14
+UVM_INFO ./verification/int_driver.sv(129) @ 5015000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5015001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x14 ACT_ACK=0x0 ACK_W=0x14
+UVM_INFO ./verification/int_driver.sv(129) @ 5025000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5025001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x14 ACT_ACK=0x0 ACK_W=0x14
+UVM_INFO ./verification/int_driver.sv(129) @ 5035000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5035001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x14 ACT_ACK=0x14 ACK_W=0x14
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 5035001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x14 exp_lvl_pr=0xc7 act_lvl_pr=0xc7
+UVM_INFO ./verification/int_driver.sv(129) @ 5045000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5045001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x14 ACT_ACK=0x0 ACK_W=0x14
+UVM_INFO ./verification/int_driver.sv(129) @ 5055000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5055001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x13 ACT_ACK=0x0 ACK_W=0x13
+UVM_INFO ./verification/int_driver.sv(129) @ 5065000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5065001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x14 ACT_ACK=0x0 ACK_W=0x14
+UVM_INFO ./verification/int_driver.sv(129) @ 5075000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5075001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 5085000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5085001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 5095000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5095001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 5105000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5105001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 5115000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5115001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 5125000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5125001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x1b ACT_ACK=0x1b ACK_W=0x1b
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 5125001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x1b exp_lvl_pr=0xe7 act_lvl_pr=0xe7
+UVM_INFO ./verification/int_driver.sv(129) @ 5135000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5135001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 5145000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5145001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x21 ACT_ACK=0x0 ACK_W=0x21
+UVM_INFO ./verification/int_driver.sv(129) @ 5155000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5155001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1b ACT_ACK=0x0 ACK_W=0x1b
+UVM_INFO ./verification/int_driver.sv(129) @ 5165000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5165001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x15 ACT_ACK=0x0 ACK_W=0x15
+UVM_INFO ./verification/int_driver.sv(129) @ 5175000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5175001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 5185000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5185001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 5195000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5195001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 5205000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5205001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 5215000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5215001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x36 ACT_ACK=0x36 ACK_W=0x36
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 5215001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x36 exp_lvl_pr=0xf5 act_lvl_pr=0xf5
+UVM_INFO ./verification/int_driver.sv(129) @ 5225000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5225001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 5235000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5235001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 5245000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5245001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 5255000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5255001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x36 ACT_ACK=0x0 ACK_W=0x36
+UVM_INFO ./verification/int_driver.sv(129) @ 5265000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5265001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 5275000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5275001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 5285000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5285001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x37 ACT_ACK=0x0 ACK_W=0x37
+UVM_INFO ./verification/int_driver.sv(129) @ 5295000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5295001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 5305000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5305001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 5315000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5315001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x39 ACT_ACK=0x39 ACK_W=0x39
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 5315001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x39 exp_lvl_pr=0xea act_lvl_pr=0xea
+UVM_INFO ./verification/int_driver.sv(129) @ 5325000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5325001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 5335000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5335001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 5345000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5345001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 5355000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5355001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 5365000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5365001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 5375000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5375001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 5385000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5385001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x1d ACT_ACK=0x0 ACK_W=0x1d
+UVM_INFO ./verification/int_driver.sv(129) @ 5395000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5395001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_driver.sv(129) @ 5405000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5405001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=1 EXP_ACK=0x39 ACT_ACK=0x39 ACK_W=0x39
+UVM_INFO ./verification/int_scoreboard.sv(50) @ 5405001: uvm_test_top.env.scb [ZIC_SCB] PASS ACK_ID: ack=0x39 exp_lvl_pr=0xea act_lvl_pr=0xea
+UVM_INFO ./verification/int_driver.sv(129) @ 5415000: uvm_test_top.env.agent.drv [DRV] Normal transaction received
+UVM_INFO ./verification/int_monitor.sv(326) @ 5415001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5425001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x2d ACT_ACK=0x0 ACK_W=0x2d
+UVM_INFO ./verification/int_monitor.sv(326) @ 5435001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5445001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5455001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5465001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5475001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5485001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5495001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5505001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5515001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5525001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5535001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5545001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5555001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5565001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5575001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5585001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5595001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5605001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO ./verification/int_monitor.sv(326) @ 5615001: uvm_test_top.env.agent.mon [MON_PREDICT] ACK_REQ=0 EXP_ACK=0x39 ACT_ACK=0x0 ACK_W=0x39
+UVM_INFO /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/base/uvm_objection.svh(1268) @ 5625000: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+UVM_INFO ./verification/int_scoreboard.sv(62) @ 5625000: uvm_test_top.env.scb [ZIC_SCB_REPORT] PASS_COUNT=50 FAIL_COUNT=0
+
+--- UVM Report catcher Summary ---
+
+
+Number of demoted UVM_FATAL reports  :    0
+Number of demoted UVM_ERROR reports  :    0
+Number of demoted UVM_WARNING reports:    0
+Number of caught UVM_FATAL reports   :    0
+Number of caught UVM_ERROR reports   :    0
+Number of caught UVM_WARNING reports :    0
+
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO : 1197
+UVM_WARNING :    0
+UVM_ERROR :    0
+UVM_FATAL :    0
+** Report counts by id
+[DRV]   537
+[MON_MIRROR]    48
+[MON_PREDICT]   557
+[RAND_STORM_SEQ]     1
+[RNTST]     1
+[TEST_DONE]     1
+[UVMTOP]     1
+[ZIC_SCB]    50
+[ZIC_SCB_REPORT]     1
+Simulation complete via $finish(1) at time 5625 NS + 45
+/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/base/uvm_root.svh:457     $finish;
+xcelium> exit
+TOOL:	xrun(64)	20.09-s009: Exiting on May 18, 2026 at 18:04:01 IST  (total: 00:00:04)
