@@ -5,7 +5,7 @@
 interface intf(input logic zic_clk);
 
   logic zic_rst;
-logic [7:0] zic_ack_int_id_w;
+//logic [7:0] zic_ack_int_id_w;
   logic zic_mmr_write_en_i;
   logic [15:0] zic_mmr_write_addr_i;
   logic [31:0] zic_mmr_write_data_i;

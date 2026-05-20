@@ -96,7 +96,7 @@ module tb_top;
     .wdt_reset_o              (vif.wdt_reset_o)
   );
 
-assign vif.zic_ack_int_id_w =   dut.zic_ack_int_id_w;
+//assign vif.zic_ack_int_id_w =   dut.zic_ack_int_id_w;
  
  initial begin
     $shm_open("wave.shm");

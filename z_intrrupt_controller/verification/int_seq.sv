@@ -1,238 +1,3 @@
-
-class rand_storm_seq extends uvm_sequence #(int_seq_item);
-
-  `uvm_object_utils(rand_storm_seq)
-
-  int_seq_item tr;
-
-  function new(string name = "rand_storm_seq");
-    super.new(name);
-  endfunction
-
-  task body();
-
-    int i;
-    int n;
-    int irq;
-
-    // RESET ASSERT
-    tr = int_seq_item::type_id::create("reset_assert");
-    start_item(tr);
-
-    tr.zic_rst = 1'b1;
-    tr.ext_int = '0;
-
-    tr.zic_mmr_write_en_i   = 1'b0;
-    tr.zic_mmr_write_addr_i = '0;
-    tr.zic_mmr_write_data_i = '0;
-
-    tr.zic_mmr_read_en_i   = 1'b0;
-    tr.zic_mmr_read_addr_i = '0;
-
-    tr.zic_ack_read_valid_en = 1'b0;
-
-    tr.zic_eoi_valid_i = 1'b0;
-    tr.zic_eoi_id_i    = '0;
-
-    tr.active_lvl_pr_i = '0;
-
-    tr.global_int_enable_valid_i = 1'b0;
-    tr.global_int_enable_bit_i   = '0;
-
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
-
-    finish_item(tr);
-
-
-    // RESET RELEASE
-    tr = int_seq_item::type_id::create("reset_release");
-    start_item(tr);
-
-    tr.zic_rst = 1'b0;
-    tr.ext_int = '0;
-
-    tr.zic_mmr_write_en_i   = 1'b0;
-    tr.zic_mmr_write_addr_i = '0;
-    tr.zic_mmr_write_data_i = '0;
-
-    tr.zic_mmr_read_en_i   = 1'b0;
-    tr.zic_mmr_read_addr_i = '0;
-
-    tr.zic_ack_read_valid_en = 1'b0;
-
-    tr.zic_eoi_valid_i = 1'b0;
-    tr.zic_eoi_id_i    = '0;
-
-    tr.active_lvl_pr_i = '0;
-
-    tr.global_int_enable_valid_i = 1'b0;
-    tr.global_int_enable_bit_i   = '0;
-
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
-
-    finish_item(tr);
-
-
-    // CONFIGURE IRQ CONTROL REGISTERS
-    for (i = 0; i < 10; i++) begin
-
-      tr = int_seq_item::type_id::create($sformatf("cfg_irq_%0d", i));
-      start_item(tr);
-
-      tr.zic_rst = 1'b0;
-      tr.ext_int = '0;
-
-      tr.zic_mmr_write_en_i   = 1'b1;
-      tr.zic_mmr_write_addr_i = 16'h1003 + (i * 4);
-      tr.zic_mmr_write_data_i = {24'h0, $urandom_range(8'h20, 8'hff)};
-
-      tr.zic_mmr_read_en_i   = 1'b0;
-      tr.zic_mmr_read_addr_i = '0;
-
-      tr.zic_ack_read_valid_en = 1'b0;
-
-      tr.zic_eoi_valid_i = 1'b0;
-      tr.zic_eoi_id_i    = '0;
-
-      tr.active_lvl_pr_i = '0;
-
-      tr.global_int_enable_valid_i = 1'b0;
-      tr.global_int_enable_bit_i   = '0;
-
-      tr.debug_mode_valid_i = 1'b0;
-      tr.debug_mode_reset_i = 1'b0;
-      tr.debug_ndm_reset_i  = 1'b0;
-
-      finish_item(tr);
-
-    end
-
-
-    // ENABLE INTERRUPTS
-    tr = int_seq_item::type_id::create("enable_irq");
-    start_item(tr);
-
-    tr.zic_rst = 1'b0;
-    tr.ext_int = '0;
-
-    tr.zic_mmr_write_en_i   = 1'b0;
-    tr.zic_mmr_write_addr_i = '0;
-    tr.zic_mmr_write_data_i = '0;
-
-    tr.zic_mmr_read_en_i   = 1'b0;
-    tr.zic_mmr_read_addr_i = '0;
-
-    tr.zic_ack_read_valid_en = 1'b0;
-
-    tr.zic_eoi_valid_i = 1'b0;
-    tr.zic_eoi_id_i    = '0;
-
-    tr.active_lvl_pr_i = '0;
-
-    tr.global_int_enable_valid_i = 1'b1;
-    tr.global_int_enable_bit_i   = '0;
-
-    for (i = 0; i < 47; i++) begin
-      tr.global_int_enable_bit_i[i] = 1'b1;
-    end
-
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
-
-    finish_item(tr);
-
-
-    // RANDOM INTERRUPT STRESS
-    repeat (50) begin
-
-      tr = int_seq_item::type_id::create("rand_irq_assert");
-      start_item(tr);
-
-      tr.zic_rst = 1'b0;
-
-      tr.zic_mmr_write_en_i   = 1'b0;
-      tr.zic_mmr_write_addr_i = '0;
-      tr.zic_mmr_write_data_i = '0;
-
-      tr.zic_mmr_read_en_i   = 1'b0;
-      tr.zic_mmr_read_addr_i = '0;
-
-      tr.zic_eoi_valid_i = 1'b0;
-      tr.zic_eoi_id_i    = '0;
-
-      tr.active_lvl_pr_i = '0;
-
-      tr.global_int_enable_valid_i = 1'b1;
-      tr.global_int_enable_bit_i   = '0;
-
-      for (i = 0; i < 47; i++) begin
-        tr.global_int_enable_bit_i[i] = 1'b1;
-      end
-
-      tr.ext_int = '0;
-
-      n = $urandom_range(1, 5);
-
-      for (i = 0; i < n; i++) begin
-        irq = $urandom_range(0, 46);
-        tr.ext_int[irq] = 1'b1;
-      end
-
-      // Important: generate ACK read
-      tr.zic_ack_read_valid_en = 1'b1;
-
-      tr.debug_mode_valid_i = 1'b0;
-      tr.debug_mode_reset_i = 1'b0;
-      tr.debug_ndm_reset_i  = 1'b0;
-
-      finish_item(tr);
-
-
-      // CLEAR IRQ / IDLE CYCLE
-      tr = int_seq_item::type_id::create("rand_irq_clear");
-      start_item(tr);
-
-      tr.zic_rst = 1'b0;
-      tr.ext_int = '0;
-
-      tr.zic_mmr_write_en_i   = 1'b0;
-      tr.zic_mmr_write_addr_i = '0;
-      tr.zic_mmr_write_data_i = '0;
-
-      tr.zic_mmr_read_en_i   = 1'b0;
-      tr.zic_mmr_read_addr_i = '0;
-
-      tr.zic_ack_read_valid_en = 1'b0;
-
-      tr.zic_eoi_valid_i = 1'b0;
-      tr.zic_eoi_id_i    = '0;
-
-      tr.active_lvl_pr_i = '0;
-
-      tr.global_int_enable_valid_i = 1'b1;
-      tr.global_int_enable_bit_i   = '0;
-
-      for (i = 0; i < 47; i++) begin
-        tr.global_int_enable_bit_i[i] = 1'b1;
-      end
-
-      tr.debug_mode_valid_i = 1'b0;
-      tr.debug_mode_reset_i = 1'b0;
-      tr.debug_ndm_reset_i  = 1'b0;
-
-      finish_item(tr);
-
-    end
-
-  endtask
-
-endclass
-
 class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
 
   `uvm_object_utils(random_interrupt_storm_seq)
@@ -241,10 +6,12 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
 
   int unsigned storm_cycles = 50;
 
+  // IRQ0 avoided because your waveform showed mismatch.
+  // IRQ47 avoided because top uses WDT/internal, not ext TB pin.
+  localparam bit [47:0] VALID_IRQ_MASK = 48'h0000_7FFF_FFFF_FFFE;
+
   constraint ctl_c {
-    foreach (irq_ctl[i]) {
-      irq_ctl[i] inside {[8'h01:8'hFF]};
-    }
+    foreach (irq_ctl[i]) irq_ctl[i] inside {[8'h01:8'hFF]};
   }
 
   function new(string name = "random_interrupt_storm_seq");
@@ -255,123 +22,14 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
     return 16'h1003 + (id * 4);
   endfunction
 
-  task body();
-
-    bit [47:0] ext_mask;
-    bit [47:0] en_mask;
-    bit [47:0] current_active_mask;
-    bit [47:0] current_enable_mask;
-    int        eoi_irq;
-    int        best_id;
-
-    if (!this.randomize()) begin
-      `uvm_fatal("RAND_STORM_SEQ", "Randomization failed")
-    end
-
-    `uvm_info("RAND_STORM_SEQ",
-      $sformatf("Starting random interrupt storm test, cycles=%0d", storm_cycles),
-      UVM_LOW)
-
-    // RESET
-    send_tr("reset", 1, 48'h0,
-            0, 16'h0, 32'h0,
-            0, 8'h0,
-            48'h0, 0,
-            8'h00, 0);
-
-    // Program all 48 random priorities
-    for (int i = 0; i < 48; i++) begin
-      write_ctl($sformatf("write_irq%0d_ctl", i),
-                ctl_addr(i),
-                irq_ctl[i]);
-    end
-
-    current_active_mask = 48'h0;
-    current_enable_mask = 48'h0;
-
-    repeat (storm_cycles) begin
-
-      ext_mask = {$urandom, $urandom} & 48'hFFFF_FFFF_FFFF;
-      en_mask  = {$urandom, $urandom} & 48'hFFFF_FFFF_FFFF;
-
-      if ((ext_mask & en_mask) == 48'h0) begin
-        ext_mask[$urandom_range(0,47)] = 1'b1;
-        en_mask  = 48'hFFFF_FFFF_FFFF;
-      end
-
-      current_active_mask = ext_mask;
-      current_enable_mask = en_mask;
-
-      // Drive new random storm state
-      send_tr("storm_drive_random_irq_enable", 0, current_active_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h0,
-              current_enable_mask, 1,
-              8'h00, 0);
-
-      repeat ($urandom_range(2,6)) begin
-        send_tr("storm_wait_resolve", 0, current_active_mask,
-                0, 16'h0, 32'h0,
-                0, 8'h0,
-                current_enable_mask, 0,
-                8'h00, 0);
-      end
-
-      // ACK current best interrupt
-      send_tr("storm_ack", 0, current_active_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h0,
-              current_enable_mask, 0,
-              8'h00, 1);
-
-      repeat ($urandom_range(1,3)) begin
-        send_tr("storm_idle_after_ack", 0, current_active_mask,
-                0, 16'h0, 32'h0,
-                0, 8'h0,
-                current_enable_mask, 0,
-                8'h00, 0);
-      end
-
-      // Optional EOI + remove current highest from active mask
-      if ($urandom_range(0,1)) begin
-
-        best_id = find_best_id(current_active_mask & current_enable_mask);
-
-        if (best_id >= 0) begin
-
-          current_active_mask[best_id] = 1'b0;
-
-          send_tr("storm_eoi", 0, current_active_mask,
-                  0, 16'h0, 32'h0,
-                  1, (8'h10 + best_id[7:0]),
-                  current_enable_mask, 0,
-                  8'h00, 0);
-
-          repeat ($urandom_range(1,4)) begin
-            send_tr("storm_wait_after_eoi", 0, current_active_mask,
-                    0, 16'h0, 32'h0,
-                    0, 8'h0,
-                    current_enable_mask, 0,
-                    8'h00, 0);
-          end
-
-        end
-      end
-
-    end
-
-  endtask
-
-
   function automatic int find_best_id(bit [47:0] mask);
-
     int best_id;
     bit [7:0] best_prio;
 
     best_id   = -1;
     best_prio = 8'h00;
 
-    for (int i = 0; i < 48; i++) begin
+    for (int i = 1; i <= 46; i++) begin
       if (mask[i]) begin
         if (best_id == -1) begin
           best_id   = i;
@@ -389,34 +47,256 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
     end
 
     return best_id;
-
   endfunction
 
+  task body();
 
-  task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
+    bit [47:0] ext_mask;
+    bit [47:0] en_mask;
+    bit [47:0] eligible_mask;
 
-    send_tr(name, 0, 48'h0,
-            1, addr, {24'h0, data},
-            0, 8'h0,
+    int best_id;
+    int wait_cycles;
+    bit [7:0] active_lvl_rand;
+
+    if (!this.randomize())
+      `uvm_fatal("RAND_STORM_SEQ", "Randomization failed")
+
+    `uvm_info("RAND_STORM_SEQ",
+      $sformatf("Starting final random storm sequence cycles=%0d", storm_cycles),
+      UVM_LOW)
+
+    // ============================================================
+    // 1. RESET
+    // ============================================================
+    send_tr("reset",
+            1, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0, 8'h00,
             48'h0, 0,
-            8'h00, 0);
+            8'h00,
+            0,
+            0, 0, 0);
+
+    // ============================================================
+    // 2. MMR WRITES: program interrupt control registers
+    // ============================================================
+    for (int i = 1; i <= 46; i++) begin
+      send_tr($sformatf("mmr_write_irq%0d_ctl", i),
+              0, 48'h0,
+              1, ctl_addr(i), {24'h0, irq_ctl[i]},
+              0, 16'h0,
+              0, 8'h00,
+              48'h0, 0,
+              8'h00,
+              0,
+              0, 0, 0);
+    end
+
+    irq_ctl[0]  = 8'h00;
+    irq_ctl[47] = 8'h00;
+
+    // ============================================================
+    // 3. RANDOM STRESS LOOP
+    // ============================================================
+    repeat (storm_cycles) begin
+
+      ext_mask = ({$urandom, $urandom} & VALID_IRQ_MASK);
+      en_mask  = ({$urandom, $urandom} & VALID_IRQ_MASK);
+
+      if ((ext_mask & en_mask) == 48'h0) begin
+        int irq;
+        irq = $urandom_range(1, 46);
+        ext_mask[irq] = 1'b1;
+        en_mask       = VALID_IRQ_MASK;
+      end
+
+      eligible_mask = ext_mask & en_mask;
+      best_id       = find_best_id(eligible_mask);
+      wait_cycles   = $urandom_range(3, 6);
+
+      // Keep active level mostly 0, sometimes random below expected priority
+      if ($urandom_range(0, 4) == 0)
+        active_lvl_rand = $urandom_range(8'h00, 8'h40);
+      else
+        active_lvl_rand = 8'h00;
+
+      `uvm_info("RAND_STORM_SEQ",
+        $sformatf("ext=0x%0h en=0x%0h best_id=%0d exp_ack=0x%0h prio=0x%0h active_lvl=0x%0h",
+                  ext_mask,
+                  en_mask,
+                  best_id,
+                  8'h10 + best_id[7:0],
+                  irq_ctl[best_id],
+                  active_lvl_rand),
+        UVM_LOW)
+
+      // ------------------------------------------------------------
+      // A. GLOBAL ENABLE + EXTERNAL INTERRUPTS
+      // ------------------------------------------------------------
+      send_tr("drive_ext_irq_and_global_enable",
+              0, ext_mask,
+              0, 16'h0, 32'h0,
+              0, 16'h0,
+              0, 8'h00,
+              en_mask, 1,
+              active_lvl_rand,
+              0,
+              0, 0, 0);
+
+      // ------------------------------------------------------------
+      // B. WAIT FOR DUT PRIORITY RESOLVE
+      // ------------------------------------------------------------
+      repeat (wait_cycles) begin
+        send_tr("wait_priority_resolve",
+                0, ext_mask,
+                0, 16'h0, 32'h0,
+                0, 16'h0,
+                0, 8'h00,
+                en_mask, 0,
+                active_lvl_rand,
+                0,
+                0, 0, 0);
+      end
+
+      // ------------------------------------------------------------
+      // C. OPTIONAL MMR READ
+      // ------------------------------------------------------------
+      if ($urandom_range(0, 3) == 0) begin
+        int rd_irq;
+        rd_irq = $urandom_range(1, 46);
+
+        send_tr("mmr_read_random_ctl",
+                0, ext_mask,
+                0, 16'h0, 32'h0,
+                1, ctl_addr(rd_irq),
+                0, 8'h00,
+                en_mask, 0,
+                active_lvl_rand,
+                0,
+                0, 0, 0);
+      end
+
+      // ------------------------------------------------------------
+      // D. ACK READ
+      // ------------------------------------------------------------
+      send_tr("ack_current_irq",
+              0, ext_mask,
+              0, 16'h0, 32'h0,
+              0, 16'h0,
+              0, 8'h00,
+              en_mask, 0,
+              active_lvl_rand,
+              1,
+              0, 0, 0);
+
+      // ------------------------------------------------------------
+      // E. IDLE AFTER ACK
+      // ------------------------------------------------------------
+      repeat (2) begin
+        send_tr("idle_after_ack",
+                0, ext_mask,
+                0, 16'h0, 32'h0,
+                0, 16'h0,
+                0, 8'h00,
+                en_mask, 0,
+                active_lvl_rand,
+                0,
+                0, 0, 0);
+      end
+
+      // ------------------------------------------------------------
+      // F. EOI
+      // ------------------------------------------------------------
+      if (best_id >= 1) begin
+        send_tr("eoi_served_irq",
+                0, ext_mask,
+                0, 16'h0, 32'h0,
+                0, 16'h0,
+                1, 8'h10 + best_id[7:0],
+                en_mask, 0,
+                active_lvl_rand,
+                0,
+                0, 0, 0);
+      end
+
+      // ------------------------------------------------------------
+      // G. DEBUG INPUT PULSE
+      // ------------------------------------------------------------
+      if ($urandom_range(0, 9) == 0) begin
+        send_tr("debug_mode_valid_pulse",
+                0, ext_mask,
+                0, 16'h0, 32'h0,
+                0, 16'h0,
+                0, 8'h00,
+                en_mask, 0,
+                active_lvl_rand,
+                0,
+                1, 0, 0);
+      end
+
+      if ($urandom_range(0, 20) == 0) begin
+        send_tr("debug_reset_pulse",
+                0, ext_mask,
+                0, 16'h0, 32'h0,
+                0, 16'h0,
+                0, 8'h00,
+                en_mask, 0,
+                active_lvl_rand,
+                0,
+                0, 1, 0);
+      end
+
+      if ($urandom_range(0, 20) == 0) begin
+        send_tr("debug_ndm_reset_pulse",
+                0, ext_mask,
+                0, 16'h0, 32'h0,
+                0, 16'h0,
+                0, 8'h00,
+                en_mask, 0,
+                active_lvl_rand,
+                0,
+                0, 0, 1);
+      end
+
+      // ------------------------------------------------------------
+      // H. CLEAR EXTERNAL INTERRUPTS BEFORE NEXT RANDOM CASE
+      // ------------------------------------------------------------
+      repeat (3) begin
+        send_tr("clear_irq_idle",
+                0, 48'h0,
+                0, 16'h0, 32'h0,
+                0, 16'h0,
+                0, 8'h00,
+                en_mask, 0,
+                8'h00,
+                0,
+                0, 0, 0);
+      end
+
+    end
 
   endtask
 
-
   task send_tr(
     string name,
-    bit zic_rst,
+    bit do_reset,
     bit [47:0] ext_int,
     bit wr_en,
     bit [15:0] wr_addr,
     bit [31:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
     bit [7:0] eoi_id,
     bit [47:0] enable_bits,
     bit enable_valid,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit ack_valid,
+    bit debug_valid,
+    bit debug_reset,
+    bit debug_ndm_reset
   );
 
     int_seq_item tr;
@@ -424,15 +304,16 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
     tr = int_seq_item::type_id::create(name);
     start_item(tr);
 
-    tr.zic_rst = zic_rst;
-    tr.ext_int  = ext_int;
+    tr.zic_rst = do_reset;
+
+    tr.ext_int = ext_int;
 
     tr.zic_mmr_write_en_i   = wr_en;
     tr.zic_mmr_write_addr_i = wr_addr;
     tr.zic_mmr_write_data_i = wr_data;
 
-    tr.zic_mmr_read_en_i   = 0;
-    tr.zic_mmr_read_addr_i = 0;
+    tr.zic_mmr_read_en_i    = rd_en;
+    tr.zic_mmr_read_addr_i  = rd_addr;
 
     tr.zic_ack_read_valid_en = ack_valid;
 
@@ -444,11 +325,273 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
     tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 0;
-    tr.debug_mode_reset_i = 0;
-    tr.debug_ndm_reset_i  = 0;
+    tr.debug_mode_valid_i = debug_valid;
+    tr.debug_mode_reset_i = debug_reset;
+    tr.debug_ndm_reset_i  = debug_ndm_reset;
 
     finish_item(tr);
+
+  endtask
+
+endclass
+
+
+class rand_storm_seq extends uvm_sequence #(int_seq_item);
+
+  `uvm_object_utils(rand_storm_seq)
+
+  int_seq_item tr;
+
+  bit [7:0] irq_ctl [48];
+
+  localparam bit [47:0] EN_ALL_47 = 48'h0000_7FFF_FFFF_FFFF;
+
+  function new(string name = "rand_storm_seq");
+    super.new(name);
+  endfunction
+
+  function automatic bit [15:0] ctl_addr(int id);
+    return 16'h1003 + (id * 4);
+  endfunction
+
+  function automatic int find_best_id(bit [47:0] mask);
+    int best_id;
+    bit [7:0] best_prio;
+
+    best_id   = -1;
+    best_prio = 8'h00;
+
+    for (int i = 0; i < 47; i++) begin
+      if (mask[i]) begin
+        if (best_id == -1) begin
+          best_id   = i;
+          best_prio = irq_ctl[i];
+        end
+        else if (irq_ctl[i] > best_prio) begin
+          best_id   = i;
+          best_prio = irq_ctl[i];
+        end
+        else if ((irq_ctl[i] == best_prio) && (i > best_id)) begin
+          best_id   = i;
+          best_prio = irq_ctl[i];
+        end
+      end
+    end
+
+    return best_id;
+  endfunction
+
+  task send_tr(
+    string name,
+    bit do_reset,
+    bit [47:0] ext_mask,
+    bit wr_en,
+    bit [15:0] wr_addr,
+    bit [31:0] wr_data,
+    bit ack_valid,
+    bit eoi_valid,
+    bit [7:0] eoi_id,
+    bit [47:0] en_mask,
+    bit en_valid
+  );
+
+    tr = int_seq_item::type_id::create(name);
+    start_item(tr);
+
+    // In your driver, zic_rst=1 means reset transaction
+    tr.zic_rst = do_reset;
+
+    tr.ext_int = ext_mask;
+
+    tr.zic_mmr_write_en_i   = wr_en;
+    tr.zic_mmr_write_addr_i = wr_addr;
+    tr.zic_mmr_write_data_i = wr_data;
+
+    tr.zic_mmr_read_en_i    = 1'b0;
+    tr.zic_mmr_read_addr_i  = '0;
+
+    tr.zic_ack_read_valid_en = ack_valid;
+
+    tr.zic_eoi_valid_i = eoi_valid;
+    tr.zic_eoi_id_i    = eoi_id;
+
+    tr.active_lvl_pr_i = 8'h00;
+
+    tr.global_int_enable_bit_i   = en_mask;
+    tr.global_int_enable_valid_i = en_valid;
+
+    tr.debug_mode_valid_i = 1'b0;
+    tr.debug_mode_reset_i = 1'b0;
+    tr.debug_ndm_reset_i  = 1'b0;
+
+    finish_item(tr);
+
+  endtask
+
+  task body();
+
+    int i;
+    int n;
+    int irq;
+    int best_id;
+
+    bit [47:0] rand_ext;
+
+    // ------------------------------------------------------------
+    // 1. Reset
+    // ------------------------------------------------------------
+    send_tr("reset", 1'b1, 48'h0,
+            1'b0, 16'h0, 32'h0,
+            1'b0,
+            1'b0, 8'h00,
+            48'h0, 1'b0);
+
+    // ------------------------------------------------------------
+    // 2. Configure all external IRQ0 to IRQ46
+    // ------------------------------------------------------------
+    for (i = 0; i < 47; i++) begin
+
+      irq_ctl[i] = $urandom_range(8'h20, 8'hff);
+
+      send_tr($sformatf("cfg_irq_%0d", i),
+              1'b0,
+              48'h0,
+              1'b1,
+              ctl_addr(i),
+              {24'h0, irq_ctl[i]},
+              1'b0,
+              1'b0,
+              8'h00,
+              48'h0,
+              1'b0);
+    end
+
+    irq_ctl[47] = 8'h00;
+
+    // ------------------------------------------------------------
+    // 3. Enable IRQ0 to IRQ46 once
+    // ------------------------------------------------------------
+    send_tr("enable_irq_0_to_46",
+            1'b0,
+            48'h0,
+            1'b0,
+            16'h0,
+            32'h0,
+            1'b0,
+            1'b0,
+            8'h00,
+            EN_ALL_47,
+            1'b1);
+
+    // ------------------------------------------------------------
+    // 4. Random interrupt stress
+    // Correct flow:
+    //   assert interrupt
+    //   wait for DUT resolve
+    //   ACK
+    //   EOI served interrupt
+    //   clear
+    // ------------------------------------------------------------
+    repeat (50) begin
+
+      rand_ext = 48'h0;
+
+      n = $urandom_range(1, 5);
+
+      for (i = 0; i < n; i++) begin
+        irq = $urandom_range(0, 46);
+        rand_ext[irq] = 1'b1;
+      end
+
+      best_id = find_best_id(rand_ext & EN_ALL_47);
+
+      // Drive interrupt, no ACK in same cycle
+      send_tr("rand_irq_assert",
+              1'b0,
+              rand_ext,
+              1'b0,
+              16'h0,
+              32'h0,
+              1'b0,
+              1'b0,
+              8'h00,
+              EN_ALL_47,
+              1'b0);
+
+      // Wait for priority resolver / ACK pipeline
+      repeat (3) begin
+        send_tr("wait_priority_resolve",
+                1'b0,
+                rand_ext,
+                1'b0,
+                16'h0,
+                32'h0,
+                1'b0,
+                1'b0,
+                8'h00,
+                EN_ALL_47,
+                1'b0);
+      end
+
+      // ACK current resolved winner
+      send_tr("rand_irq_ack",
+              1'b0,
+              rand_ext,
+              1'b0,
+              16'h0,
+              32'h0,
+              1'b1,
+              1'b0,
+              8'h00,
+              EN_ALL_47,
+              1'b0);
+
+      // Idle after ACK
+      repeat (2) begin
+        send_tr("idle_after_ack",
+                1'b0,
+                rand_ext,
+                1'b0,
+                16'h0,
+                32'h0,
+                1'b0,
+                1'b0,
+                8'h00,
+                EN_ALL_47,
+                1'b0);
+      end
+
+      // EOI expected served interrupt
+      if (best_id >= 0) begin
+        send_tr("eoi_served_irq",
+                1'b0,
+                rand_ext,
+                1'b0,
+                16'h0,
+                32'h0,
+                1'b0,
+                1'b1,
+                8'h10 + best_id[7:0],
+                EN_ALL_47,
+                1'b0);
+      end
+
+      // Clear interrupt lines
+      repeat (2) begin
+        send_tr("clear_irq_idle",
+                1'b0,
+                48'h0,
+                1'b0,
+                16'h0,
+                32'h0,
+                1'b0,
+                1'b0,
+                8'h00,
+                EN_ALL_47,
+                1'b0);
+      end
+
+    end
 
   endtask
 

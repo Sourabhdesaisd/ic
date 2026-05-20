@@ -67,9 +67,9 @@ class int_base_test extends uvm_test;
 
 // dynamic_priority_override_seq seq;
 
- random_interrupt_storm_seq seq;
+// random_interrupt_storm_seq seq;
  
-// rand_storm_seq seq;
+ rand_storm_seq seq;
 
  
    
@@ -126,9 +126,9 @@ class int_base_test extends uvm_test;
    
  //  seq = dynamic_priority_override_seq::type_id::create("seq");
    
-   seq = random_interrupt_storm_seq::type_id::create("seq");
+//   seq = random_interrupt_storm_seq::type_id::create("seq");
    
-//   seq = rand_storm_seq::type_id::create("seq");
+   seq = rand_storm_seq::type_id::create("seq");
   
 
 

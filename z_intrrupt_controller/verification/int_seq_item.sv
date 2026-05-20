@@ -8,7 +8,6 @@ class int_seq_item extends uvm_sequence_item;
   logic        interrupt_request_o;
   logic [7:0]  highest_pending_lvl_pr_o;
 
-  bit [7:0] zic_ack_int_id_w;
   //============================================================
   // DUT INPUTS / DRIVER FIELDS
   //============================================================

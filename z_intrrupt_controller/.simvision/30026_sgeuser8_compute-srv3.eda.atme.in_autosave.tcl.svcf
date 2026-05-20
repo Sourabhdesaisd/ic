@@ -109,7 +109,7 @@ set id [waveform add -signals  {
 	{wave::tb_top.dut.zic_ack_int_id_o[7:0]}
 	} ]
 
-waveform xview limits 2541.093ns 2628.907ns
+waveform xview limits 1439.103ns 1564.103ns
 
 #
 # Waveform Window Links
