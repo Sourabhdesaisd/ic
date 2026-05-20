@@ -1,4 +1,627 @@
+class zic_cov_regression_seq extends uvm_sequence #(int_seq_item);
 
+  `uvm_object_utils(zic_cov_regression_seq)
+
+  int_seq_item tr;
+
+  bit [7:0] irq_ctl [48];
+
+  localparam bit [47:0] VALID_IRQ_MASK = 48'h7FFF_FFFF_FFFE;
+
+  function new(string name="zic_cov_regression_seq");
+    super.new(name);
+  endfunction
+
+  function automatic bit [15:0] ctl_addr(int id);
+    return 16'h1003 + (id * 4);
+  endfunction
+
+  task send_tr(
+    string name,
+    bit zic_rst,
+    bit [47:0] ext_mask,
+    bit wr_en,
+    bit [15:0] wr_addr,
+    bit [31:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
+    bit ack_valid,
+    bit eoi_valid,
+    bit [7:0] eoi_id,
+    bit [47:0] en_mask,
+    bit en_valid,
+    bit [7:0] active_lvl,
+    bit dbg_valid,
+    bit dbg_rst,
+    bit dbg_ndm
+  );
+
+    tr = int_seq_item::type_id::create(name);
+    start_item(tr);
+
+    tr.zic_rst = zic_rst;
+
+    tr.ext_int = ext_mask;
+
+    tr.zic_mmr_write_en_i   = wr_en;
+    tr.zic_mmr_write_addr_i = wr_addr;
+    tr.zic_mmr_write_data_i = wr_data;
+
+    tr.zic_mmr_read_en_i    = rd_en;
+    tr.zic_mmr_read_addr_i  = rd_addr;
+
+    tr.zic_ack_read_valid_en = ack_valid;
+
+    tr.zic_eoi_valid_i = eoi_valid;
+    tr.zic_eoi_id_i    = eoi_id;
+
+    tr.global_int_enable_bit_i   = en_mask;
+    tr.global_int_enable_valid_i = en_valid;
+
+    tr.active_lvl_pr_i = active_lvl;
+
+    tr.debug_mode_valid_i = dbg_valid;
+    tr.debug_mode_reset_i = dbg_rst;
+    tr.debug_ndm_reset_i  = dbg_ndm;
+
+    finish_item(tr);
+
+  endtask
+
+  task idle(int n,
+            bit [47:0] ext_mask = 48'h0,
+            bit [47:0] en_mask  = VALID_IRQ_MASK,
+            bit [7:0] active_lvl = 8'h00);
+
+    repeat (n) begin
+      send_tr("idle",
+              0, ext_mask,
+              0, 16'h0, 32'h0,
+              0, 16'h0,
+              0,
+              0, 8'h00,
+              en_mask, 0,
+              active_lvl,
+              0, 0, 0);
+    end
+
+  endtask
+
+  task reset_case(string name, int cycles);
+
+    repeat (cycles) begin
+      send_tr(name,
+              1, 48'h0,
+              0, 16'h0, 32'h0,
+              0, 16'h0,
+              0,
+              0, 8'h00,
+              48'h0, 0,
+              8'h00,
+              0, 0, 0);
+    end
+
+    idle(3);
+
+  endtask
+
+  task write_ctl(int irq, bit [7:0] lp);
+
+    irq_ctl[irq] = lp;
+
+    send_tr($sformatf("write_ctl_irq%0d", irq),
+            0, 48'h0,
+            1, ctl_addr(irq), {24'h0, lp},
+            0, 16'h0,
+            0,
+            0, 8'h00,
+            VALID_IRQ_MASK, 0,
+            8'h00,
+            0, 0, 0);
+
+  endtask
+
+  task read_mmr(bit [15:0] addr);
+
+    send_tr("read_mmr",
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            1, addr,
+            0,
+            0, 8'h00,
+            VALID_IRQ_MASK, 0,
+            8'h00,
+            0, 0, 0);
+
+    idle(1);
+
+  endtask
+
+  task enable_mask(bit [47:0] mask);
+
+    send_tr("global_enable_mask",
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0,
+            0, 8'h00,
+            mask, 1,
+            8'h00,
+            0, 0, 0);
+
+    idle(2, 48'h0, mask);
+
+  endtask
+
+  function automatic int find_best_id(bit [47:0] ext,
+                                      bit [47:0] en);
+    int best_id;
+    bit found;
+    bit [7:0] best_lp;
+
+    best_id = 0;
+    found   = 0;
+    best_lp = 8'h00;
+
+    for (int i = 1; i <= 46; i++) begin
+      if (ext[i] && en[i]) begin
+        if (!found) begin
+          found   = 1;
+          best_id = i;
+          best_lp = irq_ctl[i];
+        end
+        else if (irq_ctl[i] > best_lp) begin
+          best_id = i;
+          best_lp = irq_ctl[i];
+        end
+        else if ((irq_ctl[i] == best_lp) && (i > best_id)) begin
+          best_id = i;
+          best_lp = irq_ctl[i];
+        end
+      end
+    end
+
+    return best_id;
+  endfunction
+
+  task service_irq(string name,
+                   bit [47:0] ext,
+                   bit [47:0] en,
+                   bit [7:0] active_lvl = 8'h00,
+                   int ack_delay = 4,
+                   int eoi_delay = 2);
+
+    int best_id;
+
+    best_id = find_best_id(ext, en);
+
+    send_tr({name, "_assert"},
+            0, ext,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0,
+            0, 8'h00,
+            en, 0,
+            active_lvl,
+            0, 0, 0);
+
+    idle(ack_delay, ext, en, active_lvl);
+
+    send_tr({name, "_ack"},
+            0, ext,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            1,
+            0, 8'h00,
+            en, 0,
+            active_lvl,
+            0, 0, 0);
+
+    idle(eoi_delay, ext, en, active_lvl);
+
+    send_tr({name, "_clear_ext"},
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0,
+            0, 8'h00,
+            en, 0,
+            active_lvl,
+            0, 0, 0);
+
+    send_tr({name, "_eoi"},
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0,
+            1, 8'h10 + best_id[7:0],
+            en, 0,
+            8'h00,
+            0, 0, 0);
+
+    idle(3, 48'h0, en);
+
+  endtask
+
+  task program_all_ctl_random();
+
+    irq_ctl[0]  = 8'h00;
+    irq_ctl[47] = 8'h00;
+
+    for (int i = 1; i <= 46; i++) begin
+      write_ctl(i, $urandom_range(8'h10, 8'hFF));
+    end
+
+  endtask
+
+  task body();
+
+    bit [47:0] ext;
+    bit [47:0] en;
+    int irq;
+    int irq1;
+    int irq2;
+    int irq_cnt;
+    bit [7:0] lp;
+
+    // ============================================================
+    // RESET COVERAGE
+    // bins: short reset, medium reset, long reset
+    // ============================================================
+    reset_case("reset_short",  2);
+    reset_case("reset_medium", 4);
+    reset_case("reset_long",   6);
+
+    // ============================================================
+    // MMR DEFAULT READ COVERAGE
+    // ============================================================
+    read_mmr(16'h0000);
+    read_mmr(16'h0004);
+    read_mmr(16'h0800);
+    read_mmr(16'h0804);
+    read_mmr(16'h0808);
+    read_mmr(16'h9999); // invalid address coverage
+
+    // ============================================================
+    // MMR WRITE/READ COVERAGE
+    // bins: low/mid/high LP values + many IRQ control addresses
+    // ============================================================
+    for (int i = 1; i <= 46; i++) begin
+      case (i % 3)
+        0: lp = $urandom_range(8'h01, 8'h3F);
+        1: lp = $urandom_range(8'h40, 8'h9F);
+        2: lp = $urandom_range(8'hA0, 8'hFF);
+      endcase
+
+      write_ctl(i, lp);
+      read_mmr(ctl_addr(i));
+    end
+
+    // Special forced values for deterministic coverage
+    write_ctl(5,  8'h20); // low
+    write_ctl(6,  8'h80); // mid
+    write_ctl(10, 8'hAA); // equal pair
+    write_ctl(11, 8'hAA); // equal pair
+    write_ctl(20, 8'hF0); // high
+    write_ctl(25, 8'h90);
+    write_ctl(30, 8'hD0);
+    write_ctl(31, 8'hD0);
+
+    en = VALID_IRQ_MASK;
+    enable_mask(en);
+
+    // ============================================================
+    // SINGLE IRQ COVERAGE
+    // bins: low ID, mid ID, high ID, random ID
+    // ============================================================
+    ext = 48'h0; ext[1] = 1'b1;
+    service_irq("single_low_id", ext, en);
+
+    ext = 48'h0; ext[20] = 1'b1;
+    service_irq("single_mid_id", ext, en);
+
+    ext = 48'h0; ext[46] = 1'b1;
+    service_irq("single_high_id", ext, en);
+
+    repeat (30) begin
+      irq = $urandom_range(1, 46);
+      ext = 48'h0;
+      ext[irq] = 1'b1;
+      service_irq("single_random", ext, en);
+    end
+
+    // ============================================================
+    // MULTI IRQ COVERAGE
+    // bins: 2 IRQ, 3-5 IRQ, many IRQ
+    // ============================================================
+    ext = 48'h0;
+    ext[5] = 1'b1;
+    ext[20] = 1'b1;
+    service_irq("multi_two_irq", ext, en);
+
+    ext = 48'h0;
+    ext[5] = 1'b1;
+    ext[6] = 1'b1;
+    ext[20] = 1'b1;
+    ext[25] = 1'b1;
+    service_irq("multi_four_irq", ext, en);
+
+    repeat (30) begin
+      ext = 48'h0;
+      irq_cnt = $urandom_range(2, 8);
+
+      repeat (irq_cnt) begin
+        irq = $urandom_range(1, 46);
+        ext[irq] = 1'b1;
+      end
+
+      service_irq("multi_random", ext, en);
+    end
+
+    // ============================================================
+    // GLOBAL ENABLE MASK COVERAGE
+    // bins: all disabled, one enabled, partial enabled, all enabled
+    // ============================================================
+    enable_mask(48'h0);
+
+    ext = 48'h0;
+    ext[5] = 1'b1;
+    idle(5, ext, 48'h0);
+
+    en = 48'h0;
+    en[6] = 1'b1;
+    enable_mask(en);
+
+    ext = 48'h0;
+    ext[5] = 1'b1;
+    ext[6] = 1'b1;
+    service_irq("only_one_enabled", ext, en);
+
+    repeat (30) begin
+      en  = 48'h0;
+      ext = 48'h0;
+
+      irq_cnt = $urandom_range(2, 10);
+
+      repeat (irq_cnt) begin
+        irq = $urandom_range(1, 46);
+        ext[irq] = 1'b1;
+
+        if ($urandom_range(0, 1))
+          en[irq] = 1'b1;
+      end
+
+      if ((ext & en) == 48'h0) begin
+        irq = $urandom_range(1, 46);
+        ext[irq] = 1'b1;
+        en[irq]  = 1'b1;
+      end
+
+      enable_mask(en);
+      service_irq("partial_enable_random", ext, en);
+    end
+
+    en = VALID_IRQ_MASK;
+    enable_mask(en);
+
+    // ============================================================
+    // EQUAL PRIORITY / SAME PRIORITY TIE BREAK COVERAGE
+    // bins: equal LP, higher ID wins
+    // ============================================================
+    repeat (40) begin
+      irq1 = $urandom_range(1, 45);
+
+      do begin
+        irq2 = $urandom_range(1, 46);
+      end while (irq2 == irq1);
+
+      lp = $urandom_range(8'h40, 8'hFF);
+
+      write_ctl(irq1, lp);
+      write_ctl(irq2, lp);
+
+      ext = 48'h0;
+      ext[irq1] = 1'b1;
+      ext[irq2] = 1'b1;
+
+      service_irq("equal_priority_random", ext, en);
+    end
+
+    // ============================================================
+    // DYNAMIC PRIORITY OVERRIDE COVERAGE
+    // bins: low->high, high->low, same->same
+    // ============================================================
+    repeat (30) begin
+      irq = $urandom_range(1, 46);
+
+      write_ctl(irq, $urandom_range(8'h10, 8'h50));
+      write_ctl(irq, $urandom_range(8'hA0, 8'hFF));
+
+      ext = 48'h0;
+      ext[irq] = 1'b1;
+
+      service_irq("dyn_low_to_high", ext, en);
+    end
+
+    repeat (20) begin
+      irq = $urandom_range(1, 46);
+
+      write_ctl(irq, $urandom_range(8'hA0, 8'hFF));
+      write_ctl(irq, $urandom_range(8'h10, 8'h50));
+
+      ext = 48'h0;
+      ext[irq] = 1'b1;
+
+      service_irq("dyn_high_to_low", ext, en);
+    end
+
+    // ============================================================
+    // ACK LATENCY COVERAGE
+    // bins: delay 1, 2-5, 6-15
+    // ============================================================
+    foreach (irq_ctl[i]) begin
+      // no operation, avoids unused warnings in some simulators
+    end
+
+    for (int delay = 1; delay <= 15; delay++) begin
+      irq = $urandom_range(1, 46);
+
+      ext = 48'h0;
+      ext[irq] = 1'b1;
+
+      service_irq("ack_latency_sweep", ext, en, 8'h00, delay, 2);
+    end
+
+    // ============================================================
+    // EOI TIMING / PROGRESSION COVERAGE
+    // bins: eoi_delay 1..8, two pending service
+    // ============================================================
+    for (int eoi_delay = 1; eoi_delay <= 8; eoi_delay++) begin
+      irq1 = $urandom_range(1, 46);
+
+      do begin
+        irq2 = $urandom_range(1, 46);
+      end while (irq2 == irq1);
+
+      write_ctl(irq1, $urandom_range(8'hA0, 8'hFF));
+      write_ctl(irq2, $urandom_range(8'h20, 8'h80));
+
+      ext = 48'h0;
+      ext[irq1] = 1'b1;
+      ext[irq2] = 1'b1;
+
+      service_irq("eoi_progress_first", ext, en, 8'h00, 4, eoi_delay);
+
+      ext = 48'h0;
+      ext[irq2] = 1'b1;
+
+      service_irq("eoi_progress_second", ext, en, 8'h00, 4, eoi_delay);
+    end
+
+    // ============================================================
+    // THRESHOLD / PREEMPTION COVERAGE
+    // bins: active low pass, active high block, equal active
+    // ============================================================
+    write_ctl(20, 8'hF0);
+
+    ext = 48'h0;
+    ext[20] = 1'b1;
+    service_irq("threshold_pass_active_low", ext, en, 8'h20);
+
+    ext = 48'h0;
+    ext[6] = 1'b1;
+
+    send_tr("threshold_block_active_high",
+            0, ext,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0,
+            0, 8'h00,
+            en, 0,
+            8'hFF,
+            0, 0, 0);
+
+    idle(5, ext, en, 8'hFF);
+
+    // ============================================================
+    // RESET DURING IRQ COVERAGE
+    // ============================================================
+    ext = 48'h0;
+    ext[12] = 1'b1;
+
+    send_tr("irq_before_reset",
+            0, ext,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0,
+            0, 8'h00,
+            en, 0,
+            8'h00,
+            0, 0, 0);
+
+    idle(2, ext, en);
+    reset_case("reset_during_irq", 4);
+
+    program_all_ctl_random();
+    en = VALID_IRQ_MASK;
+    enable_mask(en);
+
+    // ============================================================
+    // ALL IRQ ACTIVE COVERAGE
+    // ============================================================
+    repeat (10) begin
+      program_all_ctl_random();
+
+      ext = 48'h0;
+
+      for (int i = 1; i <= 46; i++)
+        ext[i] = 1'b1;
+
+      service_irq("all_irq_active_random_lp", ext, en);
+    end
+
+    // ============================================================
+    // DEBUG INPUT COVERAGE
+    // ============================================================
+    send_tr("debug_mode_valid",
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0,
+            0, 8'h00,
+            en, 0,
+            8'h00,
+            1, 0, 0);
+
+    send_tr("debug_reset",
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0,
+            0, 8'h00,
+            en, 0,
+            8'h00,
+            0, 1, 0);
+
+    send_tr("debug_ndm_reset",
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0,
+            0, 8'h00,
+            en, 0,
+            8'h00,
+            0, 0, 1);
+
+    idle(5);
+
+    // ============================================================
+    // RANDOM STORM COVERAGE
+    // ============================================================
+    repeat (200) begin
+      ext = 48'h0;
+      irq_cnt = $urandom_range(1, 10);
+
+      repeat (irq_cnt) begin
+        irq = $urandom_range(1, 46);
+        ext[irq] = 1'b1;
+      end
+
+      service_irq("random_storm_cov", ext, VALID_IRQ_MASK,
+                  8'h00,
+                  $urandom_range(1, 12),
+                  $urandom_range(1, 8));
+    end
+
+    idle(20);
+
+    `uvm_info("ZIC_COV_REG_SEQ",
+      "COVERAGE-DRIVEN RANDOM REGRESSION SEQUENCE COMPLETED",
+      UVM_LOW)
+
+  endtask
+
+endclass
 
 class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
 
@@ -230,7 +853,7 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
 
   task send_tr(
     string name,
-    bit do_reset,
+    bit zic_rst,
     bit [47:0] ext_int,
     bit wr_en,
     bit [15:0] wr_addr,
@@ -253,7 +876,7 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
     tr = int_seq_item::type_id::create(name);
     start_item(tr);
 
-    tr.zic_rst = do_reset;
+    tr.zic_rst = zic_rst;
     tr.ext_int = ext_int;
 
     tr.zic_mmr_write_en_i   = wr_en;
@@ -361,7 +984,7 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
 
   task send_tr(
     string name,
-    bit do_reset,
+    bit zic_rst,
     bit [47:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
@@ -376,7 +999,7 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
     tr = int_seq_item::type_id::create(name);
     start_item(tr);
 
-    tr.zic_rst = do_reset;
+    tr.zic_rst = zic_rst;
 
     tr.ext_int = ext_mask;
 
