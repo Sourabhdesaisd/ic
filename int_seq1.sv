@@ -1,4 +1,107 @@
 
+
+
+// ============================================================
+// COMMON BASE FOR ONLY reset_basic_seq
+//mmr_basic_seq
+//single_irq_seq
+//multi_irq_seq
+// ============================================================
+class zic_comman_base_seq extends uvm_sequence #(int_seq_item);
+
+  `uvm_object_utils(zic_comman_base_seq)
+
+  localparam bit [47:0] VALID_IRQ_MASK = 48'h0000_7FFF_FFFF_FFFE;
+
+  function new(string name = "zic_comman_base_seq");
+    super.new(name);
+  endfunction
+
+  function automatic bit [15:0] ctl_addr(int id);
+    return 16'h1003 + (id * 4);
+  endfunction
+
+  task send_tr(
+    string name,
+    bit zic_rst,
+    bit [47:0] ext_int,
+    bit wr_en,
+    bit [15:0] wr_addr,
+    bit [31:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
+    bit eoi_valid,
+    bit [7:0] eoi_id,
+    bit [47:0] enable_bits,
+    bit enable_valid,
+    bit [7:0] active_lvl,
+    bit ack_valid
+  );
+
+    int_seq_item tr;
+
+    tr = int_seq_item::type_id::create(name);
+    start_item(tr);
+
+    tr.zic_rst = zic_rst;
+    tr.ext_int = ext_int;
+
+    tr.zic_mmr_write_en_i   = wr_en;
+    tr.zic_mmr_write_addr_i = wr_addr;
+    tr.zic_mmr_write_data_i = wr_data;
+
+    tr.zic_mmr_read_en_i   = rd_en;
+    tr.zic_mmr_read_addr_i = rd_addr;
+
+    tr.zic_ack_read_valid_en = ack_valid;
+
+    tr.zic_eoi_valid_i = eoi_valid;
+    tr.zic_eoi_id_i    = eoi_id;
+
+    tr.global_int_enable_bit_i   = enable_bits;
+    tr.global_int_enable_valid_i = enable_valid;
+
+    tr.active_lvl_pr_i = active_lvl;
+
+    tr.debug_mode_valid_i = 1'b0;
+    tr.debug_mode_reset_i = 1'b0;
+    tr.debug_ndm_reset_i  = 1'b0;
+
+    finish_item(tr);
+
+  endtask
+
+  task idle(
+    int n,
+    bit [47:0] ext = 48'h0,
+    bit [47:0] en  = VALID_IRQ_MASK
+  );
+    repeat (n) begin
+      send_tr("idle",
+              0, ext,
+              0, 16'h0, 32'h0,
+              0, 16'h0,
+              0, 8'h00,
+              en, 0,
+              8'h00,
+              0);
+    end
+  endtask
+
+  task write_ctl(int irq, bit [7:0] ctl);
+    send_tr($sformatf("write_ctl_irq%0d", irq),
+            0, 48'h0,
+            1, ctl_addr(irq), {24'h0, ctl},
+            0, 16'h0,
+            0, 8'h00,
+            VALID_IRQ_MASK, 0,
+            8'h00,
+            0);
+  endtask
+
+endclass
+
+
 class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
 
   `uvm_object_utils(random_interrupt_storm_seq)
@@ -1232,24 +1335,36 @@ class random_ack_latency_seq extends uvm_sequence #(int_seq_item);
                 best_prio),
       UVM_LOW)
 
+    // ------------------------------------------------------------
+    // RESET
+    // ------------------------------------------------------------
     send_tr("reset", 1, 48'h0,
             0, 16'h0, 32'h0,
             0, 8'h0,
             48'h0, 0,
             8'h00, 0);
 
+    // ------------------------------------------------------------
+    // Program random control values
+    // ------------------------------------------------------------
     for (int i = 0; i < 48; i++) begin
       write_ctl($sformatf("write_irq%0d_ctl", i),
                 ctl_addr(i),
                 irq_ctl[i]);
     end
 
+    // ------------------------------------------------------------
+    // Assert random active/enabled interrupts
+    // ------------------------------------------------------------
     send_tr("assert_irqs", 0, active_mask,
             0, 16'h0, 32'h0,
             0, 8'h0,
             enable_mask, 1,
             8'h00, 0);
 
+    // ------------------------------------------------------------
+    // Random wait before ACK
+    // ------------------------------------------------------------
     repeat (ack_delay) begin
       send_tr("wait_before_ack_random_delay", 0, active_mask,
               0, 16'h0, 32'h0,
@@ -1258,11 +1373,45 @@ class random_ack_latency_seq extends uvm_sequence #(int_seq_item);
               8'h00, 0);
     end
 
-    send_tr("ack_after_random_delay", 0, active_mask,
+    // ------------------------------------------------------------
+    // ACK held for 2 cycles
+    // This avoids compare while zic_ack_int_id_o is still 0.
+    // ------------------------------------------------------------
+    repeat (2) begin
+      send_tr("ack_after_random_delay", 0, active_mask,
+              0, 16'h0, 32'h0,
+              0, 8'h0,
+              enable_mask, 0,
+              8'h00, 1);
+    end
+
+    // ------------------------------------------------------------
+    // Hold inputs stable after ACK for monitor/scoreboard sampling
+    // ------------------------------------------------------------
+    repeat (2) begin
+      send_tr("idle_after_ack_sample", 0, active_mask,
+              0, 16'h0, 32'h0,
+              0, 8'h0,
+              enable_mask, 0,
+              8'h00, 0);
+    end
+
+    // ------------------------------------------------------------
+    // Clear external interrupts before leaving sequence
+    // ------------------------------------------------------------
+    send_tr("clear_irqs_after_ack", 0, 48'h0,
             0, 16'h0, 32'h0,
             0, 8'h0,
             enable_mask, 0,
-            8'h00, 1);
+            8'h00, 0);
+
+    repeat (3) begin
+      send_tr("final_idle", 0, 48'h0,
+              0, 16'h0, 32'h0,
+              0, 8'h0,
+              enable_mask, 0,
+              8'h00, 0);
+    end
 
   endtask
 
@@ -3408,6 +3557,469 @@ class eoi_flow_seq extends uvm_sequence #(int_seq_item);
     tr.debug_mode_reset_i = 0;
     tr.debug_ndm_reset_i = 0;
     finish_item(tr);
+
+  endtask
+
+endclass
+
+
+
+// ============================================================
+// reset_basic_seq
+// ============================================================
+class reset_basic_seq extends zic_comman_base_seq;
+
+  `uvm_object_utils(reset_basic_seq)
+
+  rand int unsigned rst_cycles;
+  rand int unsigned post_idle_cycles;
+
+  constraint c {
+    rst_cycles       inside {[1:10]};
+    post_idle_cycles inside {[1:10]};
+  }
+
+  function new(string name = "reset_basic_seq");
+    super.new(name);
+  endfunction
+
+  task body();
+
+    if (!this.randomize())
+      `uvm_fatal("RESET_SEQ", "Randomization failed")
+
+    repeat (rst_cycles) begin
+      send_tr("random_reset",
+              1, 48'h0,
+              0, 16'h0, 32'h0,
+              0, 16'h0,
+              0, 8'h00,
+              48'h0, 0,
+              8'h00,
+              0);
+    end
+
+    idle(post_idle_cycles);
+
+  endtask
+
+endclass
+
+
+// ============================================================
+// mmr_basic_seq
+// ============================================================
+class mmr_basic_seq extends zic_comman_base_seq;
+
+  `uvm_object_utils(mmr_basic_seq)
+
+  rand int unsigned num_ops;
+
+  constraint c {
+    num_ops inside {[5:30]};
+  }
+
+  function new(string name = "mmr_basic_seq");
+    super.new(name);
+  endfunction
+
+  task body();
+
+    int irq;
+    bit [7:0] ctl_data;
+    bit [15:0] rd_addr;
+
+    if (!this.randomize())
+      `uvm_fatal("MMR_SEQ", "Randomization failed")
+
+    repeat (num_ops) begin
+
+      irq      = $urandom_range(1, 46);
+      ctl_data = $urandom_range(8'h01, 8'hFF);
+      rd_addr  = ctl_addr(irq);
+
+      write_ctl(irq, ctl_data);
+
+      send_tr("random_mmr_read",
+              0, 48'h0,
+              0, 16'h0, 32'h0,
+              1, rd_addr,
+              0, 8'h00,
+              VALID_IRQ_MASK, 0,
+              8'h00,
+              0);
+
+      idle($urandom_range(1, 3));
+
+    end
+
+  endtask
+
+endclass
+
+
+// ============================================================
+// single_irq_seq
+// ============================================================
+class single_irq_seq extends zic_comman_base_seq;
+
+  `uvm_object_utils(single_irq_seq)
+
+  rand int irq;
+  rand bit [7:0] irq_ctl;
+  rand int unsigned ack_delay;
+  rand int unsigned eoi_delay;
+
+  constraint c {
+    irq       inside {[1:46]};
+    irq_ctl   inside {[8'h01:8'hFF]};
+    ack_delay inside {[2:10]};
+    eoi_delay inside {[1:5]};
+  }
+
+  function new(string name = "single_irq_seq");
+    super.new(name);
+  endfunction
+
+  task body();
+
+    bit [47:0] ext;
+    bit [47:0] en;
+
+    if (!this.randomize())
+      `uvm_fatal("SINGLE_IRQ_SEQ", "Randomization failed")
+
+    ext = 48'h0;
+    en  = VALID_IRQ_MASK;
+    ext[irq] = 1'b1;
+
+    write_ctl(irq, irq_ctl);
+
+    send_tr("single_irq_assert",
+            0, ext,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0, 8'h00,
+            en, 1,
+            8'h00,
+            0);
+
+    idle(ack_delay, ext, en);
+
+    send_tr("single_irq_ack",
+            0, ext,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0, 8'h00,
+            en, 0,
+            8'h00,
+            1);
+
+    idle(eoi_delay, ext, en);
+
+    send_tr("single_irq_clear",
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0, 8'h00,
+            en, 0,
+            8'h00,
+            0);
+
+    send_tr("single_irq_eoi",
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            1, 8'h10 + irq[7:0],
+            en, 0,
+            8'h00,
+            0);
+
+    idle(3);
+
+  endtask
+
+endclass
+
+
+// ============================================================
+// multi_irq_seq
+// ============================================================
+class multi_irq_seq extends zic_comman_base_seq;
+
+  `uvm_object_utils(multi_irq_seq)
+
+  rand bit [7:0] irq_ctl [48];
+  rand int unsigned irq_count;
+  rand int unsigned ack_delay;
+
+  constraint c {
+    irq_count inside {[2:10]};
+    ack_delay inside {[3:10]};
+    foreach (irq_ctl[i]) irq_ctl[i] inside {[8'h01:8'hFF]};
+  }
+
+  function new(string name = "multi_irq_seq");
+    super.new(name);
+  endfunction
+
+  function automatic int find_best_id(bit [47:0] mask);
+    int best_id;
+    bit found;
+    bit [7:0] best_ctl;
+
+    best_id  = 0;
+    found    = 0;
+    best_ctl = 8'h00;
+
+    for (int i = 1; i <= 46; i++) begin
+      if (mask[i]) begin
+        if (!found ||
+            (irq_ctl[i] > best_ctl) ||
+            ((irq_ctl[i] == best_ctl) && (i > best_id))) begin
+          found    = 1;
+          best_id  = i;
+          best_ctl = irq_ctl[i];
+        end
+      end
+    end
+
+    return best_id;
+  endfunction
+
+  task body();
+
+    bit [47:0] ext;
+    bit [47:0] en;
+    int irq;
+    int best_id;
+
+    if (!this.randomize())
+      `uvm_fatal("MULTI_IRQ_SEQ", "Randomization failed")
+
+    ext = 48'h0;
+    en  = VALID_IRQ_MASK;
+
+    for (int i = 1; i <= 46; i++) begin
+      write_ctl(i, irq_ctl[i]);
+    end
+
+    repeat (irq_count) begin
+      irq = $urandom_range(1, 46);
+      ext[irq] = 1'b1;
+    end
+
+    best_id = find_best_id(ext);
+
+    send_tr("multi_irq_assert",
+            0, ext,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0, 8'h00,
+            en, 1,
+            8'h00,
+            0);
+
+    idle(ack_delay, ext, en);
+
+    send_tr("multi_irq_ack",
+            0, ext,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0, 8'h00,
+            en, 0,
+            8'h00,
+            1);
+
+    idle(2, ext, en);
+
+    send_tr("multi_irq_clear",
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            0, 8'h00,
+            en, 0,
+            8'h00,
+            0);
+
+    send_tr("multi_irq_eoi",
+            0, 48'h0,
+            0, 16'h0, 32'h0,
+            0, 16'h0,
+            1, 8'h10 + best_id[7:0],
+            en, 0,
+            8'h00,
+            0);
+
+    idle(3);
+
+  endtask
+
+endclass
+
+
+class priority_range_stress_seq extends uvm_sequence #(int_seq_item);
+
+`uvm_object_utils(priority_range_stress_seq)
+
+function new(string name="priority_range_stress_seq");
+   super.new(name);
+endfunction
+
+task body();
+
+int_seq_item tr;
+bit [47:0] ext;
+
+for(int grp=0; grp<6; grp++) begin
+
+   ext='0;
+
+   for(int irq=(grp*8);
+       irq<((grp*8)+8) && irq<48;
+       irq++) begin
+
+      tr=int_seq_item::type_id::create("cfg");
+
+      start_item(tr);
+
+      tr.zic_rst=1;
+
+      tr.zic_mmr_write_en_i=1;
+      tr.zic_mmr_write_addr_i=16'h1003+(irq*4);
+
+      case(grp)
+        0: tr.zic_mmr_write_data_i=32'h00000010;
+        1: tr.zic_mmr_write_data_i=32'h00000040;
+        2: tr.zic_mmr_write_data_i=32'h00000080;
+        3: tr.zic_mmr_write_data_i=32'h000000B0;
+        4: tr.zic_mmr_write_data_i=32'h000000D0;
+        5: tr.zic_mmr_write_data_i=32'h000000FF;
+      endcase
+
+      finish_item(tr);
+
+      ext[irq]=1;
+
+   end
+
+   tr=int_seq_item::type_id::create("drive");
+
+   start_item(tr);
+
+   tr.ext_int=ext;
+   tr.global_int_enable_valid_i=1;
+   tr.global_int_enable_bit_i=48'h7FFF_FFFFFFFE;
+
+   finish_item(tr);
+
+end
+
+endtask
+
+endclass
+
+// ============================================================
+// FULL REGRESSION SEQUENCE
+// ============================================================
+class zic_full_regression_seq extends uvm_sequence #(int_seq_item);
+
+  `uvm_object_utils(zic_full_regression_seq)
+
+  reset_basic_seq                reset_seq;
+  mmr_basic_seq                  mmr_seq;
+  single_irq_seq                 single_seq;
+  multi_irq_seq                  multi_seq;
+  random_enable_mask_seq         enable_seq;
+  random_equal_priority_seq      equal_seq;
+  same_priority_random_seq       same_pri_seq;
+  dynamic_priority_override_seq  dyn_pri_seq;
+ // random_ack_latency_seq         ack_lat_seq;
+  random_eoi_progression_seq     eoi_seq;
+  random_all_48_irq_seq          all_irq_seq;
+  random_interrupt_storm_seq     storm_seq;
+  rand_storm_seq                 rand_storm;
+  priority_range_stress_seq pri_seq;
+
+
+  function new(string name = "zic_full_regression_seq");
+    super.new(name);
+  endfunction
+
+  task body();
+
+    `uvm_info("ZIC_REG_SEQ", "FULL ZIC RANDOM REGRESSION STARTED", UVM_LOW)
+
+    repeat (10) begin
+      reset_seq = reset_basic_seq::type_id::create("reset_seq");
+      reset_seq.start(m_sequencer);
+    end
+
+    repeat (20) begin
+      mmr_seq = mmr_basic_seq::type_id::create("mmr_seq");
+      mmr_seq.start(m_sequencer);
+    end
+
+    repeat (30) begin
+      single_seq = single_irq_seq::type_id::create("single_seq");
+      single_seq.start(m_sequencer);
+    end
+
+    repeat (30) begin
+      multi_seq = multi_irq_seq::type_id::create("multi_seq");
+      multi_seq.start(m_sequencer);
+    end
+
+    repeat (30) begin
+      enable_seq = random_enable_mask_seq::type_id::create("enable_seq");
+      enable_seq.start(m_sequencer);
+    end
+
+    repeat (30) begin
+      equal_seq = random_equal_priority_seq::type_id::create("equal_seq");
+      equal_seq.start(m_sequencer);
+    end
+
+    repeat (30) begin
+      same_pri_seq = same_priority_random_seq::type_id::create("same_pri_seq");
+      same_pri_seq.start(m_sequencer);
+    end
+
+    repeat (30) begin
+      dyn_pri_seq = dynamic_priority_override_seq::type_id::create("dyn_pri_seq");
+      dyn_pri_seq.start(m_sequencer);
+    end
+
+  //  repeat (30) begin
+ //     ack_lat_seq = random_ack_latency_seq::type_id::create("ack_lat_seq");
+ //     ack_lat_seq.start(m_sequencer);
+//    end
+
+    repeat (30) begin
+      eoi_seq = random_eoi_progression_seq::type_id::create("eoi_seq");
+      eoi_seq.start(m_sequencer);
+    end
+
+    repeat (10) begin
+      all_irq_seq = random_all_48_irq_seq::type_id::create("all_irq_seq");
+      all_irq_seq.start(m_sequencer);
+    end
+
+    repeat(20) begin
+      pri_seq=priority_range_stress_seq::type_id::create("pri_seq");
+      pri_seq.start(m_sequencer);
+    end
+
+
+    storm_seq = random_interrupt_storm_seq::type_id::create("storm_seq");
+    storm_seq.storm_cycles = 500;
+    storm_seq.start(m_sequencer);
+
+    rand_storm = rand_storm_seq::type_id::create("rand_storm");
+    rand_storm.storm_cycles = 1000;
+    rand_storm.start(m_sequencer);
+
+    `uvm_info("ZIC_REG_SEQ", "FULL ZIC RANDOM REGRESSION COMPLETED", UVM_LOW)
 
   endtask
 
