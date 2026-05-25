@@ -22,23 +22,147 @@ class int_base_test extends uvm_test;
 
   task run_phase(uvm_phase phase);
 
-  int_reset_seq      reset_seq;
-  int_single_irq_seq irq_seq;
+   // irq0_basic_seq seq;
+  //  irq0_irq5_priority_seq seq;
 
-  phase.raise_objection(this);
+  //  irq5_irq6_priority_seq seq;
+//
+ //  disabled_irq_seq seq;
 
-  reset_seq = int_reset_seq::type_id::create("reset_seq");
-  reset_seq.start(env.agent.sqr);
+  // three_way_priority_seq seq;
 
-  #20;
+ //  eoi_flow_seq seq;
 
-  irq_seq = int_single_irq_seq::type_id::create("irq_seq");
-  irq_seq.start(env.agent.sqr);
+  // equal_priority_tie_break_seq seq;
 
-  #100;
+ //  active_lvl_threshold_seq  seq;
 
-  phase.drop_objection(this);
+ //  reset_during_active_irq_seq seq;
 
-endtask
+//   simul_new_irq_during_eoi_seq seq;
+
+  // random_multi_irq_seq  seq;
+
+//   simultaneous_new_irq_during_eoi_seq seq;
+
+// enable_disable_masking_seq seq;
+
+// back_to_back_interrupts_seq seq;
+
+// wrong_eoi_fail_seq seq;
+
+// random_all_48_irq_seq seq;
+
+// same_priority_random_seq seq;
+
+// random_enable_mask_seq seq;
+
+// random_equal_priority_seq seq;
+
+// random_ack_latency_seq seq;
+
+// random_eoi_progression_seq seq;
+
+// random_tie_break_eoi_seq seq;
+
+// dynamic_priority_override_seq seq;
+
+// random_interrupt_storm_seq seq;
+ 
+// rand_storm_seq seq;
+
+zic_full_regression_seq seq;
+
+//zic_seq_base seq;
+
+
+ 
+   
+ //zic_multi_irq_seq seq;
+
+    phase.raise_objection(this);
+
+   // seq = irq0_basic_seq::type_id::create("seq");
+
+  //  seq = irq0_irq5_priority_seq::type_id::create("seq");
+
+ //  seq = irq5_irq6_priority_seq::type_id::create("seq");
+
+    //seq = disabled_irq_seq::type_id::create("seq");
+
+   // seq = three_way_priority_seq::type_id::create("seq");
+    
+   // seq = eoi_flow_seq::type_id::create("seq");
+
+   // seq = equal_priority_tie_break_seq::type_id::create("seq");
+    
+//    seq = active_lvl_threshold_seq::type_id::create("seq");
+
+   // seq = reset_during_active_irq_seq::type_id::create("seq");
+
+ //   seq = simul_new_irq_during_eoi_seq::type_id::create("seq");
+
+  //  seq = random_multi_irq_seq::type_id::create("seq");
+
+   // seq = simultaneous_new_irq_during_eoi_seq::type_id::create("seq");
+
+  //  seq = enable_disable_masking_seq::type_id::create("seq");
+
+   // seq = back_to_back_interrupts_seq::type_id::create("seq");
+
+  //  seq = wrong_eoi_fail_seq::type_id::create("seq");
+
+  //  seq = random_all_48_irq_seq::type_id::create("seq");
+
+  // seq = same_priority_random_seq::type_id::create("seq");
+
+ //  seq = random_enable_mask_seq::type_id::create("seq");
+
+
+  // seq = random_equal_priority_seq::type_id::create("seq");
+
+ //  seq = random_ack_latency_seq::type_id::create("seq");
+
+ //  seq = random_eoi_progression_seq::type_id::create("seq");
+
+  // seq = random_tie_break_eoi_seq::type_id::create("seq");
+   
+   
+   
+ //  seq = dynamic_priority_override_seq::type_id::create("seq");
+   
+ //  seq = random_interrupt_storm_seq::type_id::create("seq");
+   
+  // seq = rand_storm_seq::type_id::create("seq");
+
+
+  seq = zic_full_regression_seq::type_id::create("seq");
+
+
+  // seq = zic_seq_base::type_id::create("seq");
+   
+  
+
+   
+
+   
+  
+
+
+    
+    
+    
+   
+    
+ 
+    
+ 
+    seq.start(env.agent.sqr);
+
+    #200;
+
+    phase.drop_objection(this);
+
+  endtask
 
 endclass
