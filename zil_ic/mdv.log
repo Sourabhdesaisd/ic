@@ -1,0 +1,5 @@
+[INFO ] 2026-05-27 09:58:13,299 [com.cadence.mdv.imc.Main] [main] - Binding debug tools http on port: 43885
+[ERROR] 2026-05-27 09:58:13,878 [com.cadence.mdv.messaging.MDVASynchronicMessaging] [frontend-pool-1] - Cannot read directory 'cov_work/scope/test'. Check if the directory has read permission, and rerun the command	   
+[ERROR] 2026-05-27 09:58:13,895 [com.cadence.mdv.messaging.MDVASynchronicMessaging] [frontend-pool-1] - Valid model file not found for run directory cov_work/scope/test. Specify a valid run directory with correct ucm, ucd files and rerun the command.
+[INFO ] 2026-05-27 09:59:19,207 [com.cadence.mdv.imc.Main] [main] - Binding debug tools http on port: 41516
+[INFO ] 2026-05-27 10:48:53,076 [com.cadence.mdv.imc.Main] [main] - Binding debug tools http on port: 33864
