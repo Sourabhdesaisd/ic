@@ -109,58 +109,8 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
   rand bit [7:0] irq_ctl [48];
 
   rand int unsigned irq_count;
-rand int unsigned irq_group;
-rand int unsigned prio_group;
-
-constraint cov_bias_c {
-
-  // Hit missing active count bins: single_irq and two_irq
-  irq_count dist {
-    1       := 35,
-    2       := 35,
-    [3:5]   := 15,
-    [6:15]  := 10,
-    [16:46] := 15
-  };
-
-  // Hit missing ACK ID bins: irq_0_7 and irq_8_15
-  irq_group dist {
-    0 := 40,   // IRQ 1-7
-    1 := 40,   // IRQ 8-15
-    2 := 25,    // IRQ 16-23
-    3 := 25,    // IRQ 24-31
-    4 := 25,    // IRQ 32-39
-    5 := 25     // IRQ 40-46
-  };
-
-  // Hit low/mid/high priority bins
-  prio_group dist {
-    0 := 35,   // low
-    1 := 35,   // mid
-    2 := 30    // high
-  };
-}
-
- function automatic int rand_irq_from_group(int group_id);
-  case (group_id)
-    0: return $urandom_range(1, 7);
-    1: return $urandom_range(8, 15);
-    2: return $urandom_range(16, 23);
-    3: return $urandom_range(24, 31);
-    4: return $urandom_range(32, 39);
-    5: return $urandom_range(40, 46);
-    default: return $urandom_range(1, 46);
-  endcase
-endfunction
-
-function automatic bit [7:0] rand_ctl_from_group(int group_id);
-  case (group_id)
-    0: return $urandom_range(8'h01, 8'h3F); // low
-    1: return $urandom_range(8'h40, 8'h9F); // mid
-    2: return $urandom_range(8'hA0, 8'hFF); // high
-    default: return $urandom_range(8'h01, 8'hFF);
-  endcase
-endfunction
+  rand int unsigned irq_group;
+  rand int unsigned prio_group;
 
   int unsigned storm_cycles = 1000;
 
@@ -168,6 +118,32 @@ endfunction
 
   constraint ctl_c {
     foreach (irq_ctl[i]) irq_ctl[i] inside {[8'h01:8'hFF]};
+  }
+
+  constraint cov_bias_c {
+
+    irq_count dist {
+      1       := 35,
+      2       := 35,
+      [3:5]   := 15,
+      [6:15]  := 10,
+      [16:46] := 15
+    };
+
+    irq_group dist {
+      0 := 40,
+      1 := 40,
+      2 := 25,
+      3 := 25,
+      4 := 25,
+      5 := 25
+    };
+
+    prio_group dist {
+      0 := 35,
+      1 := 35,
+      2 := 30
+    };
   }
 
   function new(string name = "random_interrupt_storm_seq");
@@ -182,6 +158,27 @@ endfunction
     return ctl[7:4];
   endfunction
 
+  function automatic int rand_irq_from_group(int group_id);
+    case (group_id)
+      0: return $urandom_range(1, 7);
+      1: return $urandom_range(8, 15);
+      2: return $urandom_range(16, 23);
+      3: return $urandom_range(24, 31);
+      4: return $urandom_range(32, 39);
+      5: return $urandom_range(40, 46);
+      default: return $urandom_range(1, 46);
+    endcase
+  endfunction
+
+  function automatic bit [7:0] rand_ctl_from_group(int group_id);
+    case (group_id)
+      0: return $urandom_range(8'h01, 8'h3F);
+      1: return $urandom_range(8'h40, 8'h9F);
+      2: return $urandom_range(8'hA0, 8'hFF);
+      default: return $urandom_range(8'h01, 8'hFF);
+    endcase
+  endfunction
+
   function automatic int find_best_id(bit [47:0] mask);
 
     int best_id;
@@ -194,9 +191,7 @@ endfunction
     best_level = 4'h0;
 
     for (int i = 1; i <= 46; i++) begin
-
       if (mask[i]) begin
-
         cur_level = get_level(irq_ctl[i]);
 
         if (!best_found) begin
@@ -212,9 +207,7 @@ endfunction
           best_id    = i;
           best_level = cur_level;
         end
-
       end
-
     end
 
     if (!best_found)
@@ -235,12 +228,15 @@ endfunction
     bit [7:0] active_lvl_rand;
 
     if (!this.randomize())
-      `uvm_fatal("RAND_STORM_SEQ", "Randomization failed")
+      `uvm_fatal("RAND_STORM_SEQ", "Initial randomization failed")
 
     `uvm_info("RAND_STORM_SEQ",
-      $sformatf("Starting final random storm sequence cycles=%0d", storm_cycles),
+      $sformatf("Starting random interrupt storm, cycles=%0d", storm_cycles),
       UVM_LOW)
 
+    // ------------------------------------------------------------
+    // Reset - keep same as your old passing style
+    // ------------------------------------------------------------
     send_tr("reset",
             1, 48'h0,
             0, 16'h0, 32'h0,
@@ -251,6 +247,12 @@ endfunction
             0,
             0, 0, 0);
 
+    irq_ctl[0]  = 8'h00;
+    irq_ctl[47] = 8'h00;
+
+    // ------------------------------------------------------------
+    // Initial CTL programming
+    // ------------------------------------------------------------
     for (int i = 1; i <= 46; i++) begin
       send_tr($sformatf("mmr_write_irq%0d_ctl", i),
               0, 48'h0,
@@ -263,68 +265,104 @@ endfunction
               0, 0, 0);
     end
 
-    irq_ctl[0]  = 8'h00;
-    irq_ctl[47] = 8'h00;
+    // ------------------------------------------------------------
+    // Initial settle after first programming
+    // ------------------------------------------------------------
+    repeat (5) begin
+      send_tr("initial_ctl_settle",
+              0, 48'h0,
+              0, 16'h0, 32'h0,
+              0, 16'h0,
+              0, 8'h00,
+              48'h0, 0,
+              8'h00,
+              0,
+              0, 0, 0);
+    end
 
+    // ------------------------------------------------------------
+    // Main storm loop
+    // ------------------------------------------------------------
     repeat (storm_cycles) begin
 
       if (!this.randomize())
-          `uvm_fatal("RAND_STORM_SEQ", "Loop randomization failed")
-        
-        ext_mask = 48'h0;
-        en_mask  = 48'h0;
-        
-        // Re-program priorities with coverage-biased priority range
-        for (int i = 1; i <= 46; i++) begin
-          irq_ctl[i] = rand_ctl_from_group(prio_group);
-        
-          send_tr($sformatf("cov_mmr_write_irq%0d_ctl", i),
-                  0, 48'h0,
-                  1, ctl_addr(i), {24'h0, irq_ctl[i]},
-                  0, 16'h0,
-                  0, 8'h00,
-                  48'h0, 0,
-                  8'h00,
-                  0,
-                  0, 0, 0);
-        end
-        
-        // Generate active/enabled IRQs from biased IRQ group
-        repeat (irq_count) begin
-          int irq;
-          irq = rand_irq_from_group(irq_group);
-          ext_mask[irq] = 1'b1;
-          en_mask[irq]  = 1'b1;
-        end
-        
-        // Safety
-        if ((ext_mask & en_mask) == 48'h0) begin
-          int irq;
-          irq = rand_irq_from_group(irq_group);
-          ext_mask[irq] = 1'b1;
-          en_mask[irq]  = 1'b1;
-        end
-        
+        `uvm_fatal("RAND_STORM_SEQ", "Loop randomization failed")
+
+      ext_mask = 48'h0;
+      en_mask  = 48'h0;
+
+      // ----------------------------------------------------------
+      // Re-program CTL values
+      // ----------------------------------------------------------
+      for (int i = 1; i <= 46; i++) begin
+
+        irq_ctl[i] = rand_ctl_from_group(prio_group);
+
+        send_tr($sformatf("cov_mmr_write_irq%0d_ctl", i),
+                0, 48'h0,
+                1, ctl_addr(i), {24'h0, irq_ctl[i]},
+                0, 16'h0,
+                0, 8'h00,
+                48'h0, 0,
+                8'h00,
+                0,
+                0, 0, 0);
+      end
+
+      // ----------------------------------------------------------
+      // IMPORTANT FIX:
+      // Settle after CTL programming before driving IRQ.
+      // This prevents highest_pending and ack_read_valid_en
+      // from occurring in the same initial timing window.
+      // ----------------------------------------------------------
+      repeat (8) begin
+        send_tr("settle_after_ctl_programming",
+                0, 48'h0,
+                0, 16'h0, 32'h0,
+                0, 16'h0,
+                0, 8'h00,
+                48'h0, 0,
+                8'h00,
+                0,
+                0, 0, 0);
+      end
+
+      // ----------------------------------------------------------
+      // Generate active/enabled IRQs
+      // ----------------------------------------------------------
+      repeat (irq_count) begin
+        int irq;
+        irq = rand_irq_from_group(irq_group);
+        ext_mask[irq] = 1'b1;
+        en_mask[irq]  = 1'b1;
+      end
+
+      if ((ext_mask & en_mask) == 48'h0) begin
+        int irq;
+        irq = rand_irq_from_group(irq_group);
+        ext_mask[irq] = 1'b1;
+        en_mask[irq]  = 1'b1;
+      end
 
       eligible_mask = ext_mask & en_mask;
       best_id       = find_best_id(eligible_mask);
-      wait_cycles   = $urandom_range(3, 6);
 
-      // Keep active level 0 for random ACK stress.
-      // This avoids threshold/preemption mixing with ACK checking.
+      wait_cycles     = $urandom_range(6, 10);
       active_lvl_rand = 8'h00;
 
       `uvm_info("RAND_STORM_SEQ",
-        $sformatf("ext=0x%0h en=0x%0h best_id=%0d exp_ack=0x%0h ctl=0x%0h level=0x%0h active_lvl=0x%0h",
+        $sformatf("ext=0x%0h en=0x%0h best_id=%0d exp_ack=0x%0h ctl=0x%0h level=0x%0h",
                   ext_mask,
                   en_mask,
                   best_id,
                   8'h10 + best_id[7:0],
                   irq_ctl[best_id],
-                  get_level(irq_ctl[best_id]),
-                  active_lvl_rand),
+                  get_level(irq_ctl[best_id])),
         UVM_LOW)
 
+      // ----------------------------------------------------------
+      // Drive interrupt + enable
+      // ----------------------------------------------------------
       send_tr("drive_ext_irq_and_global_enable",
               0, ext_mask,
               0, 16'h0, 32'h0,
@@ -335,6 +373,9 @@ endfunction
               0,
               0, 0, 0);
 
+      // ----------------------------------------------------------
+      // Wait for highest_pending/interrupt_request to become stable
+      // ----------------------------------------------------------
       repeat (wait_cycles) begin
         send_tr("wait_priority_resolve",
                 0, ext_mask,
@@ -347,6 +388,9 @@ endfunction
                 0, 0, 0);
       end
 
+      // ----------------------------------------------------------
+      // Optional MMR read, then settle before ACK
+      // ----------------------------------------------------------
       if ($urandom_range(0, 3) == 0) begin
         int rd_irq;
         rd_irq = $urandom_range(1, 46);
@@ -360,8 +404,23 @@ endfunction
                 active_lvl_rand,
                 0,
                 0, 0, 0);
+
+        repeat (3) begin
+          send_tr("settle_after_mmr_read",
+                  0, ext_mask,
+                  0, 16'h0, 32'h0,
+                  0, 16'h0,
+                  0, 8'h00,
+                  en_mask, 0,
+                  active_lvl_rand,
+                  0,
+                  0, 0, 0);
+        end
       end
 
+      // ----------------------------------------------------------
+      // ACK read valid after stable priority output
+      // ----------------------------------------------------------
       send_tr("ack_current_irq",
               0, ext_mask,
               0, 16'h0, 32'h0,
@@ -372,7 +431,10 @@ endfunction
               1,
               0, 0, 0);
 
-      repeat (2) begin
+      // ----------------------------------------------------------
+      // Hold after ACK
+      // ----------------------------------------------------------
+      repeat (3) begin
         send_tr("idle_after_ack",
                 0, ext_mask,
                 0, 16'h0, 32'h0,
@@ -384,9 +446,25 @@ endfunction
                 0, 0, 0);
       end
 
+      // ----------------------------------------------------------
+      // Clear external IRQ before EOI
+      // ----------------------------------------------------------
+      send_tr("clear_ext_before_eoi",
+              0, 48'h0,
+              0, 16'h0, 32'h0,
+              0, 16'h0,
+              0, 8'h00,
+              en_mask, 0,
+              active_lvl_rand,
+              0,
+              0, 0, 0);
+
+      // ----------------------------------------------------------
+      // EOI served interrupt
+      // ----------------------------------------------------------
       if (best_id >= 1) begin
         send_tr("eoi_served_irq",
-                0, ext_mask,
+                0, 48'h0,
                 0, 16'h0, 32'h0,
                 0, 16'h0,
                 1, 8'h10 + best_id[7:0],

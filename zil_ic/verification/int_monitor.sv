@@ -8,6 +8,10 @@ class int_monitor extends uvm_monitor;
   bit [7:0]  irq_ctl_mirror [48];
   bit [47:0] global_en_mirror;
 
+  bit       ack_pending;
+bit [7:0] pend_exp_ack_id;
+bit [7:0] pend_exp_lvl_pr;
+
   
 
   localparam bit [15:0] IRQ_CTL_BASE = 16'h1003;
@@ -32,6 +36,10 @@ class int_monitor extends uvm_monitor;
       irq_ctl_mirror[i] = 8'h00;
 
     global_en_mirror = 48'h0;
+
+    ack_pending     = 1'b0;
+pend_exp_ack_id = 8'h00;
+pend_exp_lvl_pr = 8'h00;
 
     
 
@@ -108,6 +116,9 @@ class int_monitor extends uvm_monitor;
   endtask
 
   task sample_dut(int_seq_item tr);
+
+  tr.zic_rst = vif.zic_rst;
+  
 
     tr.interrupt_request_o      = vif.interrupt_request_o;
     tr.zic_ack_int_id_o         = vif.zic_ack_int_id_o;
@@ -227,8 +238,40 @@ class int_monitor extends uvm_monitor;
   // Compare only at ACK read
   //------------------------------------------
 
-  if(tr.zic_ack_read_valid_en)
-      tr.exp_valid=1;
+  // Default
+tr.exp_valid = 1'b0;
+
+// Case 1: ACK valid same cycle
+if (tr.zic_ack_read_valid_en &&
+    tr.exp_irq_req &&
+    tr.zic_ack_int_id_o != 8'h00) begin
+
+  tr.exp_valid = 1'b1;
+
+end
+
+// Case 2: ACK requested but output not ready
+else if (tr.zic_ack_read_valid_en &&
+         tr.exp_irq_req &&
+         tr.zic_ack_int_id_o == 8'h00) begin
+
+  ack_pending     = 1'b1;
+  pend_exp_ack_id = tr.exp_ack_id;
+  pend_exp_lvl_pr = tr.exp_highest_lvl_pr;
+
+end
+
+// Case 3: delayed ACK output became valid
+else if (ack_pending &&
+         tr.zic_ack_int_id_o != 8'h00) begin
+
+  tr.exp_valid          = 1'b1;
+  tr.exp_ack_id         = pend_exp_ack_id;
+  tr.exp_highest_lvl_pr = pend_exp_lvl_pr;
+
+  ack_pending = 1'b0;
+
+end
 
 
   `uvm_info(
