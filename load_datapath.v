@@ -139,20 +139,6 @@ module load_datapath (
         endcase
     end
 
-    initial begin
-    $display("LOAD_DATAPATH_NEW_VERSION_COMPILED");
-end
-
-always @(*) begin
-    if(load_type == 3'b001 || load_type == 3'b100) begin
-        $display(
-        "LHU/LH DEBUG addr=%0d mem=%h half=%h",
-        addr,
-        mem_data_in,
-        selected_half
-        );
-    end
-end
 
 endmodule
 
