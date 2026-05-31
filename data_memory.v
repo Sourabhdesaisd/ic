@@ -186,7 +186,7 @@ module data_memory (
     } : 32'b0;
 
 endmodule */
-
+/*
 module data_memory (
     input         clk,
     input         mem_read,
@@ -321,166 +321,133 @@ module data_memory (
         } :
         32'h00000000;
 
-/*    always @(posedge clk) begin
-    if(mem_write) begin
-        #1;
-        $display("AFTER STORE: %02h %02h %02h %02h",
-                 mem[mem_addr+3],
-                 mem[mem_addr+2],
-                 mem[mem_addr+1],
-                 mem[mem_addr+0]);
-    end
-end
 
-always @(*) begin
-    if(mem_read) begin
-        $display("READ addr=%h base_addr=%h data=%h",
-                 addr,
-                 base_addr,
-                 mem_data_out);
-    end
-end */
+endmodule
 
-always @(*) begin
-    if(mem_read) begin
-        $display(
-        "READ addr=%h base=%h data=%h",
-        addr,
-        base_addr,
-        mem_data_out
-        );
-    end
-end
+*/
 
-always @(posedge clk) begin
-    if(mem_write) begin
-        #1;
-        $display("MEMCHK addr=%h", mem_addr);
+module data_memory (
+    input         clk,
+    input         mem_read,
+    input         mem_write,
+    input  [31:0] addr,
+    input  [31:0] write_data,
+    input  [3:0]  byte_enable,
+    output [31:0] mem_data_out
+);
 
-        $display("mem[%h]=%02h", mem_addr+0, mem[mem_addr+0]);
-        $display("mem[%h]=%02h", mem_addr+1, mem[mem_addr+1]);
-        $display("mem[%h]=%02h", mem_addr+2, mem[mem_addr+2]);
-        $display("mem[%h]=%02h", mem_addr+3, mem[mem_addr+3]);
-    end
-end
-always @(*) begin
-    if(mem_read && addr == 32'h8000fb22) begin
-        $display("READCHK");
-        $display("base=%h", base_addr);
-        $display("%02h %02h %02h %02h",
-                 mem[base_addr+3],
-                 mem[base_addr+2],
-                 mem[base_addr+1],
-                 mem[base_addr+0]);
-    end
-end
-/*
+    parameter MEM_BYTES = 1024*1024;
+    parameter ADDR_BITS = 20;
+
+    reg [7:0] mem [0:MEM_BYTES-1];
+
+    // --------------------------------------------------
+    // Address Mapping
+    // --------------------------------------------------
+
+    wire [ADDR_BITS-1:0] mem_addr;
+    wire [ADDR_BITS-1:0] base_addr;
+
+    assign mem_addr  = addr[ADDR_BITS-1:0];
+    assign base_addr = {mem_addr[ADDR_BITS-1:2],2'b00};
+
+    // --------------------------------------------------
+    // Hex File Loading
+    // --------------------------------------------------
+
+    reg [1023:0] data_file;
+    reg [31:0] word_data;
+
+    integer i;
+    integer fd;
+    integer ret;
+    integer load_addr;
+
     initial begin
-    #1;
 
-    $display("MEM[2214C]=%h",mem['h2214C]);
-    $display("MEM[2214D]=%h",mem['h2214D]);
-    $display("MEM[2214E]=%h",mem['h2214E]);
-    $display("MEM[2214F]=%h",mem['h2214F]);
-end
+        for(i=0;i<MEM_BYTES;i=i+1)
+            mem[i] = 8'h00;
 
-always @(posedge clk)
-begin
-   if(addr == 32'h8002214C)
-   begin
-      $display("addr=%h",addr);
-      $display("mem_addr=%h",mem_addr);
-      $display("base_addr=%h",base_addr);
-   end
-end
+        if(!$value$plusargs("data_file=%s",data_file))
+            data_file = "program_data.hex";
 
-always @(posedge clk)
-begin
-   if(addr == 32'h8002214C && mem_read)
-   begin
-      $display("================================");
-      $display("ADDR      = %h",addr);
-      $display("MEM_ADDR  = %h",mem_addr);
+        $display("========================================");
+        $display("Loading Memory File : %s",data_file);
+        $display("Memory Size         : %0d Bytes",MEM_BYTES);
+        $display("Address Mapping     : addr[19:0]");
+        $display("========================================");
 
-      $display("BYTE0=%h",mem[mem_addr+0]);
-      $display("BYTE1=%h",mem[mem_addr+1]);
-      $display("BYTE2=%h",mem[mem_addr+2]);
-      $display("BYTE3=%h",mem[mem_addr+3]);
+        fd = $fopen(data_file,"r");
 
-      $display("WORD=%h",
-      {
-         mem[mem_addr+3],
-         mem[mem_addr+2],
-         mem[mem_addr+1],
-         mem[mem_addr+0]
-      });
+        if(fd == 0) begin
+            $display("ERROR: Cannot open %s",data_file);
+            $finish;
+        end
 
-      $display("================================");
-   end
-end
+        load_addr = 0;
 
-always @(posedge clk) begin
-    if(mem_write) begin
+        while(!$feof(fd)) begin
 
-        if(
-            (mem_addr     >= 20'h22148 && mem_addr     <= 20'h2214F) ||
-            (mem_addr + 1 >= 20'h22148 && mem_addr + 1 <= 20'h2214F) ||
-            (mem_addr + 2 >= 20'h22148 && mem_addr + 2 <= 20'h2214F) ||
-            (mem_addr + 3 >= 20'h22148 && mem_addr + 3 <= 20'h2214F)
-        )
-        begin
-            $display("--------------------------------");
-            $display("STORE DETECTED");
-            $display("PC   = %h", pc);   
+            ret = $fscanf(fd,"%h",word_data);
+
+            if(ret == 1) begin
+
+                if(load_addr+3 < MEM_BYTES) begin
+
+                    // Little Endian
+                    mem[load_addr+0] = word_data[7:0];
+                    mem[load_addr+1] = word_data[15:8];
+                    mem[load_addr+2] = word_data[23:16];
+                    mem[load_addr+3] = word_data[31:24];
+
+                end
+
+                load_addr = load_addr + 4;
+
+            end
+
+        end
+
+        $fclose(fd);
+
+        $display("Loaded %0d bytes",load_addr);
+
+    end
+
+  
+    always @(posedge clk) begin
+
+        if(mem_write) begin
+
             
-            $display("ADDR=%h",mem_addr);
-            $display("DATA=%h",write_data);
-            $display("BE=%b",byte_enable);
-            $display("--------------------------------");
+            if(byte_enable[0])
+                mem[base_addr+0] <= write_data[7:0];
+
+            if(byte_enable[1])
+                mem[base_addr+1] <= write_data[15:8];
+
+            if(byte_enable[2])
+                mem[base_addr+2] <= write_data[23:16];
+
+            if(byte_enable[3])
+                mem[base_addr+3] <= write_data[31:24];
+
         end
-    end
-end
-
-always @(posedge clk) begin
-
-    if(mem_write) begin
-
-        if(byte_enable[0] && mem_addr == 20'h2214C)
-            $display("WRITE BYTE0 -> %h",write_data[7:0]);
-
-        if(byte_enable[1] && (mem_addr+1) == 20'h2214D)
-            $display("WRITE BYTE1 -> %h",write_data[15:8]);
-
-        if(byte_enable[2] && (mem_addr+2) == 20'h2214E)
-            $display("WRITE BYTE2 -> %h",write_data[23:16]);
-
-        if(byte_enable[3] && (mem_addr+3) == 20'h2214F)
-            $display("WRITE BYTE3 -> %h",write_data[31:24]);
 
     end
-end
 
-always @(posedge clk) begin
-    if(mem_write) begin
-        if(addr >= 32'h8002214c && addr <= 32'h8002214f) begin
-            $display("\nSTORE TO FAIL ADDRESS");
-            $display("PC=%h", pc);
-            $display("ADDR=%h", addr);
-            $display("DATA=%h", write_data);
-            $display("BE=%b", byte_enable);
-        end
-    end
-end
+    // --------------------------------------------------
+    // Read Logic
+    // --------------------------------------------------
 
-always @(posedge clk) begin
-    if(mem_write) begin
-        $display(
-        "STORE PC=%h ADDR=%h DATA=%h",
-        pc,
-        addr,
-        write_data
-        );
-    end
-end*/
+    assign mem_data_out =
+        mem_read ?
+        {
+            mem[base_addr+3],
+            mem[base_addr+2],
+            mem[base_addr+1],
+            mem[base_addr+0]
+        } :
+        32'h00000000;
 
 endmodule
