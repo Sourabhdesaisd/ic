@@ -1,0 +1,23 @@
+//
+// File created by:  xrun
+// Do not modify this file
+//
++test=basic_18204
++seed=18204
++log_dir=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_18204
++instr_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_18204/instruction_mem.hex
++data_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_18204/program_data.hex
++trace_file=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_18204/rtl_trace.log
+-ACCESS
++rwc
+-MESSAGES
+-XLMODE
+./xcelium.d/run.lnx8664.20.09.d
+-RUNMODE
+-CDSLIB
+./xcelium.d/run.lnx8664.20.09.d/cds.lib
+-HDLVAR
+./xcelium.d/run.lnx8664.20.09.d/hdl.var
+-WORK
+worklib
+-HASXLMODE

@@ -1,0 +1,18 @@
+//
+// File created by:  xrun
+// Do not modify this file
+//
+-access
++rwc
+-f
+/home/sgeuser8/Desktop/PINAKA/sim/cfg/basic_rtl.f
+-f
+/home/sgeuser8/Desktop/PINAKA/sim/cfg/basic_tb.f
++test=basic_18204
++seed=18204
++log_dir=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_18204
++instr_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_18204/instruction_mem.hex
++data_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_18204/program_data.hex
++trace_file=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_18204/rtl_trace.log
+-l
+/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_18204/rtl_run.log

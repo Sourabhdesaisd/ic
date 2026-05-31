@@ -1,0 +1,27 @@
+//
+// File created by:  xrun
+// Do not modify this file
+//
++test=basic_63031
++seed=63031
++log_dir=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_63031
++instr_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_63031/instruction_mem.hex
++data_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_63031/program_data.hex
++trace_file=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_63031/rtl_trace.log
+-MESSAGES
++EMGRLOG
+/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_63031/rtl_run.log
+-XLSTIME
+1780134563
+-XLKEEP
+-XLMODE
+./xcelium.d/run.lnx8664.20.09.d
+-RUNMODE
+-CDSLIB
+./xcelium.d/run.lnx8664.20.09.d/cds.lib
+-HDLVAR
+./xcelium.d/run.lnx8664.20.09.d/hdl.var
+-XLNAME
+xrun
+-XLVERSION
+"TOOL:	xrun(64)	20.09-s009"

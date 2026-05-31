@@ -1,0 +1,5 @@
+ mkdir tb/{ top env agentssequences tests scoreboards coverage config common}
+ mkdir tests
+ mkdir testplans
+ mkdir regressions
+ mkdir scripts

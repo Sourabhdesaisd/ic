@@ -1,0 +1,2 @@
+third_party/riscv-dv/src/isa/riscv_instr.sv
+third_party/riscv-dv/src/riscv_instr_gen_config.sv
