@@ -70,6 +70,7 @@ class int_base_test extends uvm_test;
 // random_interrupt_storm_seq seq;
  
 // rand_storm_seq seq;
+//random_active_level_priority_seq seq;
 
 zic_full_regression_seq seq;
 
@@ -134,6 +135,7 @@ zic_full_regression_seq seq;
  //  seq = random_interrupt_storm_seq::type_id::create("seq");
    
   // seq = rand_storm_seq::type_id::create("seq");
+//  seq = random_active_level_priority_seq::type_id::create("seq");
 
 
   seq = zic_full_regression_seq::type_id::create("seq");

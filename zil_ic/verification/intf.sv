@@ -1,39 +1,63 @@
 `timescale 1ns/1ps
 
+interface intf(input logic soc_clk);
 
+  // ============================================================
+  // Reset
+  // ============================================================
+  logic soc_rst;
 
-interface intf(input logic zic_clk);
+  // ============================================================
+  // MMR write interface from core
+  // ============================================================
+  logic        soc_mmr_write_en_i;
+  logic [15:0] soc_mmr_write_addr_i;
+  logic [31:0] soc_mmr_write_data_i;
 
-  logic zic_rst;
-  logic zic_mmr_write_en_i;
-  logic [15:0] zic_mmr_write_addr_i;
-  logic [31:0] zic_mmr_write_data_i;
+  // ============================================================
+  // MMR read interface from core
+  // ============================================================
+  logic        soc_mmr_read_en_i;
+  logic [15:0] soc_mmr_read_addr_i;
+  logic [31:0] soc_mmr_read_data_o;
 
-  logic zic_mmr_read_en_i;
-  logic [15:0] zic_mmr_read_addr_i;
-  logic [31:0] zic_mmr_read_data_o;
+  // ============================================================
+  // ACK interface
+  // ============================================================
+  logic       soc_ack_read_valid_en;
+  logic [7:0] soc_ack_int_id_o;
 
-  logic zic_ack_read_valid_en;
-  logic [7:0] zic_ack_int_id_o;
+  // ============================================================
+  // EOI interface
+  // ============================================================
+  logic       soc_eoi_valid_i;
+  logic [7:0] soc_eoi_id_i;
 
-  logic zic_eoi_valid_i;
-  logic [7:0] zic_eoi_id_i;
-
+  // ============================================================
+  // Interrupt priority/status interface
+  // ============================================================
   logic [7:0] active_lvl_pr_i;
-  logic interrupt_request_o;
-
-  logic [47:0] global_int_enable_bit_i;
-  logic global_int_enable_valid_i;
-
+  logic       interrupt_request_o;
   logic [7:0] highest_pending_lvl_pr_o;
-    
-      // Internal DUT observation signals for monitor/checker
-  logic [47:0] zic_int_en_w;
-  logic        zic_ack_w;
-  logic [7:0]  zic_ack_int_id_i;
-  
-  logic [46:0] ext_int;
 
+  // ============================================================
+  // Global interrupt enable
+  // 16 interrupts only
+  // ============================================================
+  logic [15:0] global_int_enable_bit_i;
+  logic        global_int_enable_valid_i;
+
+  // ============================================================
+  // External interrupt inputs
+  // 16 interrupts only
+  // ext_int[0]  -> ext_int0_i
+  // ext_int[15] -> ext_int15_i
+  // ============================================================
+  logic [15:0] ext_int;
+
+  // ============================================================
+  // Debug / reset related signals
+  // ============================================================
   logic debug_mode_valid_i;
   logic debug_mode_reset_i;
   logic debug_ndm_reset_i;
