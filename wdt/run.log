@@ -1,0 +1,177 @@
+xrun(64): 20.09-s009: (c) Copyright 1995-2021 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	20.09-s009: Started on Jun 06, 2026 at 07:16:36 IST
+xrun
+	-sv
+	-uvm
+	-f compile.f
+		+incdir+../../apb_vip/apb_avip/src/globals
+		+incdir+../../apb_vip/apb_avip/src/hvl_top/master
+		+incdir+../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences
+		+incdir+../../apb_vip/apb_avip/src/hdl_top/apb_if
+		+incdir+../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm
+		../../apb_vip/apb_avip/src/globals/apb_global_pkg.sv
+		../../apb_vip/apb_avip/src/hvl_top/master/apb_master_pkg.sv
+		../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv
+		../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv
+		../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv
+		../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv
+		../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv
+		../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_agent_bfm.sv
+		../../../rtl/watchdog_timer.sv
+		../tb/wdt_tb_top.sv
+	-access +rwc
+	-l run.log
+	+UVM_TESTNAME=apb_32b_write_test
+	+UVM_VERBOSITY=UVM_LOW
+
+   User defined plus("+") options:
+	+UVM_VERBOSITY=UVM_LOW
+
+file: ../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv
+	package worklib.apb_master_seq_pkg:sv
+		errors: 0, warnings: 0
+file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv
+class apb_32b_write_test extends apb_base_test;
+                                             |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,8|45): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  `uvm_component_utils(apb_32b_write_test)
+                                         |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,9|41): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+(`define macro: m_uvm_component_registry_internal [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 467], `define macro: uvm_component_utils [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 330], file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv line 9)
+  `uvm_component_utils(apb_32b_write_test)
+                                         |
+xmvlog: *E,SVEXTK (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,9|41): expecting a ';' (to terminate a type_declaration).
+(`define macro: m_uvm_component_registry_internal [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 467], `define macro: uvm_component_utils [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 330], file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv line 9)
+  `uvm_component_utils(apb_32b_write_test)
+                                         |
+xmvlog: *E,SVEXTK (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,9|41): expecting a ';' (to terminate a type_declaration).
+(`define macro: m_uvm_component_registry_internal [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 467], `define macro: uvm_component_utils [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 330], file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv line 9)
+  `uvm_component_utils(apb_32b_write_test)
+                                         |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,9|41): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+(`define macro: m_uvm_component_registry_internal [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 467], `define macro: uvm_component_utils [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 330], file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv line 9)
+  `uvm_component_utils(apb_32b_write_test)
+                                         |
+xmvlog: *E,EXPSMC (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,9|41): expecting a semicolon (';') [10.3.1(IEEE)].
+(`define macro: m_uvm_component_registry_internal [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 467], `define macro: uvm_component_utils [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 330], file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv line 9)
+  `uvm_component_utils(apb_32b_write_test)
+                                         |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,9|41): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+(`define macro: m_uvm_component_registry_internal [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 467], `define macro: uvm_component_utils [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 330], file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv line 9)
+  `uvm_component_utils(apb_32b_write_test)
+                                         |
+xmvlog: *E,EXPSMC (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,9|41): expecting a semicolon (';') [10.3.1(IEEE)].
+(`define macro: m_uvm_component_registry_internal [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 467], `define macro: uvm_component_utils [/tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d/sv/src/macros/uvm_object_defines.svh line 330], file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv line 9)
+  apb_virtual_32b_write_seq apb_virtual_32b_seq_h;
+                          |
+xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,13|26): Unrecognized declaration 'apb_virtual_32b_write_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+  extern function new(string name = "apb_32b_write_test", uvm_component parent = null);
+                                                                      |
+xmvlog: *E,EXPRPA (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,18|70): expecting a right parenthesis (')') [A.2.6(IEEE)].
+  extern function new(string name = "apb_32b_write_test", uvm_component parent = null);
+                                                                      |
+xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,18|70): Unrecognized declaration 'uvm_component' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+  extern function new(string name = "apb_32b_write_test", uvm_component parent = null);
+                                                                      |
+xmvlog: *E,NOTINF (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,18|70): Interfaces are not allowed within tasks [SystemVerilog].
+  extern function new(string name = "apb_32b_write_test", uvm_component parent = null);
+                                                                             |
+xmvlog: *E,ILLPDL (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,18|77): Mixing of ansi & non-ansi style port declaration is not legal.
+  extern function new(string name = "apb_32b_write_test", uvm_component parent = null);
+                                                                               |
+xmvlog: *E,EXPSMC (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,18|79): expecting a semicolon (';') [12.3.2(IEEE)].
+  extern virtual task run_phase(uvm_phase phase);
+       |
+xmvlog: *E,EXPRPA (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,19|7): expecting a right parenthesis (')') [A.2.6(IEEE)].
+  extern virtual task run_phase(uvm_phase phase);
+                    |
+xmvlog: *E,BADQAL (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,19|20): Lifetime or qualifier(s) 'virtual, extern' not allowed before task declaration.
+  extern virtual task run_phase(uvm_phase phase);
+                    |
+xmvlog: *E,DECINM (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,19|20): Declaration is only valid within a module, interface, or a program block.
+  extern virtual task run_phase(uvm_phase phase);
+                                        |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,19|40): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+function apb_32b_write_test::new(string name = "apb_32b_write_test",
+                          |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,30|26): 'apb_32b_write_test': undeclared identifier Expecting a class type name.
+                                 uvm_component parent = null);
+                                             |
+xmvlog: *E,EXPRPA (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,31|45): expecting a right parenthesis (')') [A.2.6(IEEE)].
+                                 uvm_component parent = null);
+                                             |
+xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,31|45): Unrecognized declaration 'uvm_component' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+                                 uvm_component parent = null);
+                                             |
+xmvlog: *E,NOTINF (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,31|45): Interfaces are not allowed within tasks [SystemVerilog].
+                                 uvm_component parent = null);
+                                                    |
+xmvlog: *E,ILLPDL (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,31|52): Mixing of ansi & non-ansi style port declaration is not legal.
+                                 uvm_component parent = null);
+                                                      |
+xmvlog: *E,EXPSMC (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,31|54): expecting a semicolon (';') [12.3.2(IEEE)].
+  super.new(name, parent);
+      |
+xmvlog: *E,EXPRPA (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,32|6): expecting a right parenthesis (')') [A.2.6(IEEE)].
+task apb_32b_write_test::run_phase(uvm_phase phase);
+                      |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,42|22): 'apb_32b_write_test': undeclared identifier Expecting a class type name.
+task apb_32b_write_test::run_phase(uvm_phase phase);
+                                           |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,42|43): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+file: ../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv
+  logic [NO_OF_SLAVES-1:0]pselx;
+                    |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv,17|20): 'NO_OF_SLAVES': undeclared identifier [12.5(IEEE)].
+  logic [ADDRESS_WIDTH-1:0]paddr;
+                     |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv,25|21): 'ADDRESS_WIDTH': undeclared identifier [12.5(IEEE)].
+  logic [(DATA_WIDTH/8)-1:0]pstrb; 
+                   |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv,33|19): 'DATA_WIDTH': undeclared identifier [12.5(IEEE)].
+  logic [DATA_WIDTH-1:0]pwdata;
+                  |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv,37|18): 'DATA_WIDTH': undeclared identifier [12.5(IEEE)].
+  logic [DATA_WIDTH-1:0]prdata;
+                  |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv,51|18): 'DATA_WIDTH': undeclared identifier [12.5(IEEE)].
+	interface worklib.apb_if:sv
+		errors: 5, warnings: 0
+file: ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv
+  apb_fsm_state_e state;
+                      |
+xmvlog: *E,ILLPDL (../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv,49|22): Mixing of ansi & non-ansi style port declaration is not legal.
+  task drive_to_bfm(inout apb_transfer_char_s data_packet, input apb_transfer_cfg_s cfg_packet);
+                                            |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv,78|44): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  task drive_to_bfm(inout apb_transfer_char_s data_packet, input apb_transfer_cfg_s cfg_packet);
+                                                                                  |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv,78|82): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  task drive_setup_state(inout apb_transfer_char_s data_packet);
+                                                 |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv,114|49): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  task waiting_in_access_state(inout apb_transfer_char_s data_packet);
+                                                       |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv,146|55): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  task detect_wait_state(inout apb_transfer_char_s data_packet);
+                                                 |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv,169|49): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+	interface worklib.apb_master_driver_bfm:sv
+		errors: 6, warnings: 0
+file: ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv
+  task sample_data (output apb_transfer_char_s apb_data_packet, input apb_transfer_cfg_s apb_cfg_packet);
+                                             |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv,70|45): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  task sample_data (output apb_transfer_char_s apb_data_packet, input apb_transfer_cfg_s apb_cfg_packet);
+                                                                                       |
+xmvlog: *E,SVNOTY (../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv,70|87): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+	interface worklib.apb_master_monitor_bfm:sv
+		errors: 2, warnings: 0
+file: ../tb/wdt_tb_top.sv
+xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/globals given but not used.
+xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hdl_top/apb_if given but not used.
+xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm given but not used.
+	Total errors/warnings found outside modules and primitives:
+		errors: 27, warnings: 3
+xrun: *E,VLGERR: An error occurred during parsing.  Review the log file for errors with the code *E and fix those identified problems to proceed.  Exiting with code (status 1).
+TOOL:	xrun(64)	20.09-s009: Exiting on Jun 06, 2026 at 07:16:37 IST  (total: 00:00:01)
