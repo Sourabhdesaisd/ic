@@ -1,0 +1,77 @@
+xrun(64): 20.09-s009: (c) Copyright 1995-2021 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	20.09-s009: Started on Jun 07, 2026 at 08:36:31 IST
+xrun
+	-sv
+	-access +rwc
+	-f /home/sgeuser8/Desktop/PINAKA/sim/cfg/basic_rtl.f
+		../rtl/ip/basic_isa/inst_mem.v
+		../rtl/ip/basic_isa/pc_reg.v
+		../rtl/ip/basic_isa/if_stage_simple_btb.v
+		../rtl/ip/basic_isa/dynamic_branch_predictor.v
+		../rtl/ip/basic_isa/btb_file.v
+		../rtl/ip/basic_isa/btb_read.v
+		../rtl/ip/basic_isa/btb_write.v
+		../rtl/ip/basic_isa/btb.v
+		../rtl/ip/basic_isa/register_file.v
+		../rtl/ip/basic_isa/control_unit.v
+		../rtl/ip/basic_isa/top_decode.v
+		../rtl/ip/basic_isa/decode_unit.v
+		../rtl/ip/basic_isa/arithmetic_unit32.v
+		../rtl/ip/basic_isa/logical_unit32.v
+		../rtl/ip/basic_isa/shift_unit32.v
+		../rtl/ip/basic_isa/compare_unit32.v
+		../rtl/ip/basic_isa/branch_jump_unit.v
+		../rtl/ip/basic_isa/alu_top32.v
+		../rtl/ip/basic_isa/forwarding_unit.v
+		../rtl/ip/basic_isa/execute_stage.v
+		../rtl/ip/basic_isa/ex_mem_pipe.v
+		../rtl/ip/basic_isa/data_memory.sv
+		../rtl/ip/basic_isa/load_datapath.v
+		../rtl/ip/basic_isa/store_datapath.v
+		../rtl/ip/basic_isa/data_mem_top.v
+		../rtl/ip/basic_isa/mem_stage.v
+		../rtl/ip/basic_isa/mem_wb_pipe.v
+		../rtl/ip/basic_isa/wb_stage.v
+		../rtl/ip/basic_isa/if_id_pipe.v
+		../rtl/ip/basic_isa/id_ex_pipe.v
+		../rtl/ip/basic_isa/hazard_unit.v
+		../rtl/ip/basic_isa/rv32i_core.v
+	-f /home/sgeuser8/Desktop/PINAKA/sim/cfg/basic_tb.f
+		../dv/tb/top/basic_tb_top.v
+	+test=basic_63021
+	+seed=63021
+	+log_dir=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_63021
+	+instr_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_63021/instruction_mem.hex
+	+data_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_63021/program_data.hex
+	+trace_file=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_63021/rtl_trace.log
+	-l /home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_63021/rtl_run.log
+
+   User defined plus("+") options:
+	+test=basic_63021
+	+seed=63021
+	+log_dir=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_63021
+	+instr_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_63021/instruction_mem.hex
+	+data_file=/home/sgeuser8/Desktop/PINAKA/sim/results/basic_63021/program_data.hex
+	+trace_file=/home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_63021/rtl_trace.log
+
+Loading snapshot worklib.main_tb:v .................... Done
+xmsim: *W,DSEM2009: This SystemVerilog design is simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
+xcelium> source /tools/cadence_march2021/XCELIUM2009/tools/xcelium/files/xmsimrc
+xcelium> run
+Loading instruction memory from:                                                        /home/sgeuser8/Desktop/PINAKA/sim/results/basic_63021/instruction_mem.hex
+========================================
+Loading Memory File :                                                           /home/sgeuser8/Desktop/PINAKA/sim/results/basic_63021/program_data.hex
+Memory Size         : 1048576 Bytes
+Address Mapping     : addr[19:0]
+========================================
+Loaded 270336 bytes
+TRACE FILE =                                                         /home/sgeuser8/Desktop/PINAKA/sim/results/logs/basic_63021/rtl_trace.log
+xmsim: *W,LMTMSG: unpacked array at "main_tb.dut.u_if.u_imem.mem" of 32768 elements exceeds limit of 16384 - not probed
+ Use 'probe -create -unpacked 32768' to adjust limit.
+xmsim: *W,LMTMSG: unpacked array at "main_tb.dut.u_mem_stage.u_datamem.u_mem.mem" of 1048576 elements exceeds limit of 16384 - not probed
+ Use 'probe -create -unpacked 1048576' to adjust limit.
+SIMULATION DONE
+Simulation complete via $finish(1) at time 100010 NS + 0
+../dv/tb/top/basic_tb_top.v:139     $finish;
+xcelium> exit
+TOOL:	xrun(64)	20.09-s009: Exiting on Jun 07, 2026 at 08:36:32 IST  (total: 00:00:01)
