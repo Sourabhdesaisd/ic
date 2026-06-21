@@ -1,5 +1,5 @@
 xrun(64): 20.09-s009: (c) Copyright 1995-2021 Cadence Design Systems, Inc.
-TOOL:	xrun(64)	20.09-s009: Started on Jun 21, 2026 at 15:04:56 IST
+TOOL:	xrun(64)	20.09-s009: Started on Jun 21, 2026 at 15:15:16 IST
 xrun
 	-sv
 	-uvm
@@ -35,97 +35,75 @@ Recompiling... reason: file '/home/sgeuser8/Desktop/soc/watchdog_timer/rtl/watch
 	actual:   Sun Jun 21 15:04:53 2026
 Compiling UVM packages (uvm_pkg.sv cdns_uvm_pkg.sv) using uvmhome location /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d
 file: ../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv
-  /*
-   |
-xmvlog: *W,NOCMIC (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,486|3): error-prone block comment nested within block comment [2.3(IEEE)].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv line 486, file: ../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv line 27)
 package apb_master_seq_pkg;
                          |
 xmvlog: *W,TSNSPK (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv,8|25): `timescale is not specified for the package.  The default timescale of 1ns/1ns will be assumed for this package.
-        wdt_vintf
-                |
-xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,45|16): 'wdt_vintf': undeclared identifier [12.5(IEEE)].
-  if (wdt_vintf == null) begin
-              |
-xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,50|14): 'wdt_vintf': undeclared identifier [12.5(IEEE)].
+    if (!uvm_config_db#(virtual wdt_intf)::get(null, "", "wdt_vintf", wdt_vintf)) begin
+                                                                              |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,70|78): 'wdt_vintf': undeclared identifier [12.5(IEEE)].
   wdt_vintf.wdt_rstn = 1'b0;
                    |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,69|19): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,88|19): illegal location for a hierarchical name (in a package).
   repeat (5) @(posedge wdt_vintf.wdt_clk);
                                        |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,70|39): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,89|39): illegal location for a hierarchical name (in a package).
   wdt_vintf.wdt_rstn = 1'b1;
                    |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,72|19): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,91|19): illegal location for a hierarchical name (in a package).
   repeat (5) @(posedge wdt_vintf.wdt_clk);
                                        |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,73|39): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,92|39): illegal location for a hierarchical name (in a package).
   wdt_vintf.cpu_dbg_halt     = $urandom_range(0, 1);
                        |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,76|23): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,95|23): illegal location for a hierarchical name (in a package).
   wdt_vintf.dbg_freeze       = $urandom_range(0, 1);
                      |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,77|21): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,96|21): illegal location for a hierarchical name (in a package).
   wdt_vintf.cpu_commit_pc    = $urandom_range(32'h8000_0000, 32'h8000_FFFF);
                         |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,78|24): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,97|24): illegal location for a hierarchical name (in a package).
   wdt_vintf.cpu_commit_valid = $urandom_range(0, 1);
                            |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,79|27): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,98|27): illegal location for a hierarchical name (in a package).
   repeat (2) @(posedge wdt_vintf.wdt_clk);
                                        |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,81|39): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,100|39): illegal location for a hierarchical name (in a package).
   wdt_vintf.cpu_commit_valid = 1'b0;
                            |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,83|27): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,102|27): illegal location for a hierarchical name (in a package).
   wdt_vintf.cpu_dbg_halt     = 1'b0;
                        |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,84|23): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,103|23): illegal location for a hierarchical name (in a package).
   wdt_vintf.dbg_freeze       = 1'b0;
                      |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,85|21): illegal location for a hierarchical name (in a package).
-  apb_write(32'h0000_0014, 32'h1ACCE551, "stress_unlock");
-          |
-xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,88|10): 'apb_write': undeclared identifier [12.5(IEEE)].
-  apb_write(32'h0000_0010, 32'h0000_000F, "stress_clear_status");
-          |
-xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,92|10): 'apb_write': undeclared identifier [12.5(IEEE)].
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,104|21): illegal location for a hierarchical name (in a package).
     repeat ($urandom_range(5, 20)) @(posedge wdt_vintf.wdt_clk);
                                                              |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,166|61): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,185|61): illegal location for a hierarchical name (in a package).
   repeat (200) @(posedge wdt_vintf.wdt_clk);
                                          |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,170|41): illegal location for a hierarchical name (in a package).
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,189|41): illegal location for a hierarchical name (in a package).
+    req.apb_master_agent_cfg_h = p_sequencer.apb_master_agent_cfg_h;
+                                                                  |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,41|66): illegal location for a hierarchical name (in a package).
+    start_item(req);
+             |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,43|13): 'start_item': undeclared identifier [12.5(IEEE)].
+    finish_item(req);
+              |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,55|14): 'finish_item': undeclared identifier [12.5(IEEE)].
 	package worklib.apb_master_seq_pkg:sv
-		errors: 18, warnings: 2
+		errors: 18, warnings: 1
 file: ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_agent_bfm.sv
 	module worklib.apb_master_agent_bfm:sv
 		errors: 0, warnings: 0
-file: ../tb/wdt_intf.sv
-	interface worklib.wdt_intf:sv
-		errors: 0, warnings: 0
-file: ../monitor/wdt_monitor.sv
-``ifndef WDT_MONITOR_SV
- |
-xmvlog: *E,EXPCPD (../monitor/wdt_monitor.sv,1|1): expecting a valid compiler directive [16(IEEE)].
-file: ../scoreboard/wdt_scb.sv
 file: ../tb/wdt_tb_top.sv
-``ifndef WDT_MONITOR_SV
- |
-xmvlog: *E,EXPCPD (../monitor/wdt_monitor.sv,1|1): expecting a valid compiler directive [16(IEEE)].
-(`include file: ../monitor/wdt_monitor.sv line 1, file: ../tb/wdt_tb_top.sv line 1)
-  wdt_monitor wdt_mon_h;
-                      |
-xmvlog: *E,NOIPRT (../tb/wdt_tb_top.sv,108|22): Unrecognized declaration 'wdt_mon_h' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-  wdt_scb     wdt_scb_h;
-                      |
-xmvlog: *E,NOIPRT (../tb/wdt_tb_top.sv,109|22): Unrecognized declaration 'wdt_scb_h' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
 	module worklib.wdt_tb_top:sv
-		errors: 2, warnings: 0
+		errors: 0, warnings: 0
 xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/globals given but not used.
 xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hdl_top/apb_if given but not used.
 xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm given but not used.
 	Total errors/warnings found outside modules and primitives:
-		errors: 1, warnings: 3
+		errors: 0, warnings: 3
 xrun: *E,VLGERR: An error occurred during parsing.  Review the log file for errors with the code *E and fix those identified problems to proceed.  Exiting with code (status 1).
-TOOL:	xrun(64)	20.09-s009: Exiting on Jun 21, 2026 at 15:04:57 IST  (total: 00:00:01)
+TOOL:	xrun(64)	20.09-s009: Exiting on Jun 21, 2026 at 15:15:18 IST  (total: 00:00:02)
