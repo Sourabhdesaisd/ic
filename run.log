@@ -1,5 +1,5 @@
 xrun(64): 20.09-s009: (c) Copyright 1995-2021 Cadence Design Systems, Inc.
-TOOL:	xrun(64)	20.09-s009: Started on Jun 21, 2026 at 15:15:16 IST
+TOOL:	xrun(64)	20.09-s009: Started on Jun 21, 2026 at 15:20:46 IST
 xrun
 	-sv
 	-uvm
@@ -11,6 +11,7 @@ xrun
 		+incdir+../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm
 		../../apb_vip/apb_avip/src/globals/apb_global_pkg.sv
 		../../apb_vip/apb_avip/src/hvl_top/master/apb_master_pkg.sv
+		../tb/wdt_intf.sv
 		../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv
 		../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv
 		../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv
@@ -18,7 +19,6 @@ xrun
 		../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv
 		../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_agent_bfm.sv
 		../../../rtl/watchdog_timer.sv
-		../tb/wdt_intf.sv
 		../monitor/wdt_monitor.sv
 		../scoreboard/wdt_scb.sv
 		../tb/wdt_tb_top.sv
@@ -30,10 +30,6 @@ xrun
    User defined plus("+") options:
 	+UVM_VERBOSITY=UVM_LOW
 
-Recompiling... reason: file '/home/sgeuser8/Desktop/soc/watchdog_timer/rtl/watchdog_timer.sv' is newer than expected.
-	expected: Sat Jun 20 17:58:59 2026
-	actual:   Sun Jun 21 15:04:53 2026
-Compiling UVM packages (uvm_pkg.sv cdns_uvm_pkg.sv) using uvmhome location /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d
 file: ../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv
 package apb_master_seq_pkg;
                          |
@@ -83,27 +79,19 @@ xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequ
   repeat (200) @(posedge wdt_vintf.wdt_clk);
                                          |
 xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,189|41): illegal location for a hierarchical name (in a package).
-    req.apb_master_agent_cfg_h = p_sequencer.apb_master_agent_cfg_h;
-                                                                  |
-xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,41|66): illegal location for a hierarchical name (in a package).
-    start_item(req);
-             |
-xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,43|13): 'start_item': undeclared identifier [12.5(IEEE)].
-    finish_item(req);
-              |
-xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,55|14): 'finish_item': undeclared identifier [12.5(IEEE)].
 	package worklib.apb_master_seq_pkg:sv
-		errors: 18, warnings: 1
-file: ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_agent_bfm.sv
-	module worklib.apb_master_agent_bfm:sv
+		errors: 15, warnings: 1
+file: ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv
+	interface worklib.apb_master_driver_bfm:sv
+		errors: 0, warnings: 0
+file: ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv
+	interface worklib.apb_master_monitor_bfm:sv
 		errors: 0, warnings: 0
 file: ../tb/wdt_tb_top.sv
-	module worklib.wdt_tb_top:sv
-		errors: 0, warnings: 0
 xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/globals given but not used.
 xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hdl_top/apb_if given but not used.
 xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm given but not used.
 	Total errors/warnings found outside modules and primitives:
 		errors: 0, warnings: 3
 xrun: *E,VLGERR: An error occurred during parsing.  Review the log file for errors with the code *E and fix those identified problems to proceed.  Exiting with code (status 1).
-TOOL:	xrun(64)	20.09-s009: Exiting on Jun 21, 2026 at 15:15:18 IST  (total: 00:00:02)
+TOOL:	xrun(64)	20.09-s009: Exiting on Jun 21, 2026 at 15:20:47 IST  (total: 00:00:01)
