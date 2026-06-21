@@ -1,141 +1,131 @@
 xrun(64): 20.09-s009: (c) Copyright 1995-2021 Cadence Design Systems, Inc.
-TOOL:	xrun(64)	20.09-s009: Started on Jun 06, 2026 at 01:49:23 IST
+TOOL:	xrun(64)	20.09-s009: Started on Jun 21, 2026 at 15:04:56 IST
 xrun
 	-sv
 	-uvm
-	-access +rwc
 	-f compile.f
 		+incdir+../../apb_vip/apb_avip/src/globals
 		+incdir+../../apb_vip/apb_avip/src/hvl_top/master
-		+incdir+../../apb_vip/apb_avip/src/hvl_top/slave
-		+incdir+../../apb_vip/apb_avip/src/hvl_top/env
-		+incdir+../../apb_vip/apb_avip/src/hvl_top/test
-		+incdir+../../apb_vip/apb_avip/src/hvl_top/test/sequences
 		+incdir+../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences
-		+incdir+../../apb_vip/apb_avip/src/hvl_top/test/sequences/slave_sequences
-		+incdir+../../apb_vip/apb_avip/src/hvl_top/test/virtual_sequences
 		+incdir+../../apb_vip/apb_avip/src/hdl_top/apb_if
 		+incdir+../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm
-		+incdir+../../apb_vip/apb_avip/src/hdl_top/slave_agent_bfm
 		../../apb_vip/apb_avip/src/globals/apb_global_pkg.sv
 		../../apb_vip/apb_avip/src/hvl_top/master/apb_master_pkg.sv
-		../../apb_vip/apb_avip/src/hvl_top/slave/apb_slave_pkg.sv
-		../../apb_vip/apb_avip/src/hvl_top/env/apb_env_pkg.sv
-		../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv
+		../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv
+		../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv
 		../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv
 		../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv
 		../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv
 		../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_agent_bfm.sv
 		../../../rtl/watchdog_timer.sv
+		../tb/wdt_intf.sv
+		../monitor/wdt_monitor.sv
+		../scoreboard/wdt_scb.sv
 		../tb/wdt_tb_top.sv
+	-access +rwc
 	-l run.log
+	+UVM_TESTNAME=apb_32b_write_test
+	+UVM_VERBOSITY=UVM_LOW
+
+   User defined plus("+") options:
+	+UVM_VERBOSITY=UVM_LOW
+
+Recompiling... reason: file '/home/sgeuser8/Desktop/soc/watchdog_timer/rtl/watchdog_timer.sv' is newer than expected.
+	expected: Sat Jun 20 17:58:59 2026
+	actual:   Sun Jun 21 15:04:53 2026
 Compiling UVM packages (uvm_pkg.sv cdns_uvm_pkg.sv) using uvmhome location /tools/cadence_march2021/XCELIUM2009/tools/methodology/UVM/CDNS-1.1d
-file: ../../apb_vip/apb_avip/src/hvl_top/slave/apb_slave_pkg.sv
-	package worklib.apb_slave_pkg:sv
-		errors: 0, warnings: 0
-file: ../../apb_vip/apb_avip/src/hvl_top/env/apb_env_pkg.sv
-  `include "apb_virtual_sequencer.sv"
-                                    |
-xmvlog: *E,COFILX (../../apb_vip/apb_avip/src/hvl_top/env/apb_env_pkg.sv,27|36): cannot open include file 'apb_virtual_sequencer.sv'.
-  apb_virtual_sequencer apb_virtual_seqr_h;
-                      |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/env/apb_env.sv,25|22): Unrecognized declaration 'apb_virtual_sequencer' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/env/apb_env.sv line 25, file: ../../apb_vip/apb_avip/src/hvl_top/env/apb_env_pkg.sv line 29)
-	package worklib.apb_env_pkg:sv
-		errors: 2, warnings: 0
-file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv
-  import apb_env_pkg::*;
-                   |
-xmvlog: *E,NOPBIND (../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv,22|19): Package apb_env_pkg could not be bound.
-  import apb_master_seq_pkg::*;
-                          |
-xmvlog: *E,NOPBIND (../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv,23|26): Package apb_master_seq_pkg could not be bound.
-  import apb_slave_seq_pkg::*;
+file: ../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv
+  /*
+   |
+xmvlog: *W,NOCMIC (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,486|3): error-prone block comment nested within block comment [2.3(IEEE)].
+(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv line 486, file: ../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv line 27)
+package apb_master_seq_pkg;
                          |
-xmvlog: *E,NOPBIND (../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv,24|25): Package apb_slave_seq_pkg could not be bound.
-  import apb_virtual_seq_pkg::*;
-                           |
-xmvlog: *E,NOPBIND (../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv,25|27): Package apb_virtual_seq_pkg could not be bound.
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_base_test.sv line 10, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 30)
-  apb_env apb_env_h;
-        |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_base_test.sv,15|8): Unrecognized declaration 'apb_env' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_base_test.sv line 15, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 30)
-  apb_env_config apb_env_cfg_h;
-               |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_base_test.sv,19|15): Unrecognized declaration 'apb_env_config' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_base_test.sv line 19, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 30)
-  apb_virtual_vd_vws_seq apb_virtual_vd_vws_seq_h;
+xmvlog: *W,TSNSPK (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_seq_pkg.sv,8|25): `timescale is not specified for the package.  The default timescale of 1ns/1ns will be assumed for this package.
+        wdt_vintf
+                |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,45|16): 'wdt_vintf': undeclared identifier [12.5(IEEE)].
+  if (wdt_vintf == null) begin
+              |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,50|14): 'wdt_vintf': undeclared identifier [12.5(IEEE)].
+  wdt_vintf.wdt_rstn = 1'b0;
+                   |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,69|19): illegal location for a hierarchical name (in a package).
+  repeat (5) @(posedge wdt_vintf.wdt_clk);
+                                       |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,70|39): illegal location for a hierarchical name (in a package).
+  wdt_vintf.wdt_rstn = 1'b1;
+                   |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,72|19): illegal location for a hierarchical name (in a package).
+  repeat (5) @(posedge wdt_vintf.wdt_clk);
+                                       |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,73|39): illegal location for a hierarchical name (in a package).
+  wdt_vintf.cpu_dbg_halt     = $urandom_range(0, 1);
                        |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_vd_vws_test.sv,14|23): Unrecognized declaration 'apb_virtual_vd_vws_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_vd_vws_test.sv line 14, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 31)
-  apb_virtual_8b_write_seq apb_virtual_8b_seq_h;
-                         |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_8b_write_test.sv,13|25): Unrecognized declaration 'apb_virtual_8b_write_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_8b_write_test.sv line 13, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 32)
-  apb_virtual_8b_write_read_seq apb_virtual_8b_write_read_seq_h;
-                              |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_8b_write_read_test.sv,13|30): Unrecognized declaration 'apb_virtual_8b_write_read_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_8b_write_read_test.sv line 13, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 33)
-  apb_virtual_16b_write_seq apb_virtual_16b_seq_h;
-                          |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_16b_write_test.sv,13|26): Unrecognized declaration 'apb_virtual_16b_write_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_16b_write_test.sv line 13, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 34)
-  apb_virtual_24b_write_seq apb_virtual_24b_seq_h;
-                          |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_24b_write_test.sv,13|26): Unrecognized declaration 'apb_virtual_24b_write_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_24b_write_test.sv line 13, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 35)
-  apb_virtual_8b_read_seq apb_virtual_8b_seq_h;
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,76|23): illegal location for a hierarchical name (in a package).
+  wdt_vintf.dbg_freeze       = $urandom_range(0, 1);
+                     |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,77|21): illegal location for a hierarchical name (in a package).
+  wdt_vintf.cpu_commit_pc    = $urandom_range(32'h8000_0000, 32'h8000_FFFF);
                         |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_8b_read_test.sv,13|24): Unrecognized declaration 'apb_virtual_8b_read_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_8b_read_test.sv line 13, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 36)
-  apb_virtual_32b_write_seq apb_virtual_32b_seq_h;
-                          |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,13|26): Unrecognized declaration 'apb_virtual_32b_write_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv line 13, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 37)
-task apb_master_32b_write_seq::body();
-                            |
-xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv,42|28): 'apb_master_32b_write_seq': undeclared identifier Expecting a class type name.
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_test.sv line 42, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 37)
-  apb_virtual_32b_write_multiple_slave_seq apb_virtual_32b_write_multiple_slave_seq_h;
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,78|24): illegal location for a hierarchical name (in a package).
+  wdt_vintf.cpu_commit_valid = $urandom_range(0, 1);
+                           |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,79|27): illegal location for a hierarchical name (in a package).
+  repeat (2) @(posedge wdt_vintf.wdt_clk);
+                                       |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,81|39): illegal location for a hierarchical name (in a package).
+  wdt_vintf.cpu_commit_valid = 1'b0;
+                           |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,83|27): illegal location for a hierarchical name (in a package).
+  wdt_vintf.cpu_dbg_halt     = 1'b0;
+                       |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,84|23): illegal location for a hierarchical name (in a package).
+  wdt_vintf.dbg_freeze       = 1'b0;
+                     |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,85|21): illegal location for a hierarchical name (in a package).
+  apb_write(32'h0000_0014, 32'h1ACCE551, "stress_unlock");
+          |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,88|10): 'apb_write': undeclared identifier [12.5(IEEE)].
+  apb_write(32'h0000_0010, 32'h0000_000F, "stress_clear_status");
+          |
+xmvlog: *E,UNDIDN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,92|10): 'apb_write': undeclared identifier [12.5(IEEE)].
+    repeat ($urandom_range(5, 20)) @(posedge wdt_vintf.wdt_clk);
+                                                             |
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,166|61): illegal location for a hierarchical name (in a package).
+  repeat (200) @(posedge wdt_vintf.wdt_clk);
                                          |
-xmvlog: *E,NOIPRT (../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_multiple_slave_test.sv,13|41): Unrecognized declaration 'apb_virtual_32b_write_multiple_slave_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
-(`include file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_32b_write_multiple_slave_test.sv line 13, file: ../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv line 38)
-package apb_test_pkg;
-                   |
-xmvlog: *W,TSNSPK (../../apb_vip/apb_avip/src/hvl_top/test/apb_test_pkg.sv,8|19): `timescale is not specified for the package.  The default timescale of 1ns/1ns will be assumed for this package.
-	package worklib.apb_test_pkg:sv
-		errors: 15, warnings: 1
-file: ../../apb_vip/apb_avip/src/hdl_top/apb_if/apb_if.sv
-	interface worklib.apb_if:sv
-		errors: 0, warnings: 0
-file: ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv
-	interface worklib.apb_master_driver_bfm:sv
-		errors: 0, warnings: 0
-file: ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv
-	interface worklib.apb_master_monitor_bfm:sv
-		errors: 0, warnings: 0
+xmvlog: *E,ILLHIN (../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences/apb_master_32b_write_seq.sv,170|41): illegal location for a hierarchical name (in a package).
+	package worklib.apb_master_seq_pkg:sv
+		errors: 18, warnings: 2
 file: ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm/apb_master_agent_bfm.sv
 	module worklib.apb_master_agent_bfm:sv
 		errors: 0, warnings: 0
-file: ../../../rtl/watchdog_timer.sv
-	module worklib.watchdog_timer:sv
+file: ../tb/wdt_intf.sv
+	interface worklib.wdt_intf:sv
 		errors: 0, warnings: 0
+file: ../monitor/wdt_monitor.sv
+``ifndef WDT_MONITOR_SV
+ |
+xmvlog: *E,EXPCPD (../monitor/wdt_monitor.sv,1|1): expecting a valid compiler directive [16(IEEE)].
+file: ../scoreboard/wdt_scb.sv
 file: ../tb/wdt_tb_top.sv
-import apb_test_pkg::*;
-                  |
-xmvlog: *E,NOPBIND (../tb/wdt_tb_top.sv,5|18): Package apb_test_pkg could not be bound.
+``ifndef WDT_MONITOR_SV
+ |
+xmvlog: *E,EXPCPD (../monitor/wdt_monitor.sv,1|1): expecting a valid compiler directive [16(IEEE)].
+(`include file: ../monitor/wdt_monitor.sv line 1, file: ../tb/wdt_tb_top.sv line 1)
+  wdt_monitor wdt_mon_h;
+                      |
+xmvlog: *E,NOIPRT (../tb/wdt_tb_top.sv,108|22): Unrecognized declaration 'wdt_mon_h' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+  wdt_scb     wdt_scb_h;
+                      |
+xmvlog: *E,NOIPRT (../tb/wdt_tb_top.sv,109|22): Unrecognized declaration 'wdt_scb_h' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
 	module worklib.wdt_tb_top:sv
-		errors: 1, warnings: 0
+		errors: 2, warnings: 0
 xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/globals given but not used.
-xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hvl_top/test/sequences given but not used.
-xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hvl_top/test/sequences/master_sequences given but not used.
-xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hvl_top/test/sequences/slave_sequences given but not used.
-xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hvl_top/test/virtual_sequences given but not used.
 xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hdl_top/apb_if given but not used.
 xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hdl_top/master_agent_bfm given but not used.
-xmvlog: *W,SPDUSD: Include directory ../../apb_vip/apb_avip/src/hdl_top/slave_agent_bfm given but not used.
 	Total errors/warnings found outside modules and primitives:
-		errors: 0, warnings: 8
+		errors: 1, warnings: 3
 xrun: *E,VLGERR: An error occurred during parsing.  Review the log file for errors with the code *E and fix those identified problems to proceed.  Exiting with code (status 1).
-TOOL:	xrun(64)	20.09-s009: Exiting on Jun 06, 2026 at 01:49:25 IST  (total: 00:00:02)
+TOOL:	xrun(64)	20.09-s009: Exiting on Jun 21, 2026 at 15:04:57 IST  (total: 00:00:01)
