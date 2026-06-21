@@ -1,10 +1,12 @@
+`include "../monitor/wdt_monitor.sv"
+`include "../scoreboard/wdt_scb.sv"
+
+
+
 
 module wdt_tb_top;
 
   import uvm_pkg::*;
-
-  
-  
   `include "uvm_macros.svh"
 
   // -----------------------------------------
@@ -14,67 +16,62 @@ module wdt_tb_top;
   bit preset_n;
 
   bit wdt_clk;
-  bit wdt_rstn;
+//  bit wdt_rstn;
 
   // -----------------------------------------
-  // WDT extra signals
-  // -----------------------------------------
-  logic        cpu_dbg_halt;
-  logic        dbg_freeze;
-  logic [31:0] cpu_commit_pc;
-  logic        cpu_commit_valid;
-
-  logic        wdt_reset;
-  logic        wdt_timeout;
-  logic [1:0]  reset_scope;
-
-  // -----------------------------------------
-  // Clock generation
-  // -----------------------------------------
-  initial begin
-    pclk = 0;
-    forever #5 pclk = ~pclk;       
-  end
-
-  initial begin
-    wdt_clk = 0;
-    forever #10 wdt_clk = ~wdt_clk;
-    end
-
-  // -----------------------------------------
-  // Reset generation
-  // -----------------------------------------
- initial begin
-  preset_n = 1'b1;
-  wdt_rstn = 1'b1;
-
-  #1;
-  preset_n = 1'b0;
-  wdt_rstn = 1'b0;
-
-  repeat(5) @(posedge pclk);
-
-  preset_n = 1'b1;
-  wdt_rstn = 1'b1;
-end
-  // -----------------------------------------
-  // Instantiate APB interface
+  // APB interface
   // -----------------------------------------
   apb_if apb_vif (
     .pclk    (pclk),
     .preset_n(preset_n)
   );
 
-  // -----------------------------------------
-  // Instantiate APB master agent BFM
-  // This connects APB VIP HDL side to interface
+   // -----------------------------------------
+  // APB VIP master BFM
   // -----------------------------------------
   apb_master_agent_bfm apb_master_bfm_h (
     .intf(apb_vif)
   );
 
+
   // -----------------------------------------
-  // Instantiate Watchdog DUT
+
+  // -----------------------------------------
+wdt_intf wdt_vintf(wdt_clk);
+
+  // -----------------------------------------
+  // Clock generation
+  // -----------------------------------------
+  initial begin
+    pclk = 1'b0;
+    forever #5 pclk = ~pclk;
+  end
+
+  initial begin
+    wdt_clk = 1'b0;
+    forever #10 wdt_clk = ~wdt_clk;
+  end
+
+  // -----------------------------------------
+  // Reset generation
+  // -----------------------------------------
+  initial begin
+    preset_n = 1'b1;
+   wdt_vintf.wdt_rstn = 1'b1;
+
+    #1;
+    preset_n = 1'b0;
+    wdt_vintf.wdt_rstn = 1'b0;
+
+    repeat (5) @(posedge pclk);
+
+    preset_n = 1'b1;
+    wdt_vintf.wdt_rstn = 1'b1;
+  end
+
+ 
+  // -----------------------------------------
+  // Watchdog DUT
   // -----------------------------------------
   watchdog_timer #(
     .ADDR_WIDTH(32),
@@ -94,77 +91,90 @@ end
     .pslverr  (apb_vif.pslverr),
 
     .wdt_clk  (wdt_clk),
-    .wdt_rstn (wdt_rstn),
+    .wdt_rstn (wdt_vintf.wdt_rstn),
 
-    .cpu_dbg_halt    (cpu_dbg_halt),
-    .dbg_freeze      (dbg_freeze),
-    .cpu_commit_pc   (cpu_commit_pc),
-    .cpu_commit_valid(cpu_commit_valid),
+    .cpu_dbg_halt     (wdt_vintf.cpu_dbg_halt),
+    .dbg_freeze       (wdt_vintf.dbg_freeze),
+    .cpu_commit_pc    (wdt_vintf.cpu_commit_pc),
+    .cpu_commit_valid (wdt_vintf.cpu_commit_valid),
 
-    .wdt_reset  (wdt_reset),
-    .wdt_timeout(wdt_timeout),
-    .reset_scope(reset_scope)
+    .wdt_reset   (wdt_vintf.wdt_reset),
+    .wdt_timeout (wdt_vintf.wdt_timeout),
+    .reset_scope (wdt_vintf.reset_scope)
   );
-initial begin
-  cpu_dbg_halt = 1'b0;
-  dbg_freeze   = 1'b0;
 
-  #350;
-  cpu_dbg_halt = 1'b0;
-  dbg_freeze   = 1'b0;
-
-  #120;
-  cpu_dbg_halt = 1'b0;
-  dbg_freeze   = 1'b0;
-end
 
 initial begin
-
-cpu_commit_pc=0;
-cpu_commit_valid =0 ;
-
-#50 cpu_commit_pc = 32'h8000_1234 ;
-     cpu_commit_valid= 1 ;
-
-#20 cpu_commit_valid =0 ;
-    
-
-
-
+  uvm_config_db#(virtual wdt_intf)::set(
+    null,
+    "*",
+    "wdt_vintf",
+    wdt_vintf
+  );
 end
+  
 
- 
-   initial begin
+  // -----------------------------------------
+  // -----------------------------------------
+  initial begin
     $shm_open("wave.shm");
     $shm_probe("ACTMF");
   end
+
+  // -----------------------------------------
+  // -----------------------------------------
+  initial begin
+    run_test();
+  end
+
+  initial begin
+  
+  wdt_vintf.cpu_dbg_halt = 1'b0;
+  wdt_vintf.dbg_freeze   = 1'b0;
+
+  wdt_vintf.cpu_commit_pc=0;
+  wdt_vintf.cpu_commit_valid =0 ;
+
+  end
+
+
+  assign wdt_vintf.watchdog_counter = dut.watchdog_counter;
+assign wdt_vintf.timeout_value     = dut.timeout_value;
+assign wdt_vintf.window_value      = dut.window_value;
+assign wdt_vintf.reset_cycles      = dut.reset_cycles;
+assign wdt_vintf.reset_counter     = dut.reset_counter;
+
+assign wdt_vintf.enable            = dut.enable;
+assign wdt_vintf.dbg_freeze_en     = dut.dbg_freeze_en;
+assign wdt_vintf.refresh_valid     = dut.refresh_valid;
+assign wdt_vintf.refresh_error     = dut.refresh_error;
+assign wdt_vintf.window_violation  = dut.window_violation_wdt;
+assign wdt_vintf.timeout_flag      = dut.timeout_flag_wdt;
+assign wdt_vintf.last_pc           = dut.last_pc;
+
+assign wdt_vintf.window_en = dut.window_en;
+
+
+wdt_monitor    wdt_mon_h;
+wdt_scb wdt_scb_h;
+
 initial begin
-run_test();
+  wdt_mon_h = new(wdt_vintf);
+  wdt_scb_h = new(wdt_vintf);
+
+  fork
+    wdt_mon_h.run();
+    wdt_scb_h.run();
+  join_none
 end
 
-always @(posedge pclk) begin
-  if(apb_vif.pselx[0] && apb_vif.penable) begin
-    $display("[%0t] APB ACCESS addr=%h data=%h write=%0b",
-              $time,
-              apb_vif.paddr,
-              apb_vif.pwdata,
-              apb_vif.pwrite);
-  end
+final begin
+  wdt_mon_h.report();
+  wdt_scb_h.report();
 end
 
-always @(posedge pclk) begin
-  if(dut.psel && dut.penable && dut.pwrite) begin
-    $display("[%0t] DUT WRITE addr=%h data=%h",
-              $time,dut.paddr,dut.pwdata);
-  end
-end
+    
 
-
-always @(posedge pclk) begin
-  if(dut.psel && dut.penable && dut.pwrite && dut.paddr==32'h4) begin
-    #5;
-    $display("timeout_value=%0d", dut.timeout_value);
-  end
-end
+  
 
 endmodule
