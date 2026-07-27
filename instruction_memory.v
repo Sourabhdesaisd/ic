@@ -1,6 +1,6 @@
-module 	data_memory #(
+module 	instruction_memory #(
     
-    parameter ADDR_WIDTH = 8
+    parameter ADDR_WIDTH = 32
 
 )
 
@@ -21,8 +21,17 @@ localparam MEM_DEPTH = 2 ** ADDR_WIDTH ;
 reg [31:0] mem [0: MEM_DEPTH-1] ;
 
 
+reg [1023:0] instr_file;
 
 
+initial begin
+    if (!$value$plusargs("instr_file=%s", instr_file))
+        instr_file = "instructions.hex";
+
+    $display("Loading HEX File = %s", instr_file);
+
+    $readmemh(instr_file, mem);
+end
 
 
 always@(posedge clk)
