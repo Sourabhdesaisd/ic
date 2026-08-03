@@ -4,61 +4,45 @@ class int_driver extends uvm_driver #(int_seq_item);
 
   virtual intf vif;
 
-  function new(string name = "int_driver", uvm_component parent);
+  function new(string name = "int_driver",
+               uvm_component parent);
     super.new(name, parent);
   endfunction
 
+
+  //============================================================
+  // Build Phase
+  //============================================================
   function void build_phase(uvm_phase phase);
+
     super.build_phase(phase);
 
-    if (!uvm_config_db#(virtual intf)::get(this, "", "vif", vif)) begin
-      `uvm_fatal("DRV", "Virtual interface not found")
-    end
+    if (!uvm_config_db #(virtual intf)::get(this, "", "vif", vif))
+      `uvm_fatal("INT_DRV", "Virtual Interface not found")
+
   endfunction
 
 
-  // ============================================================
-  // Drive idle values
-  // soc_rst is active-low:
-  // 0 = reset active
-  // 1 = normal operation
-  // ============================================================
+  //============================================================
+  // Drive Idle Values
+  //============================================================
   task drive_idle();
 
     vif.soc_rst <= 1'b1;
 
     vif.ext_int <= 16'h0000;
 
-    vif.soc_mmr_write_en_i   <= 1'b0;
-    vif.soc_mmr_write_addr_i <= 16'h0000;
-    vif.soc_mmr_write_data_i <= 32'h0000_0000;
-
-    vif.soc_mmr_read_en_i    <= 1'b0;
-    vif.soc_mmr_read_addr_i  <= 16'h0000;
-
-    vif.soc_ack_read_valid_en <= 1'b0;
-
-    vif.soc_eoi_valid_i <= 1'b0;
-    vif.soc_eoi_id_i    <= 8'h00;
-
-    vif.active_lvl_pr_i <= 8'h00;
-
-    vif.global_int_enable_bit_i   <= 16'h0000;
-    vif.global_int_enable_valid_i <= 1'b0;
-
     vif.debug_mode_valid_i <= 1'b0;
-    vif.debug_mode_reset_i <= 1'b0;
-    vif.debug_ndm_reset_i  <= 1'b0;
 
   endtask
 
 
-  // ============================================================
-  // Reset transaction
-  // ============================================================
+  //============================================================
+  // Reset
+  //============================================================
   task drive_reset();
 
-    `uvm_info("DRV", "RESET transaction received", UVM_LOW)
+    `uvm_info(get_type_name(),"Driving Reset",UVM_LOW)
 
     drive_idle();
 
@@ -66,78 +50,46 @@ class int_driver extends uvm_driver #(int_seq_item);
 
     vif.soc_rst <= 1'b0;
 
-    repeat (5) @(posedge vif.soc_clk);
+    repeat(5)
+      @(posedge vif.soc_clk);
 
     vif.soc_rst <= 1'b1;
 
-    repeat (3) @(posedge vif.soc_clk);
-
-    `uvm_info("DRV", "RESET done", UVM_LOW)
+    repeat(3)
+      @(posedge vif.soc_clk);
 
   endtask
 
 
- // ============================================================
-// Normal transaction
-// ============================================================
-task drive_normal(int_seq_item tr);
+  //============================================================
+  // Drive External Interrupt
+  //============================================================
+  task drive_normal(int_seq_item tr);
 
-  // ----------------------------------------------------------
-  // Synchronize to DUT clock
-  // ----------------------------------------------------------
-  @(posedge vif.soc_clk);
+    @(posedge vif.soc_clk);
 
-  //-----------------------------------------------------------
-  // Drive complete transaction
-  //-----------------------------------------------------------
-  vif.soc_rst <= 1'b1;
+    vif.soc_rst <= 1'b1;
 
-  vif.ext_int <= tr.ext_int;
+    vif.ext_int <= tr.ext_int;
 
-  vif.soc_mmr_write_en_i   <= tr.soc_mmr_write_en_i;
-  vif.soc_mmr_write_addr_i <= tr.soc_mmr_write_addr_i;
-  vif.soc_mmr_write_data_i <= tr.soc_mmr_write_data_i;
+    vif.debug_mode_valid_i <= tr.debug_mode_valid_i;
 
-  vif.soc_mmr_read_en_i    <= tr.soc_mmr_read_en_i;
-  vif.soc_mmr_read_addr_i  <= tr.soc_mmr_read_addr_i;
+    @(posedge vif.soc_clk);
 
-  vif.global_int_enable_valid_i <= tr.global_int_enable_valid_i;
-  vif.global_int_enable_bit_i   <= tr.global_int_enable_bit_i;
+    // Remove interrupt after one clock
+    vif.ext_int <= 16'h0000;
 
-  vif.soc_ack_read_valid_en <= tr.soc_ack_read_valid_en;
+    vif.debug_mode_valid_i <= 1'b0;
 
-  vif.soc_eoi_valid_i <= tr.soc_eoi_valid_i;
-  vif.soc_eoi_id_i    <= tr.soc_eoi_id_i;
-
-  vif.active_lvl_pr_i <= tr.active_lvl_pr_i;
-
-  vif.debug_mode_valid_i <= tr.debug_mode_valid_i;
-  vif.debug_mode_reset_i <= tr.debug_mode_reset_i;
-  vif.debug_ndm_reset_i  <= tr.debug_ndm_reset_i;
-
-  //-----------------------------------------------------------
-  // Hold transaction for one complete clock
-  //-----------------------------------------------------------
-  @(posedge vif.soc_clk);
-
-  //-----------------------------------------------------------
-  // Deassert one-cycle pulse signals
-  //-----------------------------------------------------------
-  vif.soc_mmr_write_en_i        <= 1'b0;
-  vif.soc_mmr_read_en_i         <= 1'b0;
-  vif.global_int_enable_valid_i <= 1'b0;
-  vif.soc_ack_read_valid_en     <= 1'b0;
-  vif.soc_eoi_valid_i           <= 1'b0;
-
-endtask
+  endtask
 
 
-  // ============================================================
-  // Run phase
-  // ============================================================
+  //============================================================
+  // Run Phase
+  //============================================================
   task run_phase(uvm_phase phase);
 
-    `uvm_info("DRV", "Driver run_phase started", UVM_LOW)
+    super.run_phase(phase);
 
     drive_idle();
 
@@ -145,13 +97,10 @@ endtask
 
       seq_item_port.get_next_item(req);
 
-      if (req.soc_rst == 1'b0) begin
+      if(req.soc_rst == 1'b0)
         drive_reset();
-      end
-      else begin
-        `uvm_info("DRV", "Normal transaction received", UVM_LOW)
+      else
         drive_normal(req);
-      end
 
       seq_item_port.item_done();
 
