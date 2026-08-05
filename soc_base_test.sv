@@ -22,7 +22,6 @@ class soc_base_test extends uvm_test;
     jtag_env env;
 
     int_config int_cfg;
-    ext_interrupt_seq int_seq;
 
     //virtual uart_if vif;
 

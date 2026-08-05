@@ -1,11 +1,11 @@
 class int_sequencer extends uvm_sequencer #(int_seq_item);
 
-    `uvm_component_utils(int_sequencer)
+   `uvm_component_utils(int_sequencer)
 
-    function new(string name,uvm_component parent);
+   function new(string name, uvm_component parent);
 
-        super.new(name,parent);
+      super.new(name,parent);
 
-    endfunction
+   endfunction
 
 endclass

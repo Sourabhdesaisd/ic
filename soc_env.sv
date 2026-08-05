@@ -21,7 +21,8 @@ class soc_env extends uvm_env;
     serial_agent    uart_agent_soc;
     serial_agt_config serial_agt_cfg;
 
-    int_agent int_agent_h;
+    int_agent      int_agent_h;
+
 
     
 //   gpio_agent       gpio_agent_h;
@@ -42,10 +43,8 @@ class soc_env extends uvm_env;
 
       uart_agent_soc = serial_agent::type_id::create("uart_agent_soc", this);
 
-        int_seqr = int_sequencer::type_id::create("int_seqr", this);
-
-        int_drv  = int_driver::type_id::create("int_drv", this);
-
+      int_agent_h = int_agent::type_id::create("int_agent_h",this);
+        
      //TODO update for uart and spi
         // gpio_agent_h =
      //    gpio_agent::type_id::create(
