@@ -22,6 +22,7 @@ class soc_base_test extends uvm_test;
     jtag_env env;
 
     int_config int_cfg;
+    ext_interrupt_seq int_seq;
 
     //virtual uart_if vif;
 
@@ -38,7 +39,7 @@ class soc_base_test extends uvm_test;
 
         int_cfg = int_config::type_id::create("int_cfg");
 
-        uvm_config_db#(int_config)::set(this,"*","cfg",int_cfg);
+        uvm_config_db#(int_config)::set(this,"*","int_cfg",int_cfg);
         
 
 
