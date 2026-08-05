@@ -112,7 +112,7 @@ spi_if spi_vif();
 uart_if uart_vif(tb.u_pinaka.axi2apb_instance.pclk,power_on_rst);
 jtag_if vif();
 
-intf int_vif(tb.u_pinaka.axi2apb_instance.pclk,power_on_rst);
+intf int_vif(tb.u_pinaka.axi2apb_instance.pclk);
 
 //Pinaka top Instantiation
 pinaka u_pinaka(
