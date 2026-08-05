@@ -201,3 +201,39 @@ class soc_mmu_pte_test extends uvm_test;
 
 endclass
 
+
+///////
+
+
+class soc_interrupt_test extends soc_base_test;
+
+   `uvm_component_utils(soc_interrupt_test)
+
+   ext_interrupt_seq int_seq;
+
+   function new(string name="soc_interrupt_test",
+                uvm_component parent);
+      super.new(name,parent);
+   endfunction
+
+   task run_phase(uvm_phase phase);
+   phase.raise_objection(this); 
+    
+   boot_flow();
+   #1ms;
+   handshake_from_sv_to_c=1;
+   $display($time,"sent handshake from sv to c"); 
+   wait(handshake_from_c_to_sv == 1);
+   handshake_from_c_to_sv = 0;   
+   $display("Handshake Received from C to SV\n");
+
+   int_seq = ext_interrupt_seq::type_id::create("int_seq");
+   int_seq.start(env_h.int_seqr); 
+    
+   phase.drop_objection(this);
+
+endtask
+
+endclass
+
+      
