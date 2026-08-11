@@ -134,139 +134,139 @@
 //------------------------------------------------------------
 // Global Registers
 //------------------------------------------------------------
-#define INT_CFG_ADDR                  0x0000
-#define INT_INFO_ADDR                 0x0004
-#define INT_NXTP_ADDR                 0x0008
-#define INT_ACK_ADDR                  0x000C
-#define INT_EOI_ADDR                  0x0010
+#define INT_CFG_ADDR                  0x000
+#define INT_INFO_ADDR                 0x004
+#define INT_NXTP_ADDR                 0x008
+#define INT_ACK_ADDR                  0x00C
+#define INT_EOI_ADDR                  0x010
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ0 Registers
-//------------------------------------------------------------
-#define IRQ0_PENDING_ADDR             0x0014
-#define IRQ0_ENABLE_ADDR              0x0018
-#define IRQ0_ATTR_ADDR                0x001C
-#define IRQ0_CTL_ADDR                 0x0020
+//-----------------------------------------------------------
+#define IRQ0_PENDING_ADDR             0x014
+#define IRQ0_ENABLE_ADDR              0x018
+#define IRQ0_ATTR_ADDR                0x01C
+#define IRQ0_CTL_ADDR                 0x020
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ1 Registers
-//------------------------------------------------------------
-#define IRQ1_PENDING_ADDR             0x0024
-#define IRQ1_ENABLE_ADDR              0x0028
-#define IRQ1_ATTR_ADDR                0x002C
-#define IRQ1_CTL_ADDR                 0x0030
+//-----------------------------------------------------------
+#define IRQ1_PENDING_ADDR             0x024
+#define IRQ1_ENABLE_ADDR              0x028
+#define IRQ1_ATTR_ADDR                0x02C
+#define IRQ1_CTL_ADDR                 0x030
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ2 Registers
-//------------------------------------------------------------
-#define IRQ2_PENDING_ADDR             0x0034
-#define IRQ2_ENABLE_ADDR              0x0038
-#define IRQ2_ATTR_ADDR                0x003C
-#define IRQ2_CTL_ADDR                 0x0040
+//-----------------------------------------------------------
+#define IRQ2_PENDING_ADDR             0x034
+#define IRQ2_ENABLE_ADDR              0x038
+#define IRQ2_ATTR_ADDR                0x03C
+#define IRQ2_CTL_ADDR                 0x040
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ3 Registers
-//------------------------------------------------------------
-#define IRQ3_PENDING_ADDR             0x0044
-#define IRQ3_ENABLE_ADDR              0x0048
-#define IRQ3_ATTR_ADDR                0x004C
-#define IRQ3_CTL_ADDR                 0x0050
+//-----------------------------------------------------------
+#define IRQ3_PENDING_ADDR             0x044
+#define IRQ3_ENABLE_ADDR              0x048
+#define IRQ3_ATTR_ADDR                0x04C
+#define IRQ3_CTL_ADDR                 0x050
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ4 Registers
-//------------------------------------------------------------
-#define IRQ4_PENDING_ADDR             0x0054
-#define IRQ4_ENABLE_ADDR              0x0058
-#define IRQ4_ATTR_ADDR                0x005C
-#define IRQ4_CTL_ADDR                 0x0060
+//-----------------------------------------------------------
+#define IRQ4_PENDING_ADDR             0x054
+#define IRQ4_ENABLE_ADDR              0x058
+#define IRQ4_ATTR_ADDR                0x05C
+#define IRQ4_CTL_ADDR                 0x060
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ5 Registers
-//------------------------------------------------------------
-#define IRQ5_PENDING_ADDR             0x0064
-#define IRQ5_ENABLE_ADDR              0x0068
-#define IRQ5_ATTR_ADDR                0x006C
-#define IRQ5_CTL_ADDR                 0x0070
+//-----------------------------------------------------------
+#define IRQ5_PENDING_ADDR             0x064
+#define IRQ5_ENABLE_ADDR              0x068
+#define IRQ5_ATTR_ADDR                0x06C
+#define IRQ5_CTL_ADDR                 0x070
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ6 Registers
-//------------------------------------------------------------
-#define IRQ6_PENDING_ADDR             0x0074
-#define IRQ6_ENABLE_ADDR              0x0078
-#define IRQ6_ATTR_ADDR                0x007C
-#define IRQ6_CTL_ADDR                 0x0080
+//-----------------------------------------------------------
+#define IRQ6_PENDING_ADDR             0x074
+#define IRQ6_ENABLE_ADDR              0x078
+#define IRQ6_ATTR_ADDR                0x07C
+#define IRQ6_CTL_ADDR                 0x080
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ7 Registers
-//------------------------------------------------------------
-#define IRQ7_PENDING_ADDR             0x0084
-#define IRQ7_ENABLE_ADDR              0x0088
-#define IRQ7_ATTR_ADDR                0x008C
-#define IRQ7_CTL_ADDR                 0x0090
+//-----------------------------------------------------------
+#define IRQ7_PENDING_ADDR             0x084
+#define IRQ7_ENABLE_ADDR              0x088
+#define IRQ7_ATTR_ADDR                0x08C
+#define IRQ7_CTL_ADDR                 0x090
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ8 Registers
-//------------------------------------------------------------
-#define IRQ8_PENDING_ADDR             0x0094
-#define IRQ8_ENABLE_ADDR              0x0098
-#define IRQ8_ATTR_ADDR                0x009C
-#define IRQ8_CTL_ADDR                 0x00A0
+//-----------------------------------------------------------
+#define IRQ8_PENDING_ADDR             0x094
+#define IRQ8_ENABLE_ADDR              0x098
+#define IRQ8_ATTR_ADDR                0x09C
+#define IRQ8_CTL_ADDR                 0x0A0
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ9 Registers
-//------------------------------------------------------------
-#define IRQ9_PENDING_ADDR             0x00A4
-#define IRQ9_ENABLE_ADDR              0x00A8
-#define IRQ9_ATTR_ADDR                0x00AC
-#define IRQ9_CTL_ADDR                 0x00B0
+//-----------------------------------------------------------
+#define IRQ9_PENDING_ADDR             0x0A4
+#define IRQ9_ENABLE_ADDR              0x0A8
+#define IRQ9_ATTR_ADDR                0x0AC
+#define IRQ9_CTL_ADDR                 0x0B0
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ10 Registers
-//------------------------------------------------------------
-#define IRQ10_PENDING_ADDR            0x00B4
-#define IRQ10_ENABLE_ADDR             0x00B8
-#define IRQ10_ATTR_ADDR               0x00BC
-#define IRQ10_CTL_ADDR                0x00C0
+//-----------------------------------------------------------
+#define IRQ10_PENDING_ADDR            0x0B4
+#define IRQ10_ENABLE_ADDR             0x0B8
+#define IRQ10_ATTR_ADDR               0x0BC
+#define IRQ10_CTL_ADDR                0x0C0
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ11 Registers
-//------------------------------------------------------------
-#define IRQ11_PENDING_ADDR            0x00C4
-#define IRQ11_ENABLE_ADDR             0x00C8
-#define IRQ11_ATTR_ADDR               0x00CC
-#define IRQ11_CTL_ADDR                0x00D0
+//-----------------------------------------------------------
+#define IRQ11_PENDING_ADDR            0x0C4
+#define IRQ11_ENABLE_ADDR             0x0C8
+#define IRQ11_ATTR_ADDR               0x0CC
+#define IRQ11_CTL_ADDR                0x0D0
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ12 Registers
-//------------------------------------------------------------
-#define IRQ12_PENDING_ADDR            0x00D4
-#define IRQ12_ENABLE_ADDR             0x00D8
-#define IRQ12_ATTR_ADDR               0x00DC
-#define IRQ12_CTL_ADDR                0x00E0
+//-----------------------------------------------------------
+#define IRQ12_PENDING_ADDR            0x0D4
+#define IRQ12_ENABLE_ADDR             0x0D8
+#define IRQ12_ATTR_ADDR               0x0DC
+#define IRQ12_CTL_ADDR                0x0E0
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ13 Registers
-//------------------------------------------------------------
-#define IRQ13_PENDING_ADDR            0x00E4
-#define IRQ13_ENABLE_ADDR             0x00E8
-#define IRQ13_ATTR_ADDR               0x00EC
-#define IRQ13_CTL_ADDR                0x00F0
+//-----------------------------------------------------------
+#define IRQ13_PENDING_ADDR            0x0E4
+#define IRQ13_ENABLE_ADDR             0x0E8
+#define IRQ13_ATTR_ADDR               0x0EC
+#define IRQ13_CTL_ADDR                0x0F0
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ14 Registers
-//------------------------------------------------------------
-#define IRQ14_PENDING_ADDR            0x00F4
-#define IRQ14_ENABLE_ADDR             0x00F8
-#define IRQ14_ATTR_ADDR               0x00FC
-#define IRQ14_CTL_ADDR                0x0100
+//-----------------------------------------------------------
+#define IRQ14_PENDING_ADDR            0x0F4
+#define IRQ14_ENABLE_ADDR             0x0F8
+#define IRQ14_ATTR_ADDR               0x0FC
+#define IRQ14_CTL_ADDR                0x100
 
-//------------------------------------------------------------
+//-----------------------------------------------------------
 // IRQ15 Registers
-//------------------------------------------------------------
-#define IRQ15_PENDING_ADDR            0x0104
-#define IRQ15_ENABLE_ADDR             0x0108
-#define IRQ15_ATTR_ADDR               0x010C
-#define IRQ15_CTL_ADDR                0x0110
+//-----------------------------------------------------------
+#define IRQ15_PENDING_ADDR            0x104
+#define IRQ15_ENABLE_ADDR             0x108
+#define IRQ15_ATTR_ADDR               0x10C
+#define IRQ15_CTL_ADDR                0x110
 
 
 //============================================================
@@ -539,6 +539,24 @@
 #define IRQ15_ENABLE_REG_ADDR      (INT_BASE_ADDR + IRQ15_ENABLE_ADDR)
 #define IRQ15_ATTR_REG_ADDR        (INT_BASE_ADDR + IRQ15_ATTR_ADDR)
 #define IRQ15_CTL_REG_ADDR         (INT_BASE_ADDR + IRQ15_CTL_ADDR)
+
+
+
+
+//////////////INTRRUPT  INVALID  TEST ////////
+//
+//////invalid  addr 
+
+#define INT_DATA_MEM_ADDR_ERROR         0x00000004
+
+//#define WDT_BASE_ADDR            0x00087000
+    ////invalid  addr for wdt 
+//
+
+#define INT_DATA_MEM_ADDR_SLVERROR         0x00087003
+
+//#define INT_MEM_PAGE_FAULT_ADDR            PTE_bASE addr 
+
 
 //========================================================
 //  Common MMIO APIs
