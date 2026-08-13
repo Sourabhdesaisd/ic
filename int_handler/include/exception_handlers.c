@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "peripheral.h"
 
 /*
  * Replace these registers and clear values with the actual SoC details.
@@ -14,6 +15,7 @@
 //#define IRQ5_CLEAR_REG       REG32(IRQ5_CLEAR_REG_ADDR)
 //#define IRQ6_CLEAR_REG       REG32(IRQ6_CLEAR_REG_ADDR)
 
+volatile uint32_t irq10_handler_seen = 0;
 
 /*
  * Read the machine exception program counter.
@@ -183,6 +185,10 @@ void irq10_handler(void)
      * Clear the slave address-decode error source.
      */
     //IRQ6_CLEAR_REG = IRQ6_CLEAR_VALUE;
+    irq10_handler_seen = 1;
+    info_print(0xA010);
+    mmio_write(INT_EOI_REG, IRQ10_ID);
+    
 
     /*
      * Avoid executing the same invalid load/store again.

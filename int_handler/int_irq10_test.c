@@ -4,7 +4,15 @@ int main()
 {
     info_print(0x00000);
     
-    
+    uint32_t int_info;
+    uint32_t nxtp_value;
+    uint32_t mepc_value;
+    uint32_t irq10_handler_seen;
+
+    irq10_handler_seen = 0;
+
+    info_print(0x1000);
+ 
     //-------------------------------------------------------
     // Enable Global Interrupt (mstatus.MIE = bit3)
     //-------------------------------------------------------
@@ -56,6 +64,28 @@ int main()
     mmio_write(IRQ10_CTL_REG_ADDR, 0x000000D3);
 
     info_print(0x2222);
+
+
+     /*
+     * ==========================================================
+     * READ INTERRUPT CONTROLLER INFORMATION
+     * ==========================================================
+     *
+     * Optional debug information.
+     */
+
+    int_info = mmio_read(INT_INFO_REG);
+
+    info_print(int_info);
+
+
+    /*
+     * Read next pending/selected interrupt.
+     */
+    nxtp_value = mmio_read(INT_NXTP_REG);
+
+    info_print(nxtp_value);
+
 
     //--------------------------------------------------
     // Inform SV that configuration is complete
