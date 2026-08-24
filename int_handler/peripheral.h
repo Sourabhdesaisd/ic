@@ -191,24 +191,74 @@ uint32_t uart_read_fcr  (void);
 #define GPIO_PINMUX0_ADDR  0x4C
 #define GPIO_PINMUX1_ADDR  0x50
 
-#define PINMUX_PERIPHERAL  0x1
+#define PINMUX_PRIMARY    0x0
+#define PINMUX_PERIPHERAL 0x1
 
 //UART PINMUX CFG
-#define UART_PINMUX_CFG  ((PINMUX_PERIPHERAL << 0)  | \
-                          (PINMUX_PERIPHERAL << 2)) 
+#define UART_PINMUX_CFG  ((PINMUX_PRIMARY << 6)  | \
+                          (PINMUX_PRIMARY << 9)) 
 
 
 //SPI PINMUX CFG
-#define SPI_PINMUX_CFG   ((PINMUX_PERIPHERAL << 4)  | \
-                          (PINMUX_PERIPHERAL << 6)  | \
-                          (PINMUX_PERIPHERAL << 8) | \
-                          (PINMUX_PERIPHERAL << 10))
+#define SPI_PINMUX_CFG   ((PINMUX_PRIMARY << 12)  | \
+                          (PINMUX_PRIMARY << 15)  | \
+                          (PINMUX_PRIMARY << 18) | \
+                          (PINMUX_PRIMARY << 21))
 
 //I2C PINMUX CFG
-#define I2C_PINMUX_CFG   ((PINMUX_PERIPHERAL << 12) | \
-                          (PINMUX_PERIPHERAL << 14) | \
-                          (PINMUX_PERIPHERAL << 16))
+#define I2C_PINMUX_CFG   ((PINMUX_PERIPHERAL << 0) | \
+                          (PINMUX_PERIPHERAL << 3))
                       
+//=====================================================
+// clk_rst addresses
+//=====================================================
+#define CLK_RST_BASE_ADDR       0x00081000
+
+#define CLK_DIV_PER_ADDR        0x00
+#define CLK_DIV_DEBUG_ADDR      0X04
+#define RST_CTRL_ADDR           0x08
+#define CLK_RST_STATUS_ADDR     0X0c
+
+//CLK_DIV_PER_ADDR(0x00)
+#define PER_DIV_ENABLE          (1<<31)
+#define PER_DIV_RATIO_MASK      (0x03)
+#define PER_DIV_RATIO_0         (0X00)
+#define PER_DIV_RATIO_1         (0X01)
+#define PER_DIV_RATIO_2         (0X02)
+#define PER_DIV_RATIO_3         (0x03)
+#define PER_DIV_RATIO_4         (0x04)
+#define PER_DIV_RATIO_5         (0x05)
+#define PER_DIV_RATIO_6         (0x06)
+#define PER_DIV_RATIO_7         (0x07)
+
+//CLK_DIV_DEBUG_ADDR(0x04)
+#define DEBUG_DIV_ENABLE        (1<<31)
+#define DEBUG_DIV_RATIO_MASK    (0X03)
+#define DEBUG_DIV_RATIO_0       (0X00)
+#define DEBUG_DIV_RATIO_1       (0X01)
+#define DEBUG_DIV_RATIO_2       (0X02)
+#define DEBUG_DIV_RATIO_3       (0x03)
+#define DEBUG_DIV_RATIO_4       (0x04)
+#define DEBUG_DIV_RATIO_5       (0x05)
+#define DEBUG_DIV_RATIO_6       (0x06)
+#define DEBUG_DIV_RATIO_7       (0x07)
+
+//RST_CTRL_ADDR(0x08)
+#define SOC_RSTN_BIT             (1<<0)
+#define PER_RSTN_BIT             (1<<1)
+#define DEBUG_RSTN_BIT           (1<<2)
+#define I2C_RSTN_BIT           (1<<3)
+#define UART_RSTN_BIT           (1<<4)
+#define SPI_RSTN_BIT           (1<<5)
+
+//STATUS_ADDR(RO-0x0c)
+#define STATUS_DEBUG_SEL     (1<<0)
+#define STATUS_SOC_RSTN         (1<<1)
+#define STATUS_PER_RSTN         (1<<2)
+#define STATUS_DEBUG_RSTN       (1<<3)
+#define STATUS_CLK_DIV_PER      (1<<4)
+#define STATUS_CLK_DIV_DEBUG    (1<<5)
+
 
 
 

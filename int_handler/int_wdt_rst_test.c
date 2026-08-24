@@ -2,37 +2,26 @@
 
 int main()
 {
-    info_print(0x0000);
+    info_print(0x00000);
 
-    //----------------------------------------------------------
-    // Initialize interrupt trap handler
-    //----------------------------------------------------------
-
- //   interrupt_init();
-
-    //----------------------------------------------------------
-    // Enable global machine interrupt
-    //
-    // mstatus.MIE = bit 3
-    //----------------------------------------------------------
-
+    //------------------------------------------------------------
+    // Enable Global Machine Interrupt
+    //------------------------------------------------------------
     asm volatile (
         "li t0, 0x8\n"
         "csrrs x0, mstatus, t0\n"
     );
 
-    //----------------------------------------------------------
-    // Enable machine external interrupt
-    //
-    // mie.MEIE = bit 11
-    //----------------------------------------------------------
-
+    //------------------------------------------------------------
+    // Enable Machine External Interrupt
+    //------------------------------------------------------------
     asm volatile (
-        "li t0, 0x800\n"
+        "li t0, 0xFC000000\n"
         "csrrs x0, mie, t0\n"
     );
 
     info_print(0x1111);
+
 
     //----------------------------------------------------------
     // Configure Interrupt Controller IRQ0
@@ -76,7 +65,7 @@ int main()
     mmio_write(
         WDT_BASE_ADDR + WDT_CTRL_ADDR,
         WDT_CTRL_ENABLE |
-        WDT_CTRL_RESET_EN
+        WDT_CTRL_RESET_EN | WDT_SCOPE_CLUSTER
     );
 
     info_print(0x4444);

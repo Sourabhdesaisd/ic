@@ -6,7 +6,6 @@ int main()
 
     //------------------------------------------------------------
     // Enable Global Machine Interrupt
-    // mstatus.MIE = bit 3
     //------------------------------------------------------------
     asm volatile (
         "li t0, 0x8\n"
@@ -15,14 +14,40 @@ int main()
 
     //------------------------------------------------------------
     // Enable Machine External Interrupt
-    // mie.MEIE = bit 11
     //------------------------------------------------------------
     asm volatile (
-        "li t0, 0x800\n"
+        "li t0, 0xFC000000\n"
         "csrrs x0, mie, t0\n"
     );
 
     info_print(0x1111);
+
+
+    /*
+     * ==========================================================
+     * GPIO PINMUX CONFIGURATION
+     * ==========================================================
+     *
+     * Existing configuration from your test.
+     *
+     * GPIO PINMUX0 = 150994944
+     * GPIO PINMUX1 = 585        = 0x00000249
+     *
+     * This configuration is required for the GPIO interrupt
+     * path used by the external interrupt.
+     */
+
+    mmio_write(
+        GPIO_BASE_ADDR + GPIO_PINMUX0_ADDR,
+        150994944U
+    );
+
+    mmio_write(
+        GPIO_BASE_ADDR + GPIO_PINMUX1_ADDR,
+        585U
+    );
+
+    info_print(0x2000);
 
     //------------------------------------------------------------
     // Enable IRQ14
