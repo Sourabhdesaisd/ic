@@ -258,7 +258,7 @@ int main(void)
 
     info_print(0x3010);
 
-    wait_for_handshake_from_sv(1);
+    wait_for_handshake_from_sv();
 
 
     /* ============================================================

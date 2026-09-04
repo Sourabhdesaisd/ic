@@ -444,7 +444,6 @@ class soc_interrupt_test extends soc_base_test;
     `uvm_component_utils(soc_interrupt_test)
 
     ext_interrupt_seq int_seq;
-
     string c_test_name;
 
 
@@ -470,15 +469,13 @@ class soc_interrupt_test extends soc_base_test;
 
 
         // =====================================================
-        // Read C_TEST from command line
+        // Read C_TEST
         // =====================================================
 
         c_test_name = "";
 
         if (!$value$plusargs("C_TEST=%s", c_test_name)) begin
-
             c_test_name = "";
-
         end
 
 
@@ -498,11 +495,6 @@ class soc_interrupt_test extends soc_base_test;
 
         // =====================================================
         // FIRST HANDSHAKE FROM C
-        //
-        // C:
-        //
-        //     send_handshake_to_sv(1);
-        //
         // =====================================================
 
         $display("----------------------------------------------------");
@@ -510,53 +502,105 @@ class soc_interrupt_test extends soc_base_test;
                  $time);
         $display("----------------------------------------------------");
 
-
         wait (handshake_from_c_to_sv == 1);
-
 
         $display("%0t: FIRST handshake received from C",
                  $time);
-
 
         handshake_from_c_to_sv = 0;
 
 
         // =====================================================
-        // FIRST INTERRUPT SEQUENCE
+        // INT CONFIG RETENTION TEST
         //
-        // Common flow for interrupt tests.
+        // IMPORTANT:
+        //
+        // Do NOT execute the common interrupt sequence first.
+        //
+        // This test has its own interrupt sequence.
         // =====================================================
 
-        $display("----------------------------------------------------");
-        $display("%0t: Starting FIRST interrupt sequence",
-                 $time);
-        $display("----------------------------------------------------");
+        if (c_test_name == "int_config_retention_test") begin
+
+            $display("====================================================");
+            $display("%0t: Running int_config_retention_test",
+                     $time);
+            $display("====================================================");
 
 
-        int_seq =
-            ext_interrupt_seq::type_id::create("int_seq_first");
+            // -------------------------------------------------
+            // Generate IRQ11 -> IRQ12 -> IRQ10
+            //
+            // ONLY ONCE
+            // -------------------------------------------------
+
+            int_seq =
+                ext_interrupt_seq::type_id::create(
+                    "retention_int_seq"
+                );
 
 
-        int_seq.start(
-            env_h.int_agent_h.seqr
-        );
+            $display("----------------------------------------------------");
+            $display("%0t: Starting retention interrupt sequence",
+                     $time);
+            $display("----------------------------------------------------");
 
 
-        $display("----------------------------------------------------");
-        $display("%0t: FIRST interrupt sequence completed",
-                 $time);
-        $display("----------------------------------------------------");
+            int_seq.start(
+                env_h.int_agent_h.seqr
+            );
+
+
+            $display("----------------------------------------------------");
+            $display("%0t: Retention interrupt sequence completed",
+                     $time);
+            $display("----------------------------------------------------");
+
+
+            // -------------------------------------------------
+            // Tell C that ISR service is complete
+            // -------------------------------------------------
+
+            handshake_from_sv_to_c = 1;
+
+
+            $display("----------------------------------------------------");
+            $display("%0t: Sent handshake SV -> C",
+                     $time);
+            $display("----------------------------------------------------");
+
+
+            // -------------------------------------------------
+            // Wait for C to finish configuration-retention
+            // checks and send final handshake
+            // -------------------------------------------------
+
+            $display("----------------------------------------------------");
+            $display("%0t: Waiting for FINAL handshake from C",
+                     $time);
+            $display("----------------------------------------------------");
+
+
+            wait (handshake_from_c_to_sv == 2);
+
+
+            handshake_from_c_to_sv = 0;
+          //  handshake_from_sv_to_c = 0;
+
+
+            $display("====================================================");
+            $display("%0t: int_config_retention_test FLOW DONE",
+                     $time);
+            $display("====================================================");
+
+        end
 
 
         // =====================================================
         // INT PRIORITY UPDATE TEST
         // =====================================================
 
-// =========================================================
-        // PRIORITY UPDATE TEST
-        // =========================================================
-
-        if (c_test_name == "int_priority_update_test") begin
+        else if (c_test_name == "int_priority_update_test") begin
 
             $display("====================================================");
             $display("%0t: Running int_priority_update_test",
@@ -564,29 +608,21 @@ class soc_interrupt_test extends soc_base_test;
             $display("====================================================");
 
 
-            // =====================================================
+            // -------------------------------------------------
             // PHASE 1
-            //
             // Generate IRQ10 + IRQ12
-            //
-            // GPIO = 001010
-            //
-            // IRQ10 priority = 5
-            // IRQ12 priority = 9
-            //
-            // Expected:
-            //
-            //     IRQ12 wins
-            //
-            // =====================================================
+            // -------------------------------------------------
 
             int_seq =
-            ext_interrupt_seq::type_id::create("int_seq_first");
+                ext_interrupt_seq::type_id::create(
+                    "priority_int_seq"
+                );
 
 
-        int_seq.start(
-            env_h.int_agent_h.seqr
-        );
+            int_seq.start(
+                env_h.int_agent_h.seqr
+            );
+
 
             $display("----------------------------------------------------");
             $display("%0t: FIRST PRIORITY SEQUENCE COMPLETED",
@@ -596,60 +632,43 @@ class soc_interrupt_test extends soc_base_test;
             $display("----------------------------------------------------");
 
 
-            // =====================================================
-            // SEND HANDSHAKE TO C
-            //
-            // C will now execute:
-            //
-            //     IRQ10 priority 5 -> 15
-            //
-            // =====================================================
+            // -------------------------------------------------
+            // Tell C to update IRQ10 priority
+            // -------------------------------------------------
 
             handshake_from_sv_to_c = 1;
+
 
             $display("----------------------------------------------------");
             $display("%0t: HANDSHAKE SENT FROM SV TO C",
                      $time);
-            $display("%0t: C can now update IRQ10 priority",
-                     $time);
             $display("----------------------------------------------------");
 
 
-            // =====================================================
-            // WAIT FOR C AFTER PRIORITY UPDATE
-            // =====================================================
+            // -------------------------------------------------
+            // Wait for C priority update
+            // -------------------------------------------------
 
             wait (handshake_from_c_to_sv == 1);
 
             handshake_from_c_to_sv = 0;
 
+
             $display("----------------------------------------------------");
             $display("%0t: SECOND HANDSHAKE RECEIVED FROM C",
                      $time);
-            $display("%0t: IRQ10 priority should now be 15",
-                     $time);
             $display("----------------------------------------------------");
 
 
-            // =====================================================
-            // UPDATED ARBITRATION
+            // -------------------------------------------------
+            // Updated arbitration
             //
-            // IMPORTANT:
-            //
-            // Do NOT generate another GPIO sequence here.
-            //
-            // C says both IRQs are already pending.
-            //
-            // We only need to check that arbitration changed:
-            //
-            //     IRQ10 = 15
-            //     IRQ12 = 9
+            // IRQ10 = 15
+            // IRQ12 = 9
             //
             // Expected:
-            //
-            //     IRQ10 wins
-            //
-            // =====================================================
+            // IRQ10 wins
+            // -------------------------------------------------
 
             $display("====================================================");
             $display("%0t: UPDATED PRIORITY ARBITRATION",
@@ -663,10 +682,6 @@ class soc_interrupt_test extends soc_base_test;
             $display("====================================================");
 
 
-            // =====================================================
-            // Clear SV -> C handshake
-            // =====================================================
-
             handshake_from_sv_to_c = 0;
 
 
@@ -679,58 +694,16 @@ class soc_interrupt_test extends soc_base_test;
 
 
         // =====================================================
-        // INT CONFIG RETENTION TEST
-        // =====================================================
-
-        else if (c_test_name == "int_config_retention_test") begin
-        
-            $display("====================================================");
-            $display("%0t: Running int_config_retention_test specific flow",
-                     $time);
-            $display("====================================================");
-        
-            wait (handshake_from_c_to_sv == 1);
-            handshake_from_c_to_sv = 0;
-            
-        
-                    
-             int_seq =
-            ext_interrupt_seq::type_id::create("int_seq_first");
-
-
-        int_seq.start(
-            env_h.int_agent_h.seqr
-        );
-        
-                 
-                                
-            handshake_from_sv_to_c = 1;
-        
-                    
-            wait (handshake_from_c_to_sv == 1);
-        
-            handshake_from_c_to_sv = 0;
-        
-         //   handshake_from_sv_to_c = 0;
-                
-        end
-
-
-        // =====================================================
         // REPEATED IRQ TEST
         // =====================================================
 
         else if (c_test_name == "int_repeated_irq_test") begin
 
             $display("====================================================");
-            $display("%0t: Running int_repeated_irq_test specific flow",
+            $display("%0t: Running int_repeated_irq_test",
                      $time);
             $display("====================================================");
 
-
-            // -------------------------------------------------
-            // Run repeated interrupt sequence
-            // -------------------------------------------------
 
             int_seq =
                 ext_interrupt_seq::type_id::create(
@@ -748,23 +721,38 @@ class soc_interrupt_test extends soc_base_test;
                      $time);
             $display("----------------------------------------------------");
 
-
         end
 
 
         // =====================================================
-        // NORMAL INTERRUPT TEST
+        // ALL OTHER INTERRUPT TESTS
+        //
+        // Common first interrupt sequence
         // =====================================================
 
         else begin
 
             $display("====================================================");
-            $display("%0t: Normal interrupt test flow only",
+            $display("%0t: Running common interrupt sequence",
                      $time);
-            $display("%0t: C_TEST_NAME = [%s]",
-                     $time,
-                     c_test_name);
             $display("====================================================");
+
+
+            int_seq =
+                ext_interrupt_seq::type_id::create(
+                    "int_seq_first"
+                );
+
+
+            int_seq.start(
+                env_h.int_agent_h.seqr
+            );
+
+
+            $display("----------------------------------------------------");
+            $display("%0t: FIRST interrupt sequence completed",
+                     $time);
+            $display("----------------------------------------------------");
 
         end
 
@@ -788,7 +776,6 @@ class soc_interrupt_test extends soc_base_test;
     endtask
 
 endclass
-
 
 //////wdt_halt_resume
 class soc_wdt_halt_resume_test extends uvm_test;
