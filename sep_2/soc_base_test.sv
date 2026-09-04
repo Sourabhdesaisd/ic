@@ -581,11 +581,11 @@ class soc_interrupt_test extends soc_base_test;
             $display("----------------------------------------------------");
 
 
-            wait (handshake_from_c_to_sv == 2);
+            wait (handshake_from_c_to_sv == 1);
 
 
             handshake_from_c_to_sv = 0;
-          //  handshake_from_sv_to_c = 0;
+            handshake_from_sv_to_c = 0;
 
 
             $display("====================================================");
