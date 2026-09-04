@@ -2,7 +2,7 @@
 
 
 /* ============================================================
- * TC049 : ISR Configuration Retention
+ *  ISR Configuration Retention
  *
  * Verify that interrupt configuration is not corrupted by
  * interrupt service.
@@ -24,26 +24,12 @@
  *         CTL    = 0x93
  *         Priority = 9
  *
+ * Expected interrupt service order:
  *
- * Test flow:
+ *     IRQ11 -> IRQ12 -> IRQ10
  *
- *     1. Program IRQ10/11/12.
- *     2. Read and save configuration.
- *     3. Generate multiple interrupts.
- *     4. Service IRQ11 -> IRQ12 -> IRQ10.
- *     5. Read configuration again.
- *     6. Compare actual values with the values programmed
- *        before ISR execution.
- *
- *
- * Expected:
- *
- *     ISR execution must not modify:
- *
- *         IRQ enable configuration
- *         IRQ control configuration
- *
- *     unless software intentionally changes them.
+ * The configuration of all three interrupts must remain
+ * unchanged after ISR execution.
  *
  * ============================================================ */
 
@@ -67,13 +53,14 @@
 #define EXP_GPIO_PINMUX1       585U
 
 
-
 int main(void)
 {
     uint32_t actual_value;
+
     uint32_t irq10_enable_before;
     uint32_t irq11_enable_before;
     uint32_t irq12_enable_before;
+
     uint32_t irq10_ctl_before;
     uint32_t irq11_ctl_before;
     uint32_t irq12_ctl_before;
@@ -101,9 +88,7 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
-     *
-     *     0xFC000000
+     * mie = 0xFC000000
      * ============================================================ */
 
     asm volatile (
@@ -134,9 +119,7 @@ int main(void)
 
 
     /* ============================================================
-     * ============================================================
      * IRQ10 CONFIGURATION
-     * ============================================================
      * ============================================================ */
 
     mmio_write(
@@ -181,9 +164,7 @@ int main(void)
 
 
     /* ============================================================
-     * READ CONFIGURATION BEFORE ISR
-     *
-     * Save the configuration that was programmed.
+     * SAVE CONFIGURATION BEFORE ISR
      * ============================================================ */
 
     irq10_enable_before =
@@ -207,7 +188,7 @@ int main(void)
 
 
     /* ============================================================
-     * Verify configuration before interrupt service
+     * VERIFY CONFIGURATION BEFORE ISR
      * ============================================================ */
 
     if (irq10_enable_before != EXP_ENABLE_VALUE)
@@ -254,46 +235,45 @@ int main(void)
 
 
     /* ============================================================
-     * Normal Execution Before ISR
+     * Inform SV to generate interrupt sources
+     *
+     * SV should generate:
+     *
+     *     IRQ11 -> IRQ12 -> IRQ10
+     *
+     * based on programmed priorities.
      * ============================================================ */
 
     info_print(0x3000);
 
-
-   
     send_handshake_to_sv(1);
 
 
+    /* ============================================================
+     * Wait for SV to complete ISR service
+     *
+     * SV will send handshake_from_sv_to_c after the
+     * interrupt sequence is completed.
+     * ============================================================ */
+
     info_print(0x3010);
+
+    wait_for_handshake_from_sv(1);
 
 
     /* ============================================================
-     * ISR SERVICE
-     *
-     * Expected handler sequence:
-     *
-     *     0xA011
-     *     0xA012
-     *     0xA010
-     *
-     * No interrupt configuration is modified inside the
-     * handlers.
+     * ISR SERVICE COMPLETE
      * ============================================================ */
 
     info_print(0x3020);
 
-	wait_for_handshake_from_sv();
-    
-
-    info_print(0x3333);
 
     /* ============================================================
      * READ CONFIGURATION AFTER ISR
      * ============================================================ */
 
-    actual_value = mmio_read(
-        IRQ10_ENABLE_REG_ADDR
-    );
+    actual_value =
+        mmio_read(IRQ10_ENABLE_REG_ADDR);
 
     if (actual_value != irq10_enable_before)
         error_print(20);
@@ -301,9 +281,8 @@ int main(void)
         info_print(20);
 
 
-    actual_value = mmio_read(
-        IRQ11_ENABLE_REG_ADDR
-    );
+    actual_value =
+        mmio_read(IRQ11_ENABLE_REG_ADDR);
 
     if (actual_value != irq11_enable_before)
         error_print(21);
@@ -311,9 +290,8 @@ int main(void)
         info_print(21);
 
 
-    actual_value = mmio_read(
-        IRQ12_ENABLE_REG_ADDR
-    );
+    actual_value =
+        mmio_read(IRQ12_ENABLE_REG_ADDR);
 
     if (actual_value != irq12_enable_before)
         error_print(22);
@@ -322,12 +300,11 @@ int main(void)
 
 
     /* ============================================================
-     * Verify CONTROL registers after ISR
+     * VERIFY CONTROL REGISTERS AFTER ISR
      * ============================================================ */
 
-    actual_value = mmio_read(
-        IRQ10_CTL_REG_ADDR
-    );
+    actual_value =
+        mmio_read(IRQ10_CTL_REG_ADDR);
 
     if (actual_value != irq10_ctl_before)
         error_print(23);
@@ -335,9 +312,8 @@ int main(void)
         info_print(23);
 
 
-    actual_value = mmio_read(
-        IRQ11_CTL_REG_ADDR
-    );
+    actual_value =
+        mmio_read(IRQ11_CTL_REG_ADDR);
 
     if (actual_value != irq11_ctl_before)
         error_print(24);
@@ -345,9 +321,8 @@ int main(void)
         info_print(24);
 
 
-    actual_value = mmio_read(
-        IRQ12_CTL_REG_ADDR
-    );
+    actual_value =
+        mmio_read(IRQ12_CTL_REG_ADDR);
 
     if (actual_value != irq12_ctl_before)
         error_print(25);
@@ -362,22 +337,28 @@ int main(void)
     info_print(0x3030);
 
 
-    /*
-     * If configuration was retained, all six checks above
-     * should pass.
-     */
-
-
     /* ============================================================
      * Test Complete
      * ============================================================ */
 
     info_print(0x3333);
 
-    send_handshake_to_sv(1);
-    
+
+    /* ============================================================
+     * Final handshake to SV
+     *
+     * This tells SV that:
+     *
+     *     - ISR completed
+     *     - configuration checks completed
+     *     - C test is done
+     * ============================================================ */
+
+    send_handshake_to_sv(2);
+
 
     info_print(0x7049);
 
 
+    return 0;
 }

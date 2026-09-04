@@ -445,9 +445,12 @@ class soc_interrupt_test extends soc_base_test;
 
     ext_interrupt_seq int_seq;
 
-    // Local variable specifically for this test
     string c_test_name;
 
+
+    // =========================================================
+    // Constructor
+    // =========================================================
 
     function new(string name = "soc_interrupt_test",
                  uvm_component parent);
@@ -457,221 +460,301 @@ class soc_interrupt_test extends soc_base_test;
     endfunction
 
 
+    // =========================================================
+    // RUN PHASE
+    // =========================================================
+
     task run_phase(uvm_phase phase);
 
         phase.raise_objection(this);
 
 
-        // =========================================================
-        // Read C_TEST directly from command line
-        // =========================================================
+        // =====================================================
+        // Read C_TEST from command line
+        // =====================================================
 
         c_test_name = "";
 
         if (!$value$plusargs("C_TEST=%s", c_test_name)) begin
+
             c_test_name = "";
+
         end
 
 
         $display("====================================================");
         $display("%0t: SOC INTERRUPT TEST START", $time);
-        $display("%0t: C_TEST_NAME = [%s]", $time, c_test_name);
+        $display("%0t: C_TEST_NAME = [%s]",
+                 $time, c_test_name);
         $display("====================================================");
 
 
-        // =========================================================
-        // Boot flow
-        // =========================================================
+        // =====================================================
+        // BOOT FLOW
+        // =====================================================
 
         boot_flow();
 
 
-        // =========================================================
-        // FIRST INTERRUPT
-        // Common flow for all interrupt tests
-        // =========================================================
+        // =====================================================
+        // FIRST HANDSHAKE FROM C
+        //
+        // C:
+        //
+        //     send_handshake_to_sv(1);
+        //
+        // =====================================================
 
         $display("----------------------------------------------------");
-        $display("%0t: Waiting for first handshake from C",
+        $display("%0t: Waiting for FIRST handshake from C",
                  $time);
         $display("----------------------------------------------------");
+
 
         wait (handshake_from_c_to_sv == 1);
 
-        $display("%0t: First handshake received from C",
+
+        $display("%0t: FIRST handshake received from C",
                  $time);
-
-
-        int_seq = ext_interrupt_seq::type_id::create("int_seq");
-
-        int_seq.start(env_h.int_agent_h.seqr);
 
 
         handshake_from_c_to_sv = 0;
 
-        $display("%0t: First interrupt sequence completed",
+
+        // =====================================================
+        // FIRST INTERRUPT SEQUENCE
+        //
+        // Common flow for interrupt tests.
+        // =====================================================
+
+        $display("----------------------------------------------------");
+        $display("%0t: Starting FIRST interrupt sequence",
                  $time);
+        $display("----------------------------------------------------");
 
 
-        // =========================================================
+        int_seq =
+            ext_interrupt_seq::type_id::create("int_seq_first");
+
+
+        int_seq.start(
+            env_h.int_agent_h.seqr
+        );
+
+
+        $display("----------------------------------------------------");
+        $display("%0t: FIRST interrupt sequence completed",
+                 $time);
+        $display("----------------------------------------------------");
+
+
+        // =====================================================
         // INT PRIORITY UPDATE TEST
+        // =====================================================
+
+// =========================================================
+        // PRIORITY UPDATE TEST
         // =========================================================
 
         if (c_test_name == "int_priority_update_test") begin
 
             $display("====================================================");
-            $display("%0t: Running int_priority_update_test specific flow",
+            $display("%0t: Running int_priority_update_test",
                      $time);
             $display("====================================================");
 
 
-            // -----------------------------------------------------
-            // SECOND HANDSHAKE FROM C
-            // -----------------------------------------------------
+            // =====================================================
+            // PHASE 1
+            //
+            // Generate IRQ10 + IRQ12
+            //
+            // GPIO = 001010
+            //
+            // IRQ10 priority = 5
+            // IRQ12 priority = 9
+            //
+            // Expected:
+            //
+            //     IRQ12 wins
+            //
+            // =====================================================
 
-            wait (handshake_from_c_to_sv == 1);
+            int_seq =
+            ext_interrupt_seq::type_id::create("int_seq_first");
 
-            $display("%0t: Second handshake received from C",
+
+        int_seq.start(
+            env_h.int_agent_h.seqr
+        );
+
+            $display("----------------------------------------------------");
+            $display("%0t: FIRST PRIORITY SEQUENCE COMPLETED",
                      $time);
-
-
-            // -----------------------------------------------------
-            // SECOND INTERRUPT SEQUENCE
-            // -----------------------------------------------------
-
-            int_seq = ext_interrupt_seq::type_id::create("int_seq");
-
-            int_seq.start(env_h.int_agent_h.seqr);
-
-
-            handshake_from_c_to_sv = 0;
-
-            $display("%0t: Second interrupt sequence completed",
+            $display("%0t: Expected highest priority IRQ = IRQ12",
                      $time);
+            $display("----------------------------------------------------");
 
 
-            // -----------------------------------------------------
-            // SEND HANDSHAKE FROM SV TO C
-            // -----------------------------------------------------
+            // =====================================================
+            // SEND HANDSHAKE TO C
+            //
+            // C will now execute:
+            //
+            //     IRQ10 priority 5 -> 15
+            //
+            // =====================================================
 
             handshake_from_sv_to_c = 1;
 
-            $display("%0t: Sent handshake from SV to C",
+            $display("----------------------------------------------------");
+            $display("%0t: HANDSHAKE SENT FROM SV TO C",
                      $time);
+            $display("%0t: C can now update IRQ10 priority",
+                     $time);
+            $display("----------------------------------------------------");
 
 
-            // -----------------------------------------------------
-            // WAIT FOR C RESPONSE
-            // -----------------------------------------------------
+            // =====================================================
+            // WAIT FOR C AFTER PRIORITY UPDATE
+            // =====================================================
 
             wait (handshake_from_c_to_sv == 1);
 
             handshake_from_c_to_sv = 0;
 
-            $display("%0t: Response received from C",
+            $display("----------------------------------------------------");
+            $display("%0t: SECOND HANDSHAKE RECEIVED FROM C",
                      $time);
-
-
-            // -----------------------------------------------------
-            // THIRD INTERRUPT SEQUENCE
-            // -----------------------------------------------------
-
-            int_seq = ext_interrupt_seq::type_id::create("int_seq");
-
-            int_seq.start(env_h.int_agent_h.seqr);
-
-
-            $display("%0t: Third interrupt sequence completed",
+            $display("%0t: IRQ10 priority should now be 15",
                      $time);
+            $display("----------------------------------------------------");
 
 
-            // -----------------------------------------------------
+            // =====================================================
+            // UPDATED ARBITRATION
+            //
+            // IMPORTANT:
+            //
+            // Do NOT generate another GPIO sequence here.
+            //
+            // C says both IRQs are already pending.
+            //
+            // We only need to check that arbitration changed:
+            //
+            //     IRQ10 = 15
+            //     IRQ12 = 9
+            //
+            // Expected:
+            //
+            //     IRQ10 wins
+            //
+            // =====================================================
+
+            $display("====================================================");
+            $display("%0t: UPDATED PRIORITY ARBITRATION",
+                     $time);
+            $display("%0t: IRQ10 priority = 15",
+                     $time);
+            $display("%0t: IRQ12 priority = 9",
+                     $time);
+            $display("%0t: Expected highest priority IRQ = IRQ10",
+                     $time);
+            $display("====================================================");
+
+
+            // =====================================================
             // Clear SV -> C handshake
-            // -----------------------------------------------------
+            // =====================================================
 
             handshake_from_sv_to_c = 0;
 
 
             $display("====================================================");
-            $display("%0t: int_priority_update_test specific flow DONE",
+            $display("%0t: int_priority_update_test FLOW DONE",
                      $time);
             $display("====================================================");
 
         end
 
 
-        // =========================================================
+        // =====================================================
         // INT CONFIG RETENTION TEST
-        // =========================================================
+        // =====================================================
 
         else if (c_test_name == "int_config_retention_test") begin
-
+        
             $display("====================================================");
             $display("%0t: Running int_config_retention_test specific flow",
                      $time);
             $display("====================================================");
-
-
-            // -----------------------------------------------------
-            // SECOND HANDSHAKE FROM C
-            // -----------------------------------------------------
-
+        
             wait (handshake_from_c_to_sv == 1);
-
-            $display("%0t: Second handshake received from C",
-                     $time);
-
-
-            // -----------------------------------------------------
-            // INTERRUPT SEQUENCE
-            // -----------------------------------------------------
-
-            int_seq = ext_interrupt_seq::type_id::create("int_seq");
-
-            int_seq.start(env_h.int_agent_h.seqr);
-
-
             handshake_from_c_to_sv = 0;
+            
+        
+                    
+             int_seq =
+            ext_interrupt_seq::type_id::create("int_seq_first");
 
-            $display("%0t: Interrupt sequence completed",
-                     $time);
 
-
-            // -----------------------------------------------------
-            // SEND HANDSHAKE TO C
-            // -----------------------------------------------------
-
+        int_seq.start(
+            env_h.int_agent_h.seqr
+        );
+        
+                 
+                                
             handshake_from_sv_to_c = 1;
-
-            $display("%0t: Sent handshake from SV to C",
-                     $time);
-
-
-            // -----------------------------------------------------
-            // WAIT FOR FINAL C HANDSHAKE
-            // -----------------------------------------------------
-
+        
+                    
             wait (handshake_from_c_to_sv == 1);
-
+        
             handshake_from_c_to_sv = 0;
+        
+         //   handshake_from_sv_to_c = 0;
+                
+        end
 
-            handshake_from_sv_to_c = 0;
 
-            $display("%0t: Final handshake received from C",
-                     $time);
+        // =====================================================
+        // REPEATED IRQ TEST
+        // =====================================================
 
+        else if (c_test_name == "int_repeated_irq_test") begin
 
             $display("====================================================");
-            $display("%0t: int_config_retention_test specific flow DONE",
+            $display("%0t: Running int_repeated_irq_test specific flow",
                      $time);
             $display("====================================================");
+
+
+            // -------------------------------------------------
+            // Run repeated interrupt sequence
+            // -------------------------------------------------
+
+            int_seq =
+                ext_interrupt_seq::type_id::create(
+                    "int_seq_repeated"
+                );
+
+
+            int_seq.start(
+                env_h.int_agent_h.seqr
+            );
+
+
+            $display("----------------------------------------------------");
+            $display("%0t: Repeated interrupt sequence completed",
+                     $time);
+            $display("----------------------------------------------------");
+
 
         end
 
 
-        // =========================================================
+        // =====================================================
         // NORMAL INTERRUPT TEST
-        // =========================================================
+        // =====================================================
 
         else begin
 
@@ -679,17 +762,19 @@ class soc_interrupt_test extends soc_base_test;
             $display("%0t: Normal interrupt test flow only",
                      $time);
             $display("%0t: C_TEST_NAME = [%s]",
-                     $time, c_test_name);
+                     $time,
+                     c_test_name);
             $display("====================================================");
 
         end
 
 
-        // =========================================================
+        // =====================================================
         // Allow simulation to continue
-        // =========================================================
+        // =====================================================
 
         #2ms;
+
 
         phase.drop_objection(this);
 
@@ -699,10 +784,81 @@ class soc_interrupt_test extends soc_base_test;
                  $time);
         $display("====================================================");
 
+
     endtask
 
 endclass
 
+
+//////wdt_halt_resume
+class soc_wdt_halt_resume_test extends uvm_test;
+    `uvm_component_utils(soc_wdt_halt_resume_test)
+
+    jtag_env env;
+
+    function new(string name,uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+    function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        env  = jtag_env::type_id::create("env", this);
+    endfunction
+
+    task boot_flow();
+        boot_flow_seq seq;
+        seq = boot_flow_seq::type_id::create("seq");
+        seq.start(env.agent.seqr);
+    endtask
+
+    task run_phase(uvm_phase phase);
+
+        boot_flow_seq boot_seq;
+	haltreq_seq  halt_seq;
+	resumereq_seq resume_seq;
+
+	phase.raise_objection(this); 
+	begin
+
+        	boot_seq = boot_flow_seq::type_id::create("boot_seq");
+        	boot_seq.start(env.agent.seqr);
+		
+        
+        //wait_for_handshake();
+	        wait(handshake_from_c_to_sv==1);
+	        handshake_from_c_to_sv=0;
+	        $display("Handshake Received from C to SV\n");
+
+	//	#100ns;
+        
+        // Halt running CPU
+		halt_seq = haltreq_seq::type_id::create("halt_seq");
+		halt_seq.start(env.agent.seqr);
+	
+	#1ms;
+
+    
+	 	//  Resume CPU
+		resume_seq = resumereq_seq::type_id::create("resume_seq");
+		resume_seq.start(env.agent.seqr);
+
+        	//Send handshake to C
+	        handshake_from_sv_to_c=1;
+		$display("Handshake Send to C from SV\n");
+
+         //wait_for_handshake();
+	        wait(handshake_from_c_to_sv==1);
+	        handshake_from_c_to_sv=0;
+	        $display("Handshake Received from C to SV\n");
+
+
+	       
+	end
+	#4ms;
+    phase.drop_objection(this);
+    endtask
+
+endclass
 
 
 /// Added by Darshan
@@ -746,7 +902,7 @@ class uart_base_test extends soc_base_test;
 
     function void end_of_elaboration_phase(uvm_phase phase);
        `uvm_info(get_type_name,"end_of_elaboration Phase of Test",UVM_LOW);    
-        uvm_top.print_topology();
+       // uvm_top.print_topology();
     endfunction
 
  
@@ -1476,6 +1632,11 @@ class uart_memory_test extends soc_base_test;
 function new(string name,uvm_component parent);
     super.new(name,parent);
 endfunction
+
+   virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    uvm_config_db#(bit)::set(this,"*","is_error_test",1'b1);
+    endfunction
 
 task run_phase(uvm_phase phase);
      uart_mem_seq    uart_seq;
@@ -2484,6 +2645,39 @@ endfunction
     phase.phase_done.set_drain_time(this,800ns);	
 
     seq = read_multiple_imem_seq::type_id::create("seq");
+
+    seq.start(env.agent.seqr);
+
+    phase.drop_objection(this);
+
+  endtask
+
+endclass
+
+class dtmcs_tdo_read_test extends uvm_test;
+
+  `uvm_component_utils(dtmcs_tdo_read_test)
+
+  jtag_env env;
+
+function new(string name="dtmcs_tdo_read_test",uvm_component parent=null);
+super.new(name,parent);
+endfunction
+
+
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    env = jtag_env::type_id::create("env",this);
+  endfunction
+
+  task run_phase(uvm_phase phase);
+
+    dtmcs_tdo_read_seq seq;
+
+    phase.raise_objection(this);
+    phase.phase_done.set_drain_time(this,800ns);	
+
+    seq = dtmcs_tdo_read_seq::type_id::create("seq");
 
     seq.start(env.agent.seqr);
 
@@ -3981,70 +4175,7 @@ class  ace_unsprt_test extends uvm_test;
 
 endclass
 
-//////wdt_halt_resume
-class soc_wdt_halt_resume_test extends uvm_test;
-    `uvm_component_utils(soc_mmu_pte_test)
 
-    jtag_env env;
-
-    function new(string name,uvm_component parent);
-        super.new(name,parent);
-    endfunction
-
-    function void build_phase(uvm_phase phase);
-        super.build_phase(phase);
-        env  = jtag_env::type_id::create("env", this);
-    endfunction
-
-    task boot_flow();
-        boot_flow_seq seq;
-        seq = boot_flow_seq::type_id::create("seq");
-        seq.start(env.agent.seqr);
-    endtask
-
-    task run_phase(uvm_phase phase);
-
-        boot_flow_seq boot_seq;
-	haltreq_seq  halt_seq;
-	resumereq_seq resume_seq;
-
-	phase.raise_objection(this); 
-	begin
-
-        	boot_seq = boot_flow_seq::type_id::create("boot_seq");
-        	boot_seq.start(env.agent.seqr);
-		
-        
-        //wait_for_handshake();
-	        wait(handshake_from_c_to_sv==1);
-	        handshake_from_c_to_sv=0;
-	        $display("Handshake Received from C to SV\n");
-
-		// Halt running CPU
-		halt_seq = haltreq_seq::type_id::create("halt_seq");
-		halt_seq.start(env.agent.seqr);
-	
-	
-	 	//  Resume CPU
-		resume_seq = resumereq_seq::type_id::create("resume_seq");
-		resume_seq.start(env.agent.seqr);
-
-        	//Send handshake to C
-	        handshake_from_sv_to_c=1;
-		$display("Handshake Send to C from SV\n");
-
-         //wait_for_handshake();
-	        wait(handshake_from_c_to_sv==1);
-	        handshake_from_c_to_sv=0;
-	        $display("Handshake Received from C to SV\n");
-
-
-	       
-	end
-	phase.drop_objection(this);
-    endtask
-
-endclass
 
 
 
