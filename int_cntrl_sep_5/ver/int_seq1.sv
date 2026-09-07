@@ -15,7 +15,7 @@ class zic_comman_base_seq extends uvm_sequence #(int_seq_item);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
   endfunction
 
   task send_tr(
@@ -24,7 +24,7 @@ class zic_comman_base_seq extends uvm_sequence #(int_seq_item);
     bit [15:0] ext_int,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
     bit rd_en,
     bit [15:0] rd_addr,
     bit eoi_valid,
@@ -32,12 +32,13 @@ class zic_comman_base_seq extends uvm_sequence #(int_seq_item);
     bit [15:0] enable_bits,
     bit enable_valid,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
@@ -50,23 +51,20 @@ class zic_comman_base_seq extends uvm_sequence #(int_seq_item);
     tr.soc_mmr_read_en_i   = rd_en;
     tr.soc_mmr_read_addr_i = rd_addr;
 
-    tr.soc_ack_read_valid_en = ack_valid;
-
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
+
+    tr.active_lvl_pr_i = active_lvl;
 
     tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.active_lvl_pr_i = active_lvl;
-
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
   endtask
+
 
   task idle(
     int n,
@@ -75,77 +73,101 @@ class zic_comman_base_seq extends uvm_sequence #(int_seq_item);
   );
 
     repeat (n) begin
-      send_tr("idle",
-              1'b1, ext,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0, 16'h0000,
-              1'b0, 8'h00,
-              en, 1'b0,
-              8'h00,
-              1'b0);
+
+      send_tr(
+        "idle",
+        1'b1,
+        ext,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        en,
+        1'b0,
+
+        8'h00,
+        1'b0
+      );
+
     end
 
   endtask
 
- 
-  task write_ctl(int irq, bit [31:0] data);
 
-  send_tr($sformatf("write32_irq%0d", irq),
-          1'b1,
-          16'h0000,
+  task write_ctl(
+    int irq,
+    bit [7:0] data
+  );
 
-          1'b1,
-          ctl_addr(irq),
-          data,              // Full 32-bit value
+    send_tr(
+      $sformatf("write_irq%0d_ctl", irq),
 
-          1'b0,
-          16'h0000,
+      1'b1,
+      16'h0000,
 
-          1'b0,
-          8'h00,
+      1'b1,
+      ctl_addr(irq),
+      data,
 
-          VALID_IRQ_MASK,
-          1'b0,
+      1'b0,
+      16'h0000,
 
-          8'h00,
-          1'b0);
+      1'b0,
+      8'h00,
 
-endtask
+      VALID_IRQ_MASK,
+      1'b0,
+
+      8'h00,
+      1'b0
+    );
+
+  endtask
+
 
   task read_ctl(int irq);
 
-  send_tr($sformatf("read_ctl_irq%0d", irq),
-          1'b1,
-          16'h0000,
+    send_tr(
+      $sformatf("read_ctl_irq%0d", irq),
 
-          // No write
-          1'b0,
-          16'h0000,
-          32'h0000_0000,
+      1'b1,
+      16'h0000,
 
-          // Read
-          1'b1,
-          ctl_addr(irq),
+      1'b0,
+      16'h0000,
+      8'h00,
 
-          1'b0,
-          8'h00,
+      1'b1,
+      ctl_addr(irq),
 
-          VALID_IRQ_MASK,
-          1'b0,
+      1'b0,
+      8'h00,
 
-          8'h00,
-          1'b0);
+      VALID_IRQ_MASK,
+      1'b0,
 
-    endtask
+      8'h00,
+      1'b0
+    );
+
+  endtask
 
 endclass
+
 
 
 // ============================================================
 // RANDOM INTERRUPT STORM SEQUENCE
 // 16 INTERRUPT VERSION
 // ============================================================
-class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
+class random_interrupt_storm_seq extends zic_comman_base_seq;
 
   `uvm_object_utils(random_interrupt_storm_seq)
 
@@ -160,27 +182,27 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
 
   int unsigned storm_cycles = 1000;
 
+
   constraint ctl_c {
-    foreach (irq_ctl[i]) {
+    foreach (irq_ctl[i])
       irq_ctl[i] inside {[8'h01:8'hFF]};
-    }
   }
 
   constraint cov_bias_c {
 
     irq_count dist {
-      1      := 35,
-      2      := 35,
-      [3:5]  := 20,
-      [6:10] := 10,
-      [11:16]:= 10
+      1       := 35,
+      2       := 35,
+      [3:5]   := 20,
+      [6:10]  := 10,
+      [11:16] := 10
     };
 
     irq_group dist {
-      0 := 35,   // irq 0 to 3
-      1 := 35,   // irq 4 to 7
-      2 := 25,   // irq 8 to 11
-      3 := 25    // irq 12 to 15
+      0 := 35,
+      1 := 35,
+      2 := 25,
+      3 := 25
     };
 
     prio_group dist {
@@ -188,38 +210,52 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
       1 := 35,
       2 := 30
     };
+
   }
+
 
   function new(string name = "random_interrupt_storm_seq");
     super.new(name);
   endfunction
 
+
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
   endfunction
+
 
   function automatic int rand_irq_from_group(int group_id);
 
     case (group_id)
+
       0: return $urandom_range(0, 3);
       1: return $urandom_range(4, 7);
       2: return $urandom_range(8, 11);
       3: return $urandom_range(12, 15);
-      default: return $urandom_range(0, 15);
+
+      default:
+        return $urandom_range(0, 15);
+
     endcase
 
   endfunction
+
 
   function automatic bit [7:0] rand_ctl_from_group(int group_id);
 
     case (group_id)
+
       0: return $urandom_range(8'h01, 8'h3F);
       1: return $urandom_range(8'h40, 8'h9F);
       2: return $urandom_range(8'hA0, 8'hFF);
-      default: return $urandom_range(8'h01, 8'hFF);
+
+      default:
+        return $urandom_range(8'h01, 8'hFF);
+
     endcase
 
   endfunction
+
 
   function automatic bit higher_priority(
     bit [7:0] cur_ctl,
@@ -232,7 +268,7 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
       return 1'b1;
 
     if ((cur_ctl[7:5] == best_ctl[7:5]) &&
-        (cur_ctl[4:2] >  best_ctl[4:2]))
+        (cur_ctl[4:2] > best_ctl[4:2]))
       return 1'b1;
 
     if ((cur_ctl[7:5] == best_ctl[7:5]) &&
@@ -244,13 +280,14 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
 
   endfunction
 
+
   function automatic int find_best_id(bit [15:0] mask);
 
     int best_id;
     bit best_found;
     bit [7:0] best_ctl;
 
-    best_id    = 0;
+    best_id    = -1;
     best_found = 1'b0;
     best_ctl   = 8'h00;
 
@@ -259,25 +296,32 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
       if (mask[i]) begin
 
         if (!best_found) begin
+
           best_found = 1'b1;
           best_id    = i;
           best_ctl   = irq_ctl[i];
+
         end
-        else if (higher_priority(irq_ctl[i], i, best_ctl, best_id)) begin
+        else if (higher_priority(
+                   irq_ctl[i],
+                   i,
+                   best_ctl,
+                   best_id
+                 )) begin
+
           best_id  = i;
           best_ctl = irq_ctl[i];
+
         end
 
       end
 
     end
 
-    if (!best_found)
-      return -1;
-
     return best_id;
 
   endfunction
+
 
   task body();
 
@@ -287,305 +331,618 @@ class random_interrupt_storm_seq extends uvm_sequence #(int_seq_item);
 
     int best_id;
     int wait_cycles;
+
     bit [7:0] active_lvl_rand;
 
+
     if (!this.randomize()) begin
-      `uvm_fatal("RAND_STORM_SEQ", "Initial randomization failed")
+
+      `uvm_fatal(
+        "RAND_STORM_SEQ",
+        "Initial randomization failed"
+      )
+
     end
 
-    `uvm_info("RAND_STORM_SEQ",
-      $sformatf("Starting 16-interrupt random storm, cycles=%0d", storm_cycles),
-      UVM_LOW)
 
-    // Reset active-low: 0 = reset active
-    send_tr("reset",
-            1'b0, 16'h0000,
-            1'b0, 16'h0000, 32'h0000_0000,
-            1'b0, 16'h0000,
-            1'b0, 8'h00,
-            16'h0000, 1'b0,
-            8'h00,
-            1'b0,
-            1'b0, 1'b0, 1'b0);
+    `uvm_info(
+      "RAND_STORM_SEQ",
+      $sformatf(
+        "Starting 16-interrupt random storm, cycles=%0d",
+        storm_cycles
+      ),
+      UVM_LOW
+    )
+
+
+    // --------------------------------------------------------
+    // RESET
+    // --------------------------------------------------------
+
+    send_tr(
+      "reset",
+
+      1'b0,
+      16'h0000,
+
+      1'b0,
+      16'h0000,
+      8'h00,
+
+      1'b0,
+      16'h0000,
+
+      1'b0,
+      8'h00,
+
+      16'h0000,
+      1'b0,
+
+      8'h00,
+      1'b0
+    );
+
 
     repeat (3) begin
-      send_tr("post_reset_idle",
-              1'b1, 16'h0000,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0, 16'h0000,
-              1'b0, 8'h00,
-              16'h0000, 1'b0,
-              8'h00,
-              1'b0,
-              1'b0, 1'b0, 1'b0);
+
+      send_tr(
+        "post_reset_idle",
+
+        1'b1,
+        16'h0000,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        16'h0000,
+        1'b0,
+
+        8'h00,
+        1'b0
+      );
+
     end
 
-    // Initial CTL programming for IRQ0 to IRQ15
+
+    // --------------------------------------------------------
+    // INITIAL CTL PROGRAMMING
+    // --------------------------------------------------------
+
     for (int i = 0; i < NUM_IRQ; i++) begin
 
-      send_tr($sformatf("mmr_write_irq%0d_ctl", i),
-              1'b1, 16'h0000,
-              1'b1, ctl_addr(i), {24'h0, irq_ctl[i]},
-              1'b0, 16'h0000,
-              1'b0, 8'h00,
-              16'h0000, 1'b0,
-              8'h00,
-              1'b0,
-              1'b0, 1'b0, 1'b0);
+      irq_ctl[i] = $urandom_range(
+        8'h20,
+        8'hFF
+      );
+
+      // CTL0-CTL9 are read-only in the register map.
+      // CTL10-CTL15 are writable.
+
+      if (i >= 10) begin
+
+        send_tr(
+          $sformatf(
+            "mmr_write_irq%0d_ctl",
+            i
+          ),
+
+          1'b1,
+          16'h0000,
+
+          1'b1,
+          ctl_addr(i),
+          irq_ctl[i],
+
+          1'b0,
+          16'h0000,
+
+          1'b0,
+          8'h00,
+
+          16'h0000,
+          1'b0,
+
+          8'h00,
+          1'b0
+        );
+
+      end
+      else begin
+
+        send_tr(
+          $sformatf(
+            "mmr_read_irq%0d_ctl",
+            i
+          ),
+
+          1'b1,
+          16'h0000,
+
+          1'b0,
+          16'h0000,
+          8'h00,
+
+          1'b1,
+          ctl_addr(i),
+
+          1'b0,
+          8'h00,
+
+          16'h0000,
+          1'b0,
+
+          8'h00,
+          1'b0
+        );
+
+      end
 
     end
+
 
     repeat (5) begin
-      send_tr("initial_ctl_settle",
-              1'b1, 16'h0000,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0, 16'h0000,
-              1'b0, 8'h00,
-              16'h0000, 1'b0,
-              8'h00,
-              1'b0,
-              1'b0, 1'b0, 1'b0);
+
+      send_tr(
+        "initial_ctl_settle",
+
+        1'b1,
+        16'h0000,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        16'h0000,
+        1'b0,
+
+        8'h00,
+        1'b0
+      );
+
     end
+
+
+    // --------------------------------------------------------
+    // ENABLE ALL INTERRUPTS
+    // --------------------------------------------------------
+
+    send_tr(
+      "enable_irq_0_to_15",
+
+      1'b1,
+      16'h0000,
+
+      1'b0,
+      16'h0000,
+      8'h00,
+
+      1'b0,
+      16'h0000,
+
+      1'b0,
+      8'h00,
+
+      VALID_IRQ_MASK,
+      1'b1,
+
+      8'h00,
+      1'b0
+    );
+
+
+    repeat (5) begin
+
+      send_tr(
+        "settle_after_enable",
+
+        1'b1,
+        16'h0000,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        VALID_IRQ_MASK,
+        1'b0,
+
+        8'h00,
+        1'b0
+      );
+
+    end
+
+
+    // --------------------------------------------------------
+    // RANDOM INTERRUPT STORM
+    // --------------------------------------------------------
 
     repeat (storm_cycles) begin
 
       if (!this.randomize()) begin
-        `uvm_fatal("RAND_STORM_SEQ", "Loop randomization failed")
+
+        `uvm_fatal(
+          "RAND_STORM_SEQ",
+          "Loop randomization failed"
+        )
+
       end
+
 
       ext_mask = 16'h0000;
       en_mask  = 16'h0000;
 
-      // Re-program CTL values
-      for (int i = 0; i < NUM_IRQ; i++) begin
+
+      // ------------------------------------------------------
+      // Re-program writable CTL registers
+      // ------------------------------------------------------
+
+      for (int i = 10; i < NUM_IRQ; i++) begin
 
         irq_ctl[i] = rand_ctl_from_group(prio_group);
 
-        send_tr($sformatf("cov_mmr_write_irq%0d_ctl", i),
-                1'b1, 16'h0000,
-                1'b1, ctl_addr(i), {24'h0, irq_ctl[i]},
-                1'b0, 16'h0000,
-                1'b0, 8'h00,
-                16'h0000, 1'b0,
-                8'h00,
-                1'b0,
-                1'b0, 1'b0, 1'b0);
+        send_tr(
+          $sformatf(
+            "cov_mmr_write_irq%0d_ctl",
+            i
+          ),
+
+          1'b1,
+          16'h0000,
+
+          1'b1,
+          ctl_addr(i),
+          irq_ctl[i],
+
+          1'b0,
+          16'h0000,
+
+          1'b0,
+          8'h00,
+
+          16'h0000,
+          1'b0,
+
+          8'h00,
+          1'b0
+        );
 
       end
+
 
       repeat (8) begin
-        send_tr("settle_after_ctl_programming",
-                1'b1, 16'h0000,
-                1'b0, 16'h0000, 32'h0000_0000,
-                1'b0, 16'h0000,
-                1'b0, 8'h00,
-                16'h0000, 1'b0,
-                8'h00,
-                1'b0,
-                1'b0, 1'b0, 1'b0);
+
+        send_tr(
+          "settle_after_ctl_programming",
+
+          1'b1,
+          16'h0000,
+
+          1'b0,
+          16'h0000,
+          8'h00,
+
+          1'b0,
+          16'h0000,
+
+          1'b0,
+          8'h00,
+
+          16'h0000,
+          1'b0,
+
+          8'h00,
+          1'b0
+        );
+
       end
 
-      // Generate active/enabled IRQs
+
+      // ------------------------------------------------------
+      // Generate active and enabled interrupts
+      // ------------------------------------------------------
+
       repeat (irq_count) begin
+
         int irq;
-        irq = rand_irq_from_group(irq_group);
+
+        irq = rand_irq_from_group(
+          irq_group
+        );
+
         ext_mask[irq] = 1'b1;
         en_mask[irq]  = 1'b1;
+
       end
+
 
       if ((ext_mask & en_mask) == 16'h0000) begin
+
         int irq;
-        irq = rand_irq_from_group(irq_group);
+
+        irq = rand_irq_from_group(
+          irq_group
+        );
+
         ext_mask[irq] = 1'b1;
         en_mask[irq]  = 1'b1;
+
       end
 
-      eligible_mask   = ext_mask & en_mask;
-      best_id         = find_best_id(eligible_mask);
-      wait_cycles     = $urandom_range(6, 10);
+
+      eligible_mask = ext_mask & en_mask;
+
+      best_id = find_best_id(
+        eligible_mask
+      );
+
+      wait_cycles = $urandom_range(
+        6,
+        10
+      );
+
       active_lvl_rand = 8'h00;
 
-      `uvm_info("RAND_STORM_SEQ",
-        $sformatf("ext=0x%0h en=0x%0h best_id=%0d exp_ack=0x%0h ctl=0x%0h lvl=0x%0h pri=0x%0h",
-                  ext_mask,
-                  en_mask,
-                  best_id,
-                  8'h10 + best_id[7:0],
-                  irq_ctl[best_id],
-                  irq_ctl[best_id][7:5],
-                  irq_ctl[best_id][4:2]),
-        UVM_LOW)
 
-      // Drive interrupt + enable
-      send_tr("drive_ext_irq_and_global_enable",
-              1'b1, ext_mask,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0, 16'h0000,
-              1'b0, 8'h00,
-              en_mask, 1'b1,
-              active_lvl_rand,
-              1'b0,
-              1'b0, 1'b0, 1'b0);
+      `uvm_info(
+        "RAND_STORM_SEQ",
+        $sformatf(
+          "ext=0x%0h en=0x%0h best_id=%0d ctl=0x%0h level=0x%0h pri=0x%0h",
+          ext_mask,
+          en_mask,
+          best_id,
+          irq_ctl[best_id],
+          irq_ctl[best_id][7:5],
+          irq_ctl[best_id][4:2]
+        ),
+        UVM_LOW
+      )
 
-      // Wait for priority resolve
+
+      // ------------------------------------------------------
+      // Drive external interrupt and global enable
+      // ------------------------------------------------------
+
+      send_tr(
+        "drive_ext_irq_and_global_enable",
+
+        1'b1,
+        ext_mask,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        en_mask,
+        1'b1,
+
+        active_lvl_rand,
+        1'b0
+      );
+
+
+      // ------------------------------------------------------
+      // Wait for priority resolution
+      // ------------------------------------------------------
+
       repeat (wait_cycles) begin
-        send_tr("wait_priority_resolve",
-                1'b1, ext_mask,
-                1'b0, 16'h0000, 32'h0000_0000,
-                1'b0, 16'h0000,
-                1'b0, 8'h00,
-                en_mask, 1'b0,
-                active_lvl_rand,
-                1'b0,
-                1'b0, 1'b0, 1'b0);
+
+        send_tr(
+          "wait_priority_resolve",
+
+          1'b1,
+          ext_mask,
+
+          1'b0,
+          16'h0000,
+          8'h00,
+
+          1'b0,
+          16'h0000,
+
+          1'b0,
+          8'h00,
+
+          en_mask,
+          1'b0,
+
+          active_lvl_rand,
+          1'b0
+        );
+
       end
 
-      // Optional MMR read
-      if ($urandom_range(0, 3) == 0) begin
-        int rd_irq;
-        rd_irq = $urandom_range(0, 15);
 
-        send_tr("mmr_read_random_ctl",
-                1'b1, ext_mask,
-                1'b0, 16'h0000, 32'h0000_0000,
-                1'b1, ctl_addr(rd_irq),
-                1'b0, 8'h00,
-                en_mask, 1'b0,
-                active_lvl_rand,
-                1'b0,
-                1'b0, 1'b0, 1'b0);
+      // ------------------------------------------------------
+      // Optional MMR read
+      // ------------------------------------------------------
+
+      if ($urandom_range(0, 3) == 0) begin
+
+        int rd_irq;
+
+        rd_irq = $urandom_range(
+          0,
+          15
+        );
+
+
+        send_tr(
+          "mmr_read_random_ctl",
+
+          1'b1,
+          ext_mask,
+
+          1'b0,
+          16'h0000,
+          8'h00,
+
+          1'b1,
+          ctl_addr(rd_irq),
+
+          1'b0,
+          8'h00,
+
+          en_mask,
+          1'b0,
+
+          active_lvl_rand,
+          1'b0
+        );
+
 
         repeat (3) begin
-          send_tr("settle_after_mmr_read",
-                  1'b1, ext_mask,
-                  1'b0, 16'h0000, 32'h0000_0000,
-                  1'b0, 16'h0000,
-                  1'b0, 8'h00,
-                  en_mask, 1'b0,
-                  active_lvl_rand,
-                  1'b0,
-                  1'b0, 1'b0, 1'b0);
+
+          send_tr(
+            "settle_after_mmr_read",
+
+            1'b1,
+            ext_mask,
+
+            1'b0,
+            16'h0000,
+            8'h00,
+
+            1'b0,
+            16'h0000,
+
+            1'b0,
+            8'h00,
+
+            en_mask,
+            1'b0,
+
+            active_lvl_rand,
+            1'b0
+          );
+
         end
+
       end
 
-      // ACK current IRQ
-      send_tr("ack_current_irq",
-              1'b1, ext_mask,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0, 16'h0000,
-              1'b0, 8'h00,
-              en_mask, 1'b0,
-              active_lvl_rand,
-              1'b1,
-              1'b0, 1'b0, 1'b0);
 
-      repeat (3) begin
-        send_tr("idle_after_ack",
-                1'b1, ext_mask,
-                1'b0, 16'h0000, 32'h0000_0000,
-                1'b0, 16'h0000,
-                1'b0, 8'h00,
-                en_mask, 1'b0,
-                active_lvl_rand,
-                1'b0,
-                1'b0, 1'b0, 1'b0);
-      end
+      // ------------------------------------------------------
+      // Clear external interrupt
+      // ------------------------------------------------------
 
-      // Clear external IRQ before EOI
-      send_tr("clear_ext_before_eoi",
-              1'b1, 16'h0000,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0, 16'h0000,
-              1'b0, 8'h00,
-              en_mask, 1'b0,
-              active_lvl_rand,
-              1'b0,
-              1'b0, 1'b0, 1'b0);
+      send_tr(
+        "clear_ext_before_eoi",
 
-      // EOI served interrupt
+        1'b1,
+        16'h0000,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        en_mask,
+        1'b0,
+
+        active_lvl_rand,
+        1'b0
+      );
+
+
+      // ------------------------------------------------------
+      // EOI
+      // ------------------------------------------------------
+
       if (best_id >= 0) begin
-        send_tr("eoi_served_irq",
-                1'b1, 16'h0000,
-                1'b0, 16'h0000, 32'h0000_0000,
-                1'b0, 16'h0000,
-                1'b1, 8'h10 + best_id[7:0],
-                en_mask, 1'b0,
-                active_lvl_rand,
-                1'b0,
-                1'b0, 1'b0, 1'b0);
+
+        send_tr(
+          "eoi_served_irq",
+
+          1'b1,
+          16'h0000,
+
+          1'b0,
+          16'h0000,
+          8'h00,
+
+          1'b0,
+          16'h0000,
+
+          1'b1,
+          8'h10 + best_id[7:0],
+
+          en_mask,
+          1'b0,
+
+          active_lvl_rand,
+          1'b0
+        );
+
       end
 
+
+      // ------------------------------------------------------
+      // Idle
+      // ------------------------------------------------------
+
       repeat (3) begin
-        send_tr("clear_irq_idle",
-                1'b1, 16'h0000,
-                1'b0, 16'h0000, 32'h0000_0000,
-                1'b0, 16'h0000,
-                1'b0, 8'h00,
-                en_mask, 1'b0,
-                8'h00,
-                1'b0,
-                1'b0, 1'b0, 1'b0);
+
+        send_tr(
+          "clear_irq_idle",
+
+          1'b1,
+          16'h0000,
+
+          1'b0,
+          16'h0000,
+          8'h00,
+
+          1'b0,
+          16'h0000,
+
+          1'b0,
+          8'h00,
+
+          en_mask,
+          1'b0,
+
+          8'h00,
+          1'b0
+        );
+
       end
 
     end
 
   endtask
 
-
-  task send_tr(
-    string name,
-    bit soc_rst,
-    bit [15:0] ext_int,
-    bit wr_en,
-    bit [15:0] wr_addr,
-    bit [31:0] wr_data,
-    bit rd_en,
-    bit [15:0] rd_addr,
-    bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_bits,
-    bit enable_valid,
-    bit [7:0] active_lvl,
-    bit ack_valid,
-    bit debug_valid,
-    bit debug_reset,
-    bit debug_ndm_reset
-  );
-
-    int_seq_item tr;
-
-    tr = int_seq_item::type_id::create(name);
-    start_item(tr);
-
-    tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
-
-    tr.soc_mmr_write_en_i   = wr_en;
-    tr.soc_mmr_write_addr_i = wr_addr;
-    tr.soc_mmr_write_data_i = wr_data;
-
-    tr.soc_mmr_read_en_i    = rd_en;
-    tr.soc_mmr_read_addr_i  = rd_addr;
-
-    tr.soc_ack_read_valid_en = ack_valid;
-
-    tr.soc_eoi_valid_i = eoi_valid;
-    tr.soc_eoi_id_i    = eoi_id;
-
-    tr.active_lvl_pr_i = active_lvl;
-
-    tr.global_int_enable_bit_i   = enable_bits;
-    tr.global_int_enable_valid_i = enable_valid;
-
-    tr.debug_mode_valid_i = debug_valid;
-    tr.debug_mode_reset_i = debug_reset;
-    tr.debug_ndm_reset_i  = debug_ndm_reset;
-
-    finish_item(tr);
-
-  endtask
-
 endclass
+
+
 
 // ============================================================
 // RANDOM STORM SEQUENCE - 16 INTERRUPT VERSION
@@ -603,13 +960,16 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
 
   int unsigned storm_cycles = 1000;
 
+
   function new(string name = "rand_storm_seq");
     super.new(name);
   endfunction
 
+
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
   endfunction
+
 
   function automatic int find_best_id(bit [15:0] mask);
 
@@ -626,6 +986,7 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
     best_lvl = 3'h0;
     best_pri = 3'h0;
 
+
     for (int i = 0; i < NUM_IRQ; i++) begin
 
       if (mask[i]) begin
@@ -633,31 +994,42 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
         cur_lvl = irq_ctl[i][7:5];
         cur_pri = irq_ctl[i][4:2];
 
+
         if (!found) begin
+
           found    = 1'b1;
           best_id  = i;
           best_lvl = cur_lvl;
           best_pri = cur_pri;
+
         end
         else if (cur_lvl > best_lvl) begin
+
           best_id  = i;
           best_lvl = cur_lvl;
           best_pri = cur_pri;
+
         end
-        else if ((cur_lvl == best_lvl) && (cur_pri > best_pri)) begin
+        else if ((cur_lvl == best_lvl) &&
+                 (cur_pri > best_pri)) begin
+
           best_id  = i;
           best_lvl = cur_lvl;
           best_pri = cur_pri;
+
         end
         else if ((cur_lvl == best_lvl) &&
                  (cur_pri == best_pri) &&
                  (i > best_id)) begin
+
           best_id  = i;
           best_lvl = cur_lvl;
           best_pri = cur_pri;
+
         end
 
       end
+
     end
 
     return best_id;
@@ -671,8 +1043,9 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
     bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
-    bit ack_valid,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
     bit [7:0] eoi_id,
     bit [15:0] en_mask,
@@ -680,6 +1053,7 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
   );
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
@@ -689,10 +1063,8 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i    = 1'b0;
-    tr.soc_mmr_read_addr_i  = 16'h0000;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
@@ -703,8 +1075,6 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
     tr.global_int_enable_valid_i = en_valid;
 
     tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
 
     finish_item(tr);
 
@@ -721,157 +1091,322 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
     bit [15:0] rand_ext;
     bit [15:0] active_mask;
 
-    // Reset active-low
-    send_tr("reset",
-            1'b0,
-            16'h0000,
-            1'b0, 16'h0000, 32'h0000_0000,
-            1'b0,
-            1'b0, 8'h00,
-            16'h0000,
-            1'b0);
+
+    // --------------------------------------------------------
+    // RESET
+    // --------------------------------------------------------
+
+    send_tr(
+      "reset",
+      1'b0,
+      16'h0000,
+
+      1'b0,
+      16'h0000,
+      8'h00,
+
+      1'b0,
+      16'h0000,
+
+      1'b0,
+      8'h00,
+
+      16'h0000,
+      1'b0
+    );
+
 
     repeat (3) begin
-      send_tr("post_reset_idle",
-              1'b1,
-              16'h0000,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0,
-              1'b0, 8'h00,
-              16'h0000,
-              1'b0);
+
+      send_tr(
+        "post_reset_idle",
+        1'b1,
+        16'h0000,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        16'h0000,
+        1'b0
+      );
+
     end
 
-    // Configure IRQ0 to IRQ15
-    for (i = 0; i < NUM_IRQ; i++) begin
 
-      irq_ctl[i] = $urandom_range(8'h20, 8'hFF);
+    // --------------------------------------------------------
+    // Configure writable CTL10 to CTL15
+    // --------------------------------------------------------
 
-      send_tr($sformatf("cfg_irq_%0d", i),
-              1'b1,
-              16'h0000,
-              1'b1,
-              ctl_addr(i),
-              {24'h0, irq_ctl[i]},
-              1'b0,
-              1'b0, 8'h00,
-              16'h0000,
-              1'b0);
+    for (i = 10; i < NUM_IRQ; i++) begin
+
+      irq_ctl[i] = $urandom_range(
+        8'h20,
+        8'hFF
+      );
+
+
+      send_tr(
+        $sformatf(
+          "cfg_irq_%0d",
+          i
+        ),
+
+        1'b1,
+        16'h0000,
+
+        1'b1,
+        ctl_addr(i),
+        irq_ctl[i],
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        16'h0000,
+        1'b0
+      );
+
     end
 
+
+    // --------------------------------------------------------
     // Enable IRQ0 to IRQ15
-    send_tr("enable_irq_0_to_15",
-            1'b1,
-            16'h0000,
-            1'b0, 16'h0000, 32'h0000_0000,
-            1'b0,
-            1'b0, 8'h00,
-            VALID_IRQ_MASK,
-            1'b1);
+    // --------------------------------------------------------
+
+    send_tr(
+      "enable_irq_0_to_15",
+
+      1'b1,
+      16'h0000,
+
+      1'b0,
+      16'h0000,
+      8'h00,
+
+      1'b0,
+      16'h0000,
+
+      1'b0,
+      8'h00,
+
+      VALID_IRQ_MASK,
+      1'b1
+    );
+
 
     repeat (5) begin
-      send_tr("settle_after_enable",
-              1'b1,
-              16'h0000,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0,
-              1'b0, 8'h00,
-              VALID_IRQ_MASK,
-              1'b0);
+
+      send_tr(
+        "settle_after_enable",
+
+        1'b1,
+        16'h0000,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        VALID_IRQ_MASK,
+        1'b0
+      );
+
     end
 
-    // Random interrupt storm
+
+    // --------------------------------------------------------
+    // RANDOM INTERRUPT STORM
+    // --------------------------------------------------------
+
     repeat (storm_cycles) begin
 
       rand_ext = 16'h0000;
 
-      n = $urandom_range(1, 5);
+      n = $urandom_range(
+        1,
+        5
+      );
+
 
       for (i = 0; i < n; i++) begin
-        irq = $urandom_range(0, 15);
+
+        irq = $urandom_range(
+          0,
+          15
+        );
+
         rand_ext[irq] = 1'b1;
+
       end
+
 
       active_mask = rand_ext & VALID_IRQ_MASK;
-      best_id     = find_best_id(active_mask);
 
-      `uvm_info("RAND_STORM_SEQ",
-        $sformatf("rand_ext=0x%0h best_id=%0d exp_ack=0x%0h ctl=0x%0h level=0x%0h pri=0x%0h",
-                  rand_ext,
-                  best_id,
-                  8'h10 + best_id[7:0],
-                  irq_ctl[best_id],
-                  irq_ctl[best_id][7:5],
-                  irq_ctl[best_id][4:2]),
-        UVM_LOW)
+      best_id = find_best_id(
+        active_mask
+      );
 
-      send_tr("rand_irq_assert",
-              1'b1,
-              rand_ext,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0,
-              1'b0, 8'h00,
-              VALID_IRQ_MASK,
-              1'b0);
+
+      `uvm_info(
+        "RAND_STORM_SEQ",
+
+        $sformatf(
+          "rand_ext=0x%0h best_id=%0d ctl=0x%0h level=0x%0h pri=0x%0h",
+          rand_ext,
+          best_id,
+          irq_ctl[best_id],
+          irq_ctl[best_id][7:5],
+          irq_ctl[best_id][4:2]
+        ),
+
+        UVM_LOW
+      )
+
+
+      // ------------------------------------------------------
+      // Assert random interrupts
+      // ------------------------------------------------------
+
+      send_tr(
+        "rand_irq_assert",
+
+        1'b1,
+        rand_ext,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        VALID_IRQ_MASK,
+        1'b0
+      );
+
+
+      // ------------------------------------------------------
+      // Wait
+      // ------------------------------------------------------
 
       repeat (4) begin
-        send_tr("wait_priority_resolve",
-                1'b1,
-                rand_ext,
-                1'b0, 16'h0000, 32'h0000_0000,
-                1'b0,
-                1'b0, 8'h00,
-                VALID_IRQ_MASK,
-                1'b0);
+
+        send_tr(
+          "wait_priority_resolve",
+
+          1'b1,
+          rand_ext,
+
+          1'b0,
+          16'h0000,
+          8'h00,
+
+          1'b0,
+          16'h0000,
+
+          1'b0,
+          8'h00,
+
+          VALID_IRQ_MASK,
+          1'b0
+        );
+
       end
 
-      send_tr("rand_irq_ack",
-              1'b1,
-              rand_ext,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b1,
-              1'b0, 8'h00,
-              VALID_IRQ_MASK,
-              1'b0);
 
-      send_tr("idle_after_ack",
-              1'b1,
-              rand_ext,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0,
-              1'b0, 8'h00,
-              VALID_IRQ_MASK,
-              1'b0);
+      // ------------------------------------------------------
+      // Clear external interrupt
+      // ------------------------------------------------------
 
-      send_tr("clear_ext_before_eoi",
-              1'b1,
-              16'h0000,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0,
-              1'b0, 8'h00,
-              VALID_IRQ_MASK,
-              1'b0);
+      send_tr(
+        "clear_ext_before_eoi",
+
+        1'b1,
+        16'h0000,
+
+        1'b0,
+        16'h0000,
+        8'h00,
+
+        1'b0,
+        16'h0000,
+
+        1'b0,
+        8'h00,
+
+        VALID_IRQ_MASK,
+        1'b0
+      );
+
+
+      // ------------------------------------------------------
+      // EOI
+      // ------------------------------------------------------
 
       if (best_id >= 0) begin
-        send_tr("eoi_served_irq",
-                1'b1,
-                16'h0000,
-                1'b0, 16'h0000, 32'h0000_0000,
-                1'b0,
-                1'b1, 8'h10 + best_id[7:0],
-                VALID_IRQ_MASK,
-                1'b0);
+
+        send_tr(
+          "eoi_served_irq",
+
+          1'b1,
+          16'h0000,
+
+          1'b0,
+          16'h0000,
+          8'h00,
+
+          1'b0,
+          16'h0000,
+
+          1'b1,
+          8'h10 + best_id[7:0],
+
+          VALID_IRQ_MASK,
+          1'b0
+        );
+
       end
 
+
       repeat (3) begin
-        send_tr("clear_irq_idle",
-                1'b1,
-                16'h0000,
-                1'b0, 16'h0000, 32'h0000_0000,
-                1'b0,
-                1'b0, 8'h00,
-                VALID_IRQ_MASK,
-                1'b0);
+
+        send_tr(
+          "clear_irq_idle",
+
+          1'b1,
+          16'h0000,
+
+          1'b0,
+          16'h0000,
+          8'h00,
+
+          1'b0,
+          16'h0000,
+
+          1'b0,
+          8'h00,
+
+          VALID_IRQ_MASK,
+          1'b0
+        );
+
       end
 
     end
@@ -879,7 +1414,6 @@ class rand_storm_seq extends uvm_sequence #(int_seq_item);
   endtask
 
 endclass
-
 
 // ============================================================
 // DYNAMIC PRIORITY OVERRIDE SEQUENCE - 16 INTERRUPT VERSION
@@ -892,8 +1426,8 @@ class dynamic_priority_override_seq extends uvm_sequence #(int_seq_item);
   rand int high_irq;
 
   constraint irq_c {
-    low_irq  inside {[0:7]};
-    high_irq inside {[8:15]};
+    low_irq  inside {[10:12]};
+    high_irq inside {[13:15]};
     low_irq != high_irq;
   }
 
@@ -902,7 +1436,7 @@ class dynamic_priority_override_seq extends uvm_sequence #(int_seq_item);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
   endfunction
 
   task body();
@@ -928,25 +1462,27 @@ class dynamic_priority_override_seq extends uvm_sequence #(int_seq_item);
     both_mask[high_irq] = 1'b1;
 
     `uvm_info("DYN_PRIO_SEQ",
-      $sformatf("LOW_IRQ=%0d LOW_ACK=0x%0h PRIO=0x20 | HIGH_IRQ=%0d HIGH_ACK=0x%0h PRIO=0xE0",
-                low_irq,  8'h10 + low_irq[7:0],
-                high_irq, 8'h10 + high_irq[7:0]),
+      $sformatf("LOW_IRQ=%0d PRIO=0x20 | HIGH_IRQ=%0d PRIO=0xE0",
+                low_irq, high_irq),
       UVM_LOW)
 
-    send_tr("reset", 1'b0, 16'h0000,
-            1'b0, 16'h0000, 32'h0000_0000,
-            1'b0, 8'h00,
-            16'h0000, 1'b0,
-            8'h00, 1'b0);
+   send_tr("reset", 1'b0, 16'h0000,
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, 16'h0000,
+        1'b0, 8'h00,
+        8'h00, 1'b0);
 
     repeat (3) begin
+    
       send_tr("post_reset_idle", 1'b1, 16'h0000,
-              1'b0, 16'h0000, 32'h0000_0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
               1'b0, 8'h00,
-              16'h0000, 1'b0,
               8'h00, 1'b0);
+    
     end
-
     write_ctl($sformatf("write_low_irq%0d_ctl", low_irq),
               ctl_addr(low_irq),
               8'h20);
@@ -956,88 +1492,116 @@ class dynamic_priority_override_seq extends uvm_sequence #(int_seq_item);
               8'hE0);
 
     send_tr("assert_low_irq_only", 1'b1, low_mask,
-            1'b0, 16'h0000, 32'h0000_0000,
-            1'b0, 8'h00,
-            enable_mask, 1'b1,
-            8'h00, 1'b0);
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, enable_mask,
+        1'b0, 8'h00,
+        8'h00, 1'b0);
 
+    
     repeat (5) begin
       send_tr("wait_low_irq_resolve", 1'b1, low_mask,
-              1'b0, 16'h0000, 32'h0000_0000,
-              1'b0, 8'h00,
-              enable_mask, 1'b0,
-              8'h00, 1'b0);
-    end
-
-    send_tr("ack_low_irq", 1'b1, low_mask,
-            1'b0, 16'h0000, 32'h0000_0000,
-            1'b0, 8'h00,
-            enable_mask, 1'b0,
-            8'h00, 1'b1);
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, enable_mask,
+        1'b0, 8'h00,
+        8'h00, 1'b0);
+      
+      end
 
     repeat (2) begin
-      send_tr("idle_after_low_ack", 1'b1, low_mask,
-              1'b0, 16'h0000, 32'h0000_0000,
+      send_tr("wait_after_low_ack", 1'b1, low_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
               1'b0, 8'h00,
-              enable_mask, 1'b0,
-              8'h00, 1'b0);
+              8'h00, 
+              1'b0);
     end
 
     send_tr("high_irq_arrives", 1'b1, both_mask,
-            1'b0, 16'h0000, 32'h0000_0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, enable_mask,
             1'b0, 8'h00,
-            enable_mask, 1'b0,
-            8'h00, 1'b0);
+            8'h00, 
+            1'b0);
 
     repeat (5) begin
       send_tr("wait_high_override", 1'b1, both_mask,
-              1'b0, 16'h0000, 32'h0000_0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
               1'b0, 8'h00,
-              enable_mask, 1'b0,
-              8'h00, 1'b0);
+              8'h00, 
+              1'b0);
     end
 
-    send_tr("ack_high_irq_override", 1'b1, both_mask,
-            1'b0, 16'h0000, 32'h0000_0000,
+    send_tr("eoi_high_irq", 1'b1, both_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b1, (8'h10 + high_irq),
+            1'b0, enable_mask,
             1'b0, 8'h00,
-            enable_mask, 1'b0,
-            8'h00, 1'b1);
+            8'h00, 
+            1'b0);
 
     repeat (3) begin
-      send_tr("idle_after_high_ack", 1'b1, both_mask,
-              1'b0, 16'h0000, 32'h0000_0000,
+      send_tr("idle_after_high_eoi", 1'b1, both_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
               1'b0, 8'h00,
-              enable_mask, 1'b0,
-              8'h00, 1'b0);
+              8'h00, 
+              1'b0);
+    end
+
+    send_tr("eoi_low_irq", 1'b1, both_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b1, (8'h10 + low_irq),
+            1'b0, enable_mask,
+            1'b0, 8'h00,
+            8'h00, 
+            1'b0);
+
+    repeat (3) begin
+      send_tr("idle_after_low_eoi", 1'b1, both_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
+              1'b0, 8'h00,
+              8'h00, 
+              1'b0);
     end
 
   endtask
-
 
   task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
 
     send_tr(name, 1'b1, 16'h0000,
-            1'b1, addr, {24'h0, data},
+            1'b1, addr, data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
             1'b0, 8'h00,
-            16'h0000, 1'b0,
-            8'h00, 1'b0);
+            8'h00, 
+            1'b0);
 
   endtask
-
 
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
     bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
@@ -1046,16 +1610,14 @@ class dynamic_priority_override_seq extends uvm_sequence #(int_seq_item);
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 1'b0;
-    tr.soc_mmr_read_addr_i = 16'h0000;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
@@ -1065,15 +1627,14 @@ class dynamic_priority_override_seq extends uvm_sequence #(int_seq_item);
     tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
   endtask
 
 endclass
+
 
 // ============================================================
 // RANDOM TIE BREAK + EOI SEQUENCE - 16 IRQ
@@ -1087,10 +1648,15 @@ class random_tie_break_eoi_seq extends uvm_sequence #(int_seq_item);
   rand bit [7:0]  shared_prio;
 
   constraint valid_c {
-    active_mask != 16'h0;
-    enable_mask != 16'h0;
-    (active_mask & enable_mask) != 16'h0;
+    active_mask[9:0] == 10'h000;
+    enable_mask[9:0] == 10'h000;
+
+    active_mask[15:10] != 6'h00;
+    enable_mask[15:10] != 6'h00;
+
+    (active_mask & enable_mask) != 16'h0000;
     $countones(active_mask & enable_mask) >= 3;
+
     shared_prio inside {[8'h01:8'hFF]};
   }
 
@@ -1099,18 +1665,20 @@ class random_tie_break_eoi_seq extends uvm_sequence #(int_seq_item);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
   endfunction
 
   function automatic int find_highest_id(bit [15:0] mask);
+
     int best_id = -1;
 
-    for (int i = 0; i < 16; i++) begin
+    for (int i = 10; i < 16; i++) begin
       if (mask[i] && (i > best_id))
         best_id = i;
     end
 
     return best_id;
+
   endfunction
 
   task body();
@@ -1123,72 +1691,84 @@ class random_tie_break_eoi_seq extends uvm_sequence #(int_seq_item);
 
     work_mask = active_mask & enable_mask;
 
-    send_tr("reset", 1'b0, 16'h0,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+    send_tr("reset", 1'b0, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00, 
+            1'b0);
 
     repeat (3) begin
-      send_tr("post_reset_idle", 1'b1, 16'h0,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'h0, 0,
-              8'h00, 0);
+      send_tr("post_reset_idle", 1'b1, 16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              8'h00, 
+              1'b0);
     end
 
-    for (int i = 0; i < 16; i++) begin
+    for (int i = 10; i < 16; i++) begin
       write_ctl($sformatf("write_irq%0d_ctl", i),
                 ctl_addr(i),
                 shared_prio);
     end
 
     send_tr("assert_tie_break_irqs", 1'b1, active_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            enable_mask, 1,
-            8'h00, 0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, enable_mask,
+            1'b1, 8'h00,
+            8'h00, 
+            1'b0);
 
     repeat (5) begin
       send_tr("wait_initial_resolve", 1'b1, active_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              enable_mask, 0,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
+              1'b0, 8'h00,
+              8'h00, 
+              1'b0);
     end
 
     repeat (3) begin
 
       winner = find_highest_id(work_mask);
 
-      send_tr("ack_highest_id_winner", 1'b1, work_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              enable_mask, 0,
-              8'h00, 1);
+      if (winner < 10) begin
+        `uvm_fatal("RAND_TIE_EOI_SEQ", "Invalid winner")
+      end
 
       repeat (2) begin
-        send_tr("idle_after_ack", 1'b1, work_mask,
-                0, 16'h0, 32'h0,
-                0, 8'h00,
-                enable_mask, 0,
-                8'h00, 0);
+        send_tr("wait_before_eoi", 1'b1, work_mask,
+                1'b0, 16'h0000, 8'h00,
+                1'b0, 16'h0000,
+                1'b0, enable_mask,
+                1'b0, 8'h00,
+                8'h00, 
+                1'b0);
       end
 
       work_mask[winner] = 1'b0;
 
       send_tr("eoi_highest_id_winner", 1'b1, work_mask,
-              0, 16'h0, 32'h0,
-              1, 8'h10 + winner[7:0],
-              enable_mask, 0,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b1, 16'h0000,
+              1'b1, enable_mask,
+              1'b0, (8'h10 + winner),
+              8'h00,
+              1'b0);
 
       repeat (4) begin
         send_tr("wait_next_tie_resolve", 1'b1, work_mask,
-                0, 16'h0, 32'h0,
-                0, 8'h00,
-                enable_mask, 0,
-                8'h00, 0);
+                1'b0, 16'h0000, 8'h00,
+                1'b0, 16'h0000,
+                1'b0, enable_mask,
+                1'b0, 8'h00,
+                8'h00, 
+                1'b0);
       end
 
     end
@@ -1196,26 +1776,32 @@ class random_tie_break_eoi_seq extends uvm_sequence #(int_seq_item);
   endtask
 
   task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
-    send_tr(name, 1'b1, 16'h0,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+
+    send_tr(name, 1'b1, 16'h0000,
+            1'b1, addr, data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00, 
+            1'b0);
+
   endtask
 
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
     bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
@@ -1224,16 +1810,14 @@ class random_tie_break_eoi_seq extends uvm_sequence #(int_seq_item);
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 0;
-    tr.soc_mmr_read_addr_i = 0;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
@@ -1243,9 +1827,7 @@ class random_tie_break_eoi_seq extends uvm_sequence #(int_seq_item);
     tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 0;
-    tr.debug_mode_reset_i = 0;
-    tr.debug_ndm_reset_i  = 0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
@@ -1266,9 +1848,14 @@ class random_eoi_progression_seq extends uvm_sequence #(int_seq_item);
   rand bit [15:0] enable_mask;
 
   constraint valid_c {
-    active_mask != 16'h0;
-    enable_mask != 16'h0;
-    (active_mask & enable_mask) != 16'h0;
+
+    active_mask[9:0] == 10'h000;
+    enable_mask[9:0] == 10'h000;
+
+    active_mask[15:10] != 6'h00;
+    enable_mask[15:10] != 6'h00;
+
+    (active_mask & enable_mask) != 16'h0000;
     $countones(active_mask & enable_mask) >= 3;
 
     foreach (irq_ctl[i]) {
@@ -1281,28 +1868,32 @@ class random_eoi_progression_seq extends uvm_sequence #(int_seq_item);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
   endfunction
 
   function automatic int find_best_id(bit [15:0] mask);
+
     int best_id;
     bit [7:0] best_prio;
 
     best_id   = -1;
     best_prio = 8'h00;
 
-    for (int i = 0; i < 16; i++) begin
+    for (int i = 10; i < 16; i++) begin
       if (mask[i]) begin
         if ((best_id == -1) ||
             (irq_ctl[i] > best_prio) ||
             ((irq_ctl[i] == best_prio) && (i > best_id))) begin
+
           best_id   = i;
           best_prio = irq_ctl[i];
+
         end
       end
     end
 
     return best_id;
+
   endfunction
 
   task body();
@@ -1315,72 +1906,84 @@ class random_eoi_progression_seq extends uvm_sequence #(int_seq_item);
 
     work_mask = active_mask & enable_mask;
 
-    send_tr("reset", 1'b0, 16'h0,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+    send_tr("reset", 1'b0, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00, 
+            1'b0);
 
     repeat (3) begin
-      send_tr("post_reset_idle", 1'b1, 16'h0,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'h0, 0,
-              8'h00, 0);
+      send_tr("post_reset_idle", 1'b1, 16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              8'h00, 
+              1'b0);
     end
 
-    for (int i = 0; i < 16; i++) begin
+    for (int i = 10; i < 16; i++) begin
       write_ctl($sformatf("write_irq%0d_ctl", i),
                 ctl_addr(i),
                 irq_ctl[i]);
     end
 
     send_tr("assert_initial_irqs", 1'b1, active_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            enable_mask, 1,
-            8'h00, 0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, enable_mask,
+            1'b1, 8'h00,
+            8'h00, 
+            1'b0);
 
     repeat (5) begin
       send_tr("wait_initial_resolve", 1'b1, active_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              enable_mask, 0,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
+              1'b0, 8'h00,
+              8'h00, 
+              1'b0);
     end
 
     repeat (3) begin
 
       winner = find_best_id(work_mask);
 
-      send_tr("ack_current_winner", 1'b1, work_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              enable_mask, 0,
-              8'h00, 1);
+      if (winner < 10) begin
+        `uvm_fatal("RAND_EOI_PROG_SEQ", "Invalid winner")
+      end
 
       repeat (2) begin
-        send_tr("idle_after_ack", 1'b1, work_mask,
-                0, 16'h0, 32'h0,
-                0, 8'h00,
-                enable_mask, 0,
-                8'h00, 0);
+        send_tr("wait_before_eoi", 1'b1, work_mask,
+                1'b0, 16'h0000, 8'h00,
+                1'b0, 16'h0000,
+                1'b0, enable_mask,
+                1'b0, 8'h00,
+                8'h00, 
+                1'b0);
       end
 
       work_mask[winner] = 1'b0;
 
       send_tr("eoi_current_winner", 1'b1, work_mask,
-              0, 16'h0, 32'h0,
-              1, 8'h10 + winner[7:0],
-              enable_mask, 0,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b1, enable_mask,
+              1'b0, (8'h10 + winner),
+              8'h00, 
+              1'b0);
 
       repeat (4) begin
         send_tr("wait_next_resolve", 1'b1, work_mask,
-                0, 16'h0, 32'h0,
-                0, 8'h00,
-                enable_mask, 0,
-                8'h00, 0);
+                1'b0, 16'h0000, 8'h00,
+                1'b0, 16'h0000,
+                1'b0, enable_mask,
+                1'b0, 8'h00,
+                8'h00, 
+                1'b0);
       end
 
     end
@@ -1388,26 +1991,32 @@ class random_eoi_progression_seq extends uvm_sequence #(int_seq_item);
   endtask
 
   task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
-    send_tr(name, 1'b1, 16'h0,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+
+    send_tr(name, 1'b1, 16'h0000,
+            1'b1, addr, data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00, 
+            1'b0);
+
   endtask
 
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
     bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
@@ -1416,16 +2025,14 @@ class random_eoi_progression_seq extends uvm_sequence #(int_seq_item);
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 0;
-    tr.soc_mmr_read_addr_i = 0;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
@@ -1435,9 +2042,7 @@ class random_eoi_progression_seq extends uvm_sequence #(int_seq_item);
     tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 0;
-    tr.debug_mode_reset_i = 0;
-    tr.debug_ndm_reset_i  = 0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
@@ -1447,7 +2052,7 @@ endclass
 
 
 // ============================================================
-// RANDOM ACK LATENCY SEQUENCE - 16 IRQ
+// RANDOM EOI LATENCY SEQUENCE - 16 IRQ
 // ============================================================
 class random_ack_latency_seq extends uvm_sequence #(int_seq_item);
 
@@ -1456,14 +2061,19 @@ class random_ack_latency_seq extends uvm_sequence #(int_seq_item);
   rand bit [7:0]  irq_ctl [16];
   rand bit [15:0] active_mask;
   rand bit [15:0] enable_mask;
-  rand int unsigned ack_delay;
+  rand int unsigned eoi_delay;
 
   constraint valid_c {
-    active_mask != 16'h0;
-    enable_mask != 16'h0;
-    (active_mask & enable_mask) != 16'h0;
 
-    ack_delay inside {[1:25]};
+    active_mask[9:0] == 10'h000;
+    enable_mask[9:0] == 10'h000;
+
+    active_mask[15:10] != 6'h00;
+    enable_mask[15:10] != 6'h00;
+
+    (active_mask & enable_mask) != 16'h0000;
+
+    eoi_delay inside {[1:25]};
 
     foreach (irq_ctl[i]) {
       irq_ctl[i] inside {[8'h01:8'hFF]};
@@ -1475,118 +2085,149 @@ class random_ack_latency_seq extends uvm_sequence #(int_seq_item);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
+  endfunction
+
+  function automatic int find_best_id(bit [15:0] mask);
+
+    int best_id;
+    bit [7:0] best_prio;
+
+    best_id   = -1;
+    best_prio = 8'h00;
+
+    for (int i = 10; i < 16; i++) begin
+
+      if (mask[i]) begin
+
+        if ((best_id == -1) ||
+            (irq_ctl[i] > best_prio) ||
+            ((irq_ctl[i] == best_prio) && (i > best_id))) begin
+
+          best_id   = i;
+          best_prio = irq_ctl[i];
+
+        end
+
+      end
+
+    end
+
+    return best_id;
+
   endfunction
 
   task body();
 
     int best_id;
-    bit [7:0] best_prio;
 
     if (!this.randomize())
       `uvm_fatal("RAND_ACK_LAT_SEQ", "Randomization failed")
 
-    best_id   = -1;
-    best_prio = 8'h00;
+    best_id = find_best_id(active_mask & enable_mask);
 
-    for (int i = 0; i < 16; i++) begin
-      if (active_mask[i] && enable_mask[i]) begin
-        if ((best_id == -1) ||
-            (irq_ctl[i] > best_prio) ||
-            ((irq_ctl[i] == best_prio) && (i > best_id))) begin
-          best_id   = i;
-          best_prio = irq_ctl[i];
-        end
-      end
-    end
+    if (best_id < 10)
+      `uvm_fatal("RAND_ACK_LAT_SEQ", "Invalid interrupt winner")
 
-    send_tr("reset", 1'b0, 16'h0,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+    send_tr("reset", 1'b0, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00, 
+            1'b0);
 
     repeat (3) begin
-      send_tr("post_reset_idle", 1'b1, 16'h0,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'h0, 0,
-              8'h00, 0);
+      send_tr("post_reset_idle", 1'b1, 16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              8'h00, 
+              1'b0);
     end
 
-    for (int i = 0; i < 16; i++) begin
+    for (int i = 10; i < 16; i++) begin
       write_ctl($sformatf("write_irq%0d_ctl", i),
                 ctl_addr(i),
                 irq_ctl[i]);
     end
 
     send_tr("assert_irqs", 1'b1, active_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            enable_mask, 1,
-            8'h00, 0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, enable_mask,
+            1'b1, 8'h00,
+            8'h00, 
+            1'b0);
 
-    repeat (ack_delay) begin
-      send_tr("wait_before_ack_random_delay", 1'b1, active_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              enable_mask, 0,
-              8'h00, 0);
+    repeat (5) begin
+      send_tr("wait_interrupt_resolve", 1'b1, active_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
+              1'b0, 8'h00,
+              8'h00, 
+              1'b0);
     end
+
+    repeat (eoi_delay) begin
+      send_tr("wait_before_eoi_random_delay", 1'b1, active_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
+              1'b0, 8'h00,
+              8'h00, 
+              1'b0);
+    end
+
+    send_tr("eoi_after_random_delay", 1'b1, active_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, enable_mask,
+            1'b0, (8'h10 + best_id),
+            8'h00, 
+            1'b0);
 
     repeat (2) begin
-      send_tr("ack_after_random_delay", 1'b1, active_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              enable_mask, 0,
-              8'h00, 1);
-    end
-
-    repeat (2) begin
-      send_tr("idle_after_ack_sample", 1'b1, active_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              enable_mask, 0,
-              8'h00, 0);
-    end
-
-    send_tr("clear_irqs_after_ack", 1'b1, 16'h0,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            enable_mask, 0,
-            8'h00, 0);
-
-    repeat (3) begin
-      send_tr("final_idle", 1'b1, 16'h0,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              enable_mask, 0,
-              8'h00, 0);
+      send_tr("idle_after_eoi", 1'b1, 16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
+              1'b0, 8'h00,
+              8'h00, 
+              1'b0);
     end
 
   endtask
 
   task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
-    send_tr(name, 1'b1, 16'h0,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+
+    send_tr(name, 1'b1, 16'h0000,
+            1'b1, addr, data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
+
   endtask
 
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
     bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
@@ -1595,16 +2236,14 @@ class random_ack_latency_seq extends uvm_sequence #(int_seq_item);
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 0;
-    tr.soc_mmr_read_addr_i = 0;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
@@ -1614,15 +2253,14 @@ class random_ack_latency_seq extends uvm_sequence #(int_seq_item);
     tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 0;
-    tr.debug_mode_reset_i = 0;
-    tr.debug_ndm_reset_i  = 0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
   endtask
 
 endclass
+
 
 // ============================================================
 // RANDOM EQUAL PRIORITY SEQUENCE - 16 IRQ
@@ -1637,19 +2275,27 @@ class random_equal_priority_seq extends uvm_sequence #(int_seq_item);
 
   bit [7:0] irq_ctl [16];
 
-  constraint valid_c {
-    active_mask != 16'h0;
-    enable_mask != 16'h0;
-    (active_mask & enable_mask) != 16'h0;
-    shared_prio inside {[8'h01:8'hFF]};
-  }
+ constraint valid_c {
+  active_mask[9:0]  == 10'h000;
+  enable_mask[9:0]  == 10'h000;
+
+  active_mask[15:10] != 6'b000000;
+  enable_mask[15:10] != 6'b000000;
+
+  (active_mask & enable_mask) != 16'h0000;
+
+  $countones(active_mask & enable_mask) >= 3;
+
+  shared_prio inside {[8'h01:8'hFF]};
+}
+
 
   function new(string name = "random_equal_priority_seq");
     super.new(name);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
   endfunction
 
   task body();
@@ -1665,94 +2311,144 @@ class random_equal_priority_seq extends uvm_sequence #(int_seq_item);
 
     winner_id = -1;
 
-    for (int i = 0; i < 16; i++) begin
+    for (int i = 10; i < 16; i++) begin
       if (active_mask[i] && enable_mask[i]) begin
         if (i > winner_id)
           winner_id = i;
       end
     end
 
-    send_tr("reset", 1'b0, 16'h0,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+    `uvm_info("RAND_EQUAL_PRIO_SEQ",
+      $sformatf("Shared priority=0x%02h Expected highest ID=%0d",
+                shared_prio, winner_id),
+      UVM_LOW)
+
+    send_tr("reset",
+            1'b0,
+            16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
 
     repeat (3) begin
-      send_tr("post_reset_idle", 1'b1, 16'h0,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'h0, 0,
-              8'h00, 0);
+      send_tr("post_reset_idle",
+              1'b1,
+              16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
     end
 
-    for (int i = 0; i < 16; i++) begin
-      write_ctl($sformatf("write_irq%0d_ctl", i),
-                ctl_addr(i),
-                irq_ctl[i]);
+    for (int i = 10; i < 16; i++) begin
+      if (active_mask[i] || enable_mask[i]) begin
+        write_ctl($sformatf("write_irq%0d_ctl", i),
+                  ctl_addr(i),
+                  irq_ctl[i]);
+      end
     end
 
-    send_tr("assert_equal_priority_irqs", 1'b1, active_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            enable_mask, 1,
-            8'h00, 0);
+    send_tr("assert_equal_priority_irqs",
+            1'b1,
+            active_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, enable_mask,
+            1'b1, 8'h00,
+            8'h00,
+            1'b0);
 
     repeat (5) begin
-      send_tr("wait_resolve", 1'b1, active_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              enable_mask, 0,
-              8'h00, 0);
+      send_tr("wait_resolve",
+              1'b1,
+              active_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
     end
 
-    send_tr("ack_winner", 1'b1, active_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            enable_mask, 0,
-            8'h00, 1);
+    send_tr("eoi_winner",
+            1'b1,
+            active_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, enable_mask,
+            1'b0, (8'h10 + winner_id),
+            8'h00,
+            1'b0);
+
+    repeat (3) begin
+      send_tr("idle_after_eoi",
+              1'b1,
+              active_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, enable_mask,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
+    end
 
   endtask
 
-  task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
-    send_tr(name, 1'b1, 16'h0,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+  task write_ctl(
+    string name,
+    bit [15:0] addr,
+    bit [7:0] data
+  );
+
+    send_tr(name,
+            1'b1,
+            16'h0000,
+            1'b1, addr, data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
+
   endtask
 
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
     bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 0;
-    tr.soc_mmr_read_addr_i = 0;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
@@ -1762,9 +2458,7 @@ class random_equal_priority_seq extends uvm_sequence #(int_seq_item);
     tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 0;
-    tr.debug_mode_reset_i = 0;
-    tr.debug_ndm_reset_i  = 0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
@@ -1772,8 +2466,10 @@ class random_equal_priority_seq extends uvm_sequence #(int_seq_item);
 
 endclass
 
-/////////////////////
 
+// ============================================================
+// RANDOM ACTIVE LEVEL PRIORITY SEQUENCE - 16 IRQ
+// ============================================================
 class random_active_level_priority_seq extends uvm_sequence #(int_seq_item);
 
   `uvm_object_utils(random_active_level_priority_seq)
@@ -1782,7 +2478,7 @@ class random_active_level_priority_seq extends uvm_sequence #(int_seq_item);
   rand bit [7:0] active_lvl;
 
   constraint c_valid {
-    irq_count inside {[1:10]};
+    irq_count inside {[1:6]};
   }
 
   function new(string name = "random_active_level_priority_seq");
@@ -1790,7 +2486,7 @@ class random_active_level_priority_seq extends uvm_sequence #(int_seq_item);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int irq);
-    return 16'h1003 + (irq * 4);
+    return 16'h9020 + (irq * 16'h0010);
   endfunction
 
   task body();
@@ -1799,27 +2495,45 @@ class random_active_level_priority_seq extends uvm_sequence #(int_seq_item);
     bit [15:0] ext_mask;
     bit [15:0] en_mask;
     bit [7:0] ctl_val;
+    bit [15:0] selected_mask;
 
     if (!this.randomize())
       `uvm_fatal("RAND_ACT_LVL", "Randomization failed")
 
+    ext_mask      = 16'h0000;
+    en_mask       = 16'h0000;
+    selected_mask = 16'h0000;
+
     send_tr("reset",
             1'b0,
             16'h0000,
-            1'b0, 16'h0000, 32'h0000_0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
             1'b0, 8'h00,
-            16'h0000, 1'b0,
             8'h00,
             1'b0);
 
-    active_lvl = $urandom_range(8'h00, 8'hFF);
-
-    ext_mask = 16'h0000;
-    en_mask  = 16'h0000;
+    repeat (3) begin
+      send_tr("post_reset_idle",
+              1'b1,
+              16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
+    end
 
     repeat (irq_count) begin
 
-      irq     = $urandom_range(0, 15);
+      do begin
+        irq = $urandom_range(10, 15);
+      end while (selected_mask[irq]);
+
+      selected_mask[irq] = 1'b1;
+
       ctl_val = $urandom_range(8'h01, 8'hFF);
 
       write_ctl($sformatf("irq_%0d_ctl", irq),
@@ -1831,12 +2545,18 @@ class random_active_level_priority_seq extends uvm_sequence #(int_seq_item);
 
     end
 
+    `uvm_info("RAND_ACT_LVL",
+      $sformatf("IRQ count=%0d ACTIVE_LEVEL=0x%02h EXT_MASK=0x%04h ENABLE_MASK=0x%04h",
+                irq_count, active_lvl, ext_mask, en_mask),
+      UVM_LOW)
+
     send_tr("assert_random_irqs",
             1'b1,
             ext_mask,
-            1'b0, 16'h0000, 32'h0000_0000,
-            1'b0, 8'h00,
-            en_mask, 1'b1,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en_mask,
+            1'b1, 8'h00,
             active_lvl,
             1'b0);
 
@@ -1844,35 +2564,49 @@ class random_active_level_priority_seq extends uvm_sequence #(int_seq_item);
       send_tr("wait_irq",
               1'b1,
               ext_mask,
-              1'b0, 16'h0000, 32'h0000_0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, en_mask,
               1'b0, 8'h00,
-              en_mask, 1'b0,
               active_lvl,
               1'b0);
     end
 
-    send_tr("ack_read",
+    repeat (2) begin
+      send_tr("wait_before_eoi",
+              1'b1,
+              ext_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, en_mask,
+              1'b0, 8'h00,
+              active_lvl,
+              1'b0);
+    end
+
+    send_tr("eoi_current_interrupt",
             1'b1,
             ext_mask,
-            1'b0, 16'h0000, 32'h0000_0000,
-            1'b0, 8'h00,
-            en_mask, 1'b0,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, en_mask,
+            1'b0, 8'h10,
             active_lvl,
-            1'b1);
+            1'b0);
 
     repeat ($urandom_range(1, 5)) begin
       send_tr("idle",
               1'b1,
               16'h0000,
-              1'b0, 16'h0000, 32'h0000_0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, en_mask,
               1'b0, 8'h00,
-              en_mask, 1'b0,
               active_lvl,
               1'b0);
     end
 
   endtask
-
 
   task write_ctl(
     string name,
@@ -1885,30 +2619,33 @@ class random_active_level_priority_seq extends uvm_sequence #(int_seq_item);
             16'h0000,
             1'b1,
             addr,
-            {24'h0, data},
+            data,
             1'b0,
-            8'h00,
             16'h0000,
             1'b0,
+            16'h0000,
+            1'b0,
+            8'h00,
             8'h00,
             1'b0);
 
   endtask
 
-
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_mask,
+    bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl_pr,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
@@ -1918,35 +2655,32 @@ class random_active_level_priority_seq extends uvm_sequence #(int_seq_item);
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 1'b0;
-    tr.soc_mmr_read_addr_i = 16'h0000;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
 
     tr.active_lvl_pr_i = active_lvl_pr;
 
-    tr.global_int_enable_bit_i   = enable_mask;
+    tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
   endtask
 
 endclass
+
+
 // ============================================================
 // RANDOM ENABLE MASK SEQUENCE - 16 IRQ
 // ============================================================
@@ -1958,139 +2692,211 @@ class random_enable_mask_seq extends uvm_sequence #(int_seq_item);
   rand bit [15:0] ext_mask;
   rand bit [15:0] en_mask;
 
-  constraint valid_c {
-    ext_mask != 16'h0;
-    en_mask  != 16'h0;
-    (ext_mask & en_mask) != 16'h0;
-
-    foreach (irq_ctl[i]) {
-      irq_ctl[i] inside {[8'h01:8'hFF]};
-    }
-  }
-
+    constraint valid_c {
+    
+      ext_mask[9:0] == 10'h000;
+      en_mask[9:0]  == 10'h000;
+    
+      ext_mask[15:10] != 6'b000000;
+      en_mask[15:10]  != 6'b000000;
+    
+      (ext_mask & en_mask) != 16'h0000;
+    
+      foreach (irq_ctl[i]) {
+        irq_ctl[i] inside {[8'h01:8'hFF]};
+      }
+    } 
+    
   function new(string name = "random_enable_mask_seq");
     super.new(name);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
+  endfunction
+
+  function automatic int find_best_id(bit [15:0] mask);
+
+    int best_id;
+    bit [7:0] best_prio;
+
+    best_id   = -1;
+    best_prio = 8'h00;
+
+    for (int i = 10; i < 16; i++) begin
+
+      if (mask[i]) begin
+
+        if ((best_id == -1) ||
+            (irq_ctl[i] > best_prio) ||
+            ((irq_ctl[i] == best_prio) && (i > best_id))) begin
+
+          best_id   = i;
+          best_prio = irq_ctl[i];
+
+        end
+
+      end
+
+    end
+
+    return best_id;
+
   endfunction
 
   task body();
 
     int best_id;
-    bit [7:0] best_prio;
 
     if (!this.randomize())
       `uvm_fatal("RAND_EN_MASK_SEQ", "Randomization failed")
 
-    best_id   = -1;
-    best_prio = 8'h00;
+    best_id = find_best_id(ext_mask & en_mask);
 
-    for (int i = 0; i < 16; i++) begin
-      if (ext_mask[i] && en_mask[i]) begin
-        if ((best_id == -1) ||
-            (irq_ctl[i] > best_prio) ||
-            ((irq_ctl[i] == best_prio) && (i > best_id))) begin
-          best_id   = i;
-          best_prio = irq_ctl[i];
-        end
+    if (best_id < 10)
+      `uvm_fatal("RAND_EN_MASK_SEQ", "Invalid interrupt winner")
+
+    send_tr("reset",
+            1'b0,
+            16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
+
+    repeat (3) begin
+      send_tr("post_reset_idle",
+              1'b1,
+              16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
+    end
+
+    for (int i = 10; i < 16; i++) begin
+      if (ext_mask[i]) begin
+        write_ctl($sformatf("write_irq%0d_ctl", i),
+                  ctl_addr(i),
+                  irq_ctl[i]);
       end
     end
 
-    send_tr("reset", 1'b0, 16'h0,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
-
-    repeat (3) begin
-      send_tr("post_reset_idle", 1'b1, 16'h0,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'h0, 0,
-              8'h00, 0);
-    end
-
-    for (int i = 0; i < 16; i++) begin
-      write_ctl($sformatf("write_irq%0d_ctl", i),
-                ctl_addr(i),
-                irq_ctl[i]);
-    end
-
-    send_tr("assert_random_enable_mask", 1'b1, ext_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            en_mask, 1,
-            8'h00, 0);
+    send_tr("assert_random_enable_mask",
+            1'b1,
+            ext_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en_mask,
+            1'b1, 8'h00,
+            8'h00,
+            1'b0);
 
     repeat (5) begin
-      send_tr("wait_resolve", 1'b1, ext_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              en_mask, 0,
-              8'h00, 0);
+      send_tr("wait_resolve",
+              1'b1,
+              ext_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, en_mask,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
     end
 
-    send_tr("ack_enabled_winner", 1'b1, ext_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            en_mask, 0,
-            8'h00, 1);
+    send_tr("eoi_enabled_winner",
+            1'b1,
+            ext_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, en_mask,
+            1'b0, (8'h10 + best_id),
+            8'h00,
+            1'b0);
+
+    repeat (3) begin
+      send_tr("idle_after_eoi",
+              1'b1,
+              ext_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, en_mask,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
+    end
 
   endtask
 
-  task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
-    send_tr(name, 1'b1, 16'h0,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+  task write_ctl(
+    string name,
+    bit [15:0] addr,
+    bit [7:0] data
+  );
+
+    send_tr(name,
+            1'b1,
+            16'h0000,
+            1'b1,
+            addr,
+            data,
+            1'b0,
+            16'h0000,
+            1'b0,
+            16'h0000,
+            1'b0,
+            8'h00,
+            8'h00,
+            1'b0);
+
   endtask
 
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_mask,
+    bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 0;
-    tr.soc_mmr_read_addr_i = 0;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
 
     tr.active_lvl_pr_i = active_lvl;
 
-    tr.global_int_enable_bit_i   = enable_mask;
+    tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 0;
-    tr.debug_mode_reset_i = 0;
-    tr.debug_ndm_reset_i  = 0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
@@ -2110,13 +2916,15 @@ class same_priority_random_seq extends uvm_sequence #(int_seq_item);
   rand bit [7:0] common_prio;
 
   constraint irq_c {
+
     foreach (irq_id[i]) {
-      irq_id[i] inside {[0:15]};
+      irq_id[i] inside {[10:15]};
     }
 
     foreach (irq_id[i]) {
       foreach (irq_id[j]) {
-        if (i != j) irq_id[i] != irq_id[j];
+        if (i != j)
+          irq_id[i] != irq_id[j];
       }
     }
 
@@ -2128,7 +2936,7 @@ class same_priority_random_seq extends uvm_sequence #(int_seq_item);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int id);
-    return 16'h1003 + (id * 4);
+    return 16'h9020 + (id * 16'h0010);
   endfunction
 
   task body();
@@ -2139,124 +2947,170 @@ class same_priority_random_seq extends uvm_sequence #(int_seq_item);
     if (!this.randomize())
       `uvm_fatal("SAME_PRIO_SEQ", "Randomization failed")
 
-    irq_mask    = 16'h0;
+    irq_mask    = 16'h0000;
     expected_id = irq_id[0];
 
     foreach (irq_id[i]) begin
+
       irq_mask[irq_id[i]] = 1'b1;
 
       if (irq_id[i] > expected_id)
         expected_id = irq_id[i];
+
     end
 
-    send_tr("reset", 1'b0, 16'h0,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+    `uvm_info("SAME_PRIO_SEQ",
+      $sformatf("COMMON_PRIO=0x%02h EXPECTED_HIGHEST_ID=%0d IRQ_MASK=0x%04h",
+                common_prio, expected_id, irq_mask),
+      UVM_LOW)
+
+    send_tr("reset",
+            1'b0,
+            16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
 
     repeat (3) begin
-      send_tr("post_reset_idle", 1'b1, 16'h0,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'h0, 0,
-              8'h00, 0);
+      send_tr("post_reset_idle",
+              1'b1,
+              16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
     end
 
     foreach (irq_id[i]) begin
+
       write_ctl($sformatf("write_irq%0d_ctl", irq_id[i]),
                 ctl_addr(irq_id[i]),
                 common_prio);
+
     end
 
-    send_tr("assert_same_priority_irqs", 1'b1, irq_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            irq_mask, 1,
-            8'h00, 0);
+    send_tr("assert_same_priority_irqs",
+            1'b1,
+            irq_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, irq_mask,
+            1'b1, 8'h00,
+            8'h00,
+            1'b0);
 
     repeat (5) begin
-      send_tr("wait_resolve", 1'b1, irq_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              irq_mask, 0,
-              8'h00, 0);
+      send_tr("wait_resolve",
+              1'b1,
+              irq_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, irq_mask,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
     end
 
-    send_tr("ack_highest_id", 1'b1, irq_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            irq_mask, 0,
-            8'h00, 1);
+    send_tr("eoi_highest_id",
+            1'b1,
+            irq_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, irq_mask,
+            1'b0, (8'h10 + expected_id),
+            8'h00,
+            1'b0);
 
     repeat (3) begin
-      send_tr("idle_after_ack", 1'b1, irq_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              irq_mask, 0,
-              8'h00, 0);
+      send_tr("idle_after_eoi",
+              1'b1,
+              irq_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, irq_mask,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
     end
 
   endtask
 
-  task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
-    send_tr(name, 1'b1, 16'h0,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+  task write_ctl(
+    string name,
+    bit [15:0] addr,
+    bit [7:0] data
+  );
+
+    send_tr(name,
+            1'b1,
+            16'h0000,
+            1'b1,
+            addr,
+            data,
+            1'b0,
+            16'h0000,
+            1'b0,
+            16'h0000,
+            1'b0,
+            8'h00,
+            8'h00,
+            1'b0);
+
   endtask
 
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_mask,
+    bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 0;
-    tr.soc_mmr_read_addr_i = 0;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
 
     tr.active_lvl_pr_i = active_lvl;
 
-    tr.global_int_enable_bit_i   = enable_mask;
+    tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 0;
-    tr.debug_mode_reset_i = 0;
-    tr.debug_ndm_reset_i  = 0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
   endtask
 
 endclass
-
 
 // ============================================================
 // RANDOM ALL 16 IRQ SEQUENCE
@@ -2265,11 +3119,11 @@ class random_all_16_irq_seq extends uvm_sequence #(int_seq_item);
 
   `uvm_object_utils(random_all_16_irq_seq)
 
-  rand bit [7:0]  irq_ctl [16];
+  rand bit [7:0] irq_ctl [6];
   rand bit [15:0] irq_mask;
 
   constraint valid_c {
-    irq_mask != 16'h0;
+    irq_mask != 16'h0000;
 
     foreach (irq_ctl[i]) {
       irq_ctl[i] inside {[8'h01:8'hFF]};
@@ -2281,174 +3135,188 @@ class random_all_16_irq_seq extends uvm_sequence #(int_seq_item);
   endfunction
 
   function automatic bit [15:0] ctl_addr(int irq_id);
-    return 16'h1003 + (irq_id * 4);
-  endfunction
-
-  function automatic int find_best_id(bit [15:0] mask);
-
-    int best_id;
-    bit [7:0] best_prio;
-
-    best_id   = -1;
-    best_prio = 8'h00;
-
-    for (int i = 0; i < 16; i++) begin
-      if (mask[i]) begin
-        if ((best_id == -1) ||
-            (irq_ctl[i] > best_prio) ||
-            ((irq_ctl[i] == best_prio) && (i > best_id))) begin
-          best_id   = i;
-          best_prio = irq_ctl[i];
-        end
-      end
-    end
-
-    return best_id;
-
+    return 16'h9020 + (irq_id * 16'h0010);
   endfunction
 
   task body();
 
+    bit [15:0] prog_mask;
     int best_id;
 
     if (!this.randomize())
       `uvm_fatal("RAND16_SEQ", "randomization failed")
 
-    best_id = find_best_id(irq_mask);
+    // All 16 IRQs are asserted
+    irq_mask = 16'hFFFF;
 
-    send_tr("reset", 1'b0, 16'h0,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
+    // Only IRQ10-15 CTLs are programmable
+    prog_mask = 16'hFC00;
 
+    send_tr("post_reset_idle",
+        1'b1, 16'h0000,
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, 16'h0000,
+        1'b0, 8'h00,
+        8'h00,
+        1'b0);
+    
     repeat (3) begin
-      send_tr("post_reset_idle", 1'b1, 16'h0,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'h0, 0,
-              8'h00, 0);
+      send_tr("post_reset_idle",
+        1'b1, 16'h0000,
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, 16'h0000,
+        1'b0, 8'h00,
+        8'h00,
+        1'b0);
     end
 
-    for (int i = 0; i < 16; i++) begin
-      write_ctl($sformatf("write_irq%0d_ctl", i),
-                ctl_addr(i),
+    for (int i = 0; i < 6; i++) begin
+      write_ctl($sformatf("write_irq%0d_ctl", i + 10),
+                ctl_addr(i + 10),
                 irq_ctl[i]);
     end
 
-    send_tr("enable_all_assert_random_mask", 1'b1, irq_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            16'hFFFF, 1,
-            8'h00, 0);
+  send_tr("enable_all_assert_random_mask", 1'b1, irq_mask,
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, 16'hFFFF,
+        1'b0, 8'h00,
+        8'h00,
+        1'b0);
+
 
     repeat (5) begin
       send_tr("wait_priority_resolve", 1'b1, irq_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'hFFFF, 0,
-              8'h00, 0);
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, 16'hFFFF,
+        1'b0, 8'h00,
+        8'h00,
+        1'b0);
     end
 
-    send_tr("ack_random_winner", 1'b1, irq_mask,
-            0, 16'h0, 32'h0,
-            0, 8'h00,
-            16'hFFFF, 0,
-            8'h00, 1);
+    // Remove IRQs 0-9 from expected programmable-priority
+    // winner calculation. Programmable priority is tested on
+    // IRQ10-15.
+    best_id = 10;
 
-    repeat (2) begin
-      send_tr("idle_after_first_ack", 1'b1, irq_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'hFFFF, 0,
-              8'h00, 0);
+    for (int i = 11; i < 16; i++) begin
+      if ((irq_ctl[i-10] > irq_ctl[best_id-10]) ||
+          ((irq_ctl[i-10] == irq_ctl[best_id-10]) &&
+           (i > best_id))) begin
+        best_id = i;
+      end
     end
 
+   send_tr("idle_before_eoi", 1'b1, irq_mask,
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, 16'hFFFF,
+        1'b0, 8'h00,
+        8'h00,
+        1'b0);
+
+    // EOI selected programmable IRQ
     irq_mask[best_id] = 1'b0;
 
     send_tr("eoi_first_winner", 1'b1, irq_mask,
-            0, 16'h0, 32'h0,
-            1, 8'h10 + best_id[7:0],
-            16'hFFFF, 0,
-            8'h00, 0);
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b1, 16'hFFFF,
+        1'b0, 8'h00,
+        (8'h10 + best_id),
+        1'b0);
 
     repeat (3) begin
       send_tr("wait_next_pending", 1'b1, irq_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'hFFFF, 0,
-              8'h00, 0);
-    end
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, 16'hFFFF,
+        1'b0, 8'h00,
+        8'h00,
+        1'b0);
+      end
 
-    if (irq_mask != 16'h0) begin
-      send_tr("ack_next_winner", 1'b1, irq_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'hFFFF, 0,
-              8'h00, 1);
+    if (irq_mask != 16'h0000) begin
+    send_tr("wait_next_pending", 1'b1, irq_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'hFFFF,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
     end
 
     repeat (3) begin
-      send_tr("idle_after_ack", 1'b1, irq_mask,
-              0, 16'h0, 32'h0,
-              0, 8'h00,
-              16'hFFFF, 0,
-              8'h00, 0);
-    end
+      send_tr("idle_before_eoi", 1'b1, irq_mask,
+        1'b0, 16'h0000, 8'h00,
+        1'b0, 16'h0000,
+        1'b0, 16'hFFFF,
+        1'b0, 8'h00,
+        8'h00,
+        1'b0);
+      end
 
   endtask
 
-  task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
-    send_tr(name, 1'b1, 16'h0,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0, 0,
-            8'h00, 0);
-  endtask
-
+     task write_ctl(
+        string name,
+        bit [15:0] addr,
+        bit [7:0] data
+    );
+    
+        send_tr(name, 1'b1, 16'h0000,
+                1'b1, addr, data,
+                1'b0, 16'h0000,
+                1'b0, 16'h0000,
+                1'b0, 8'h00,
+                8'h00,
+                1'b0);
+    endtask
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_mask,
+    bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 0;
-    tr.soc_mmr_read_addr_i = 0;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
 
     tr.active_lvl_pr_i = active_lvl;
 
-    tr.global_int_enable_bit_i   = enable_mask;
+    tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 0;
-    tr.debug_mode_reset_i = 0;
-    tr.debug_ndm_reset_i  = 0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
@@ -2457,7 +3325,7 @@ class random_all_16_irq_seq extends uvm_sequence #(int_seq_item);
 endclass
 
 // ============================================================
-// ENABLE / DISABLE MASKING SEQUENCE - 16 IRQ
+// ENABLE / DISABLE MASKING SEQUENCE - IRQ10
 // ============================================================
 class enable_disable_masking_seq extends uvm_sequence #(int_seq_item);
 
@@ -2467,134 +3335,220 @@ class enable_disable_masking_seq extends uvm_sequence #(int_seq_item);
     super.new(name);
   endfunction
 
+
   task body();
 
-    // RESET: active-low
-    send_tr("reset", 1'b0, 16'h0000,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0000, 0,
-            8'h00, 0);
+    // --------------------------------------------------------
+    // Reset
+    // --------------------------------------------------------
+    send_tr("reset",
+            1'b0, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            1'b0,
+            1'b0);
 
+
+    // --------------------------------------------------------
+    // Wait after reset
+    // --------------------------------------------------------
     repeat (3)
-      send_tr("post_reset_idle", 1'b1, 16'h0000,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0000, 0,
-              8'h00, 0);
+      send_tr("post_reset_idle",
+              1'b1, 16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              1'b0,
+              1'b0);
 
-    // IRQ5 control address = 16'h1003 + 5*4 = 16'h1017
-    write_ctl("irq5_ctl", 16'h1017, 8'hE0);
 
-    // IRQ5 active, but disabled
-    send_tr("irq5_active_disabled", 1'b1, 16'h0020,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0000, 1,
-            8'h00, 0);
+    // --------------------------------------------------------
+    // IRQ10 CTL
+    // 0x9020 + (10 * 0x10) = 0x90C0
+    // --------------------------------------------------------
+    write_ctl("irq10_ctl", 16'h90C0, 8'hE0);
 
+
+    // --------------------------------------------------------
+    // IRQ10 active, but disabled
+    // --------------------------------------------------------
+    send_tr("irq10_active_disabled",
+            1'b1, 16'h0400,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            1'b0,
+            1'b0);
+
+
+    // --------------------------------------------------------
+    // Verify interrupt remains disabled
+    // --------------------------------------------------------
     repeat (5)
-      send_tr("wait_disabled", 1'b1, 16'h0020,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0000, 0,
-              8'h00, 0);
+      send_tr("wait_disabled",
+              1'b1, 16'h0400,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              1'b0,
+              1'b0);
 
-    // Enable IRQ5 while still active
-    send_tr("enable_irq5", 1'b1, 16'h0020,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0020, 1,
-            8'h00, 0);
 
+    // --------------------------------------------------------
+    // Enable IRQ10 while it is still active
+    // --------------------------------------------------------
+    send_tr("enable_irq10",
+            1'b1, 16'h0400,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0400,
+            1'b1, 8'h00,
+            1'b0,
+            1'b0);
+
+
+    // --------------------------------------------------------
+    // Wait for IRQ10 to become serviceable
+    // --------------------------------------------------------
     repeat (3)
-      send_tr("wait_enabled_irq5", 1'b1, 16'h0020,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0020, 0,
-              8'h00, 0);
+      send_tr("wait_enabled_irq10",
+              1'b1, 16'h0400,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0400,
+              1'b0, 8'h00,
+              1'b0,
+              1'b0);
 
-    // ACK IRQ5 expected = 8'h15
-    send_tr("ack_irq5", 1'b1, 16'h0020,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0020, 0,
-            8'h00, 1);
 
+    // --------------------------------------------------------
+    // EOI for IRQ10
+    // IRQ ID = 0x10 + 10 = 0x1A
+    // --------------------------------------------------------
+    send_tr("eoi_irq10",
+            1'b1, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, 16'h0400,
+            1'b0, 8'h1A,
+            1'b0,
+            1'b0);
+
+
+    // --------------------------------------------------------
+    // Wait after EOI
+    // --------------------------------------------------------
     repeat (2)
-      send_tr("idle_after_ack", 1'b1, 16'h0020,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0020, 0,
-              8'h00, 0);
+      send_tr("idle_after_eoi",
+              1'b1, 16'h0400,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0400,
+              1'b0, 8'h00,
+              1'b0,
+              1'b0);
 
-    // Disable IRQ5 again while still active
-    send_tr("disable_irq5_again", 1'b1, 16'h0020,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0000, 1,
-            8'h00, 0);
 
+    // --------------------------------------------------------
+    // Disable IRQ10 again
+    // --------------------------------------------------------
+    send_tr("disable_irq10_again",
+            1'b1, 16'h0400,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b1, 8'h00,
+            1'b0,
+            1'b0);
+
+
+    // --------------------------------------------------------
+    // Verify interrupt remains disabled
+    // --------------------------------------------------------
     repeat (5)
-      send_tr("wait_after_disable_again", 1'b1, 16'h0020,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0000, 0,
-              8'h00, 0);
+      send_tr("wait_after_disable_again",
+              1'b1, 16'h0400,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              1'b0,
+              1'b0);
 
   endtask
 
-  task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
-    send_tr(name, 1'b1, 16'h0000,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0000, 0,
-            8'h00, 0);
+
+  // ==========================================================
+  // WRITE CTL REGISTER
+  // ==========================================================
+  task write_ctl(
+    string name,
+    bit [15:0] addr,
+    bit [7:0] data
+  );
+
+    send_tr(name,
+            1'b1, 16'h0000,
+            1'b1, addr, data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            1'b0,
+            1'b0);
+
   endtask
 
+
+  // ==========================================================
+  // SEND TRANSACTION
+  // ==========================================================
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_mask,
+    bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 1'b0;
-    tr.soc_mmr_read_addr_i = 16'h0000;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
 
     tr.active_lvl_pr_i = active_lvl;
 
-    tr.global_int_enable_bit_i   = enable_mask;
+    tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
@@ -2616,139 +3570,198 @@ class simultaneous_new_irq_during_eoi_seq extends uvm_sequence #(int_seq_item);
 
   task body();
 
+    // ----------------------------------------------------------
+    // Reset
+    // ----------------------------------------------------------
     send_tr("reset", 1'b0, 16'h0000,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0000, 0,
-            8'h00, 0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
 
+    // ----------------------------------------------------------
+    // Post reset idle
+    // ----------------------------------------------------------
     repeat (3)
       send_tr("post_reset_idle", 1'b1, 16'h0000,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0000, 0,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
 
-    // IRQ5 = 0x20, IRQ6 = 0xE0
-    write_ctl("irq5_ctl", 16'h1017, 8'h20);
-    write_ctl("irq6_ctl", 16'h101B, 8'hE0);
+    // ----------------------------------------------------------
+    // Program priorities
+    // IRQ10 CTL = 0x90C0
+    // IRQ11 CTL = 0x90D0
+    // ----------------------------------------------------------
+    write_ctl("irq10_ctl", 16'h90C0, 8'h20);
+    write_ctl("irq11_ctl", 16'h90D0, 8'hE0);
 
-    // Assert IRQ5 only, enable IRQ5 and IRQ6
-    send_tr("assert_irq5", 1'b1, 16'h0020,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0060, 1,
-            8'h00, 0);
+    // ----------------------------------------------------------
+    // Assert IRQ10 only
+    // Enable IRQ10 and IRQ11
+    // ----------------------------------------------------------
+    send_tr("assert_irq10", 1'b1, 16'h0400,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0C00,
+            1'b1, 8'h00,
+            8'h00,
+            1'b0);
 
+    // ----------------------------------------------------------
+    // Wait for IRQ10
+    // ----------------------------------------------------------
     repeat (3)
-      send_tr("wait_irq5", 1'b1, 16'h0020,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0060, 0,
-              8'h00, 0);
+      send_tr("wait_irq10", 1'b1, 16'h0400,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0C00,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
 
-    // ACK IRQ5 expected = 8'h15
-    send_tr("ack_irq5", 1'b1, 16'h0020,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0060, 0,
-            8'h00, 1);
-
+    // ----------------------------------------------------------
+    // ACK is generated internally by DUT.
+    // Wait for interrupt acceptance.
+    // ----------------------------------------------------------
     repeat (2)
-      send_tr("wait_after_ack5", 1'b1, 16'h0020,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0060, 0,
-              8'h00, 0);
+      send_tr("wait_after_internal_ack10", 1'b1, 16'h0400,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0C00,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
 
-    // Same cycle: EOI IRQ5 and new IRQ6 arrives
-    send_tr("eoi_irq5_new_irq6", 1'b1, 16'h0040,
-            0, 16'h0000, 32'h0000_0000,
-            1, 8'h15,
-            16'h0060, 0,
-            8'h00, 0);
+    // ----------------------------------------------------------
+    // EOI IRQ10 + assert new IRQ11
+    //
+    // IRQ10 EOI ID = 0x10 + 10 = 0x1A
+    // ----------------------------------------------------------
+    send_tr("eoi_irq10_new_irq11", 1'b1, 16'h0800,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, 16'h0C00,
+            1'b0, 8'h1A,
+            8'h00,
+            1'b0);
 
+    // ----------------------------------------------------------
+    // Wait for IRQ11
+    // ----------------------------------------------------------
     repeat (3)
-      send_tr("wait_irq6", 1'b1, 16'h0040,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0060, 0,
-              8'h00, 0);
+      send_tr("wait_irq11", 1'b1, 16'h0800,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0C00,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
 
-    // ACK IRQ6 expected = 8'h16
-    send_tr("ack_irq6", 1'b1, 16'h0040,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0060, 0,
-            8'h00, 1);
+    // ----------------------------------------------------------
+    // EOI IRQ11
+    //
+    // IRQ11 EOI ID = 0x10 + 11 = 0x1B
+    // ----------------------------------------------------------
+    send_tr("eoi_irq11", 1'b1, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, 16'h0C00,
+            1'b0, 8'h1B,
+            8'h00,
+            1'b0);
 
+    // ----------------------------------------------------------
+    // Idle after EOI
+    // ----------------------------------------------------------
     repeat (3)
       send_tr("idle", 1'b1, 16'h0000,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0060, 0,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0C00,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
 
   endtask
 
-  task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
+
+  // ==========================================================
+  // WRITE CTL
+  // ==========================================================
+  task write_ctl(
+    string name,
+    bit [15:0] addr,
+    bit [7:0] data
+  );
+
     send_tr(name, 1'b1, 16'h0000,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0000, 0,
-            8'h00, 0);
+            1'b1, addr, data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
+
   endtask
 
+
+  // ==========================================================
+  // SEND TRANSACTION
+  // ==========================================================
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_mask,
+    bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 1'b0;
-    tr.soc_mmr_read_addr_i = 16'h0000;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
 
     tr.active_lvl_pr_i = active_lvl;
 
-    tr.global_int_enable_bit_i   = enable_mask;
+    tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
   endtask
 
 endclass
-
 
 // ============================================================
 // RANDOM MULTI IRQ SEQUENCE - 16 IRQ
@@ -2766,9 +3779,10 @@ class random_multi_irq_seq extends uvm_sequence #(int_seq_item);
   rand bit [7:0] prio_c;
 
   constraint valid_irq_c {
-    irq_a inside {[0:15]};
-    irq_b inside {[0:15]};
-    irq_c inside {[0:15]};
+
+    irq_a inside {[10:15]};
+    irq_b inside {[10:15]};
+    irq_c inside {[10:15]};
 
     irq_a != irq_b;
     irq_b != irq_c;
@@ -2783,118 +3797,289 @@ class random_multi_irq_seq extends uvm_sequence #(int_seq_item);
     super.new(name);
   endfunction
 
+
+  // ==========================================================
+  // IRQ CTL ADDRESS
+  //
+  // IRQ10 = 0x90C0
+  // IRQ11 = 0x90D0
+  // IRQ12 = 0x90E0
+  // IRQ13 = 0x90F0
+  // IRQ14 = 0x9100
+  // IRQ15 = 0x9110
+  // ==========================================================
   function automatic bit [15:0] ctl_addr(int irq_id);
-    return 16'h1003 + (irq_id * 4);
+
+    return 16'h9020 + (irq_id * 16'h0010);
+
   endfunction
 
+
+  // ==========================================================
+  // FIND HIGHEST PRIORITY ACTIVE IRQ
+  // ==========================================================
+  function automatic int find_best_id(
+    bit [15:0] mask
+  );
+
+    int best_id;
+    bit [7:0] best_prio;
+
+    best_id   = -1;
+    best_prio = 8'h00;
+
+    for (int i = 10; i < 16; i++) begin
+
+      if (mask[i]) begin
+
+        if (i == irq_a) begin
+
+          if ((best_id == -1) || (prio_a > best_prio)) begin
+            best_id   = i;
+            best_prio = prio_a;
+          end
+
+        end
+        else if (i == irq_b) begin
+
+          if ((best_id == -1) || (prio_b > best_prio)) begin
+            best_id   = i;
+            best_prio = prio_b;
+          end
+
+        end
+        else if (i == irq_c) begin
+
+          if ((best_id == -1) || (prio_c > best_prio)) begin
+            best_id   = i;
+            best_prio = prio_c;
+          end
+
+        end
+
+      end
+
+    end
+
+    return best_id;
+
+  endfunction
+
+
+  // ==========================================================
+  // BODY
+  // ==========================================================
   task body();
 
     bit [15:0] irq_mask;
+    int best_id;
 
+    // --------------------------------------------------------
+    // Randomize IRQs and priorities
+    // --------------------------------------------------------
     if (!this.randomize())
-      `uvm_fatal("RAND_SEQ", "randomization failed")
+      `uvm_fatal("RAND_MULTI_SEQ", "randomization failed")
 
     irq_mask = 16'h0000;
+
     irq_mask[irq_a] = 1'b1;
     irq_mask[irq_b] = 1'b1;
     irq_mask[irq_c] = 1'b1;
 
-    send_tr("reset", 1'b0, 16'h0000,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            16'h0000, 0,
-            8'h00, 0);
 
+    // --------------------------------------------------------
+    // Reset
+    // --------------------------------------------------------
+    send_tr("reset", 1'b0, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
+
+
+    // --------------------------------------------------------
+    // Post reset idle
+    // --------------------------------------------------------
     repeat (3)
       send_tr("post_reset_idle", 1'b1, 16'h0000,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              16'h0000, 0,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
 
-    write_ctl("write_irq_a", ctl_addr(irq_a), prio_a);
-    write_ctl("write_irq_b", ctl_addr(irq_b), prio_b);
-    write_ctl("write_irq_c", ctl_addr(irq_c), prio_c);
 
+    // --------------------------------------------------------
+    // Program IRQ A
+    // --------------------------------------------------------
+    write_ctl("write_irq_a_ctl",
+              ctl_addr(irq_a),
+              prio_a);
+
+
+    // --------------------------------------------------------
+    // Program IRQ B
+    // --------------------------------------------------------
+    write_ctl("write_irq_b_ctl",
+              ctl_addr(irq_b),
+              prio_b);
+
+
+    // --------------------------------------------------------
+    // Program IRQ C
+    // --------------------------------------------------------
+    write_ctl("write_irq_c_ctl",
+              ctl_addr(irq_c),
+              prio_c);
+
+
+    // --------------------------------------------------------
+    // Assert all three random IRQs
+    //
+    // irq_mask contains only IRQ10-15.
+    // --------------------------------------------------------
     send_tr("assert_random_irqs", 1'b1, irq_mask,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            irq_mask, 1,
-            8'h00, 0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'hFC00,
+            1'b1, 8'h00,
+            8'h00,
+            1'b0);
 
+
+    // --------------------------------------------------------
+    // Wait for interrupt selection / internal ACK
+    // --------------------------------------------------------
     repeat (3)
       send_tr("wait_random_irqs", 1'b1, irq_mask,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              irq_mask, 0,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'hFC00,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
 
-    send_tr("ack_random_winner", 1'b1, irq_mask,
-            0, 16'h0000, 32'h0000_0000,
-            0, 8'h00,
-            irq_mask, 0,
-            8'h00, 1);
 
-    repeat (2)
-      send_tr("idle_after_ack", 1'b1, irq_mask,
-              0, 16'h0000, 32'h0000_0000,
-              0, 8'h00,
-              irq_mask, 0,
-              8'h00, 0);
+    // --------------------------------------------------------
+    // Determine expected highest priority IRQ
+    // --------------------------------------------------------
+    best_id = find_best_id(irq_mask);
+
+    if (best_id < 10)
+      `uvm_fatal("RAND_MULTI_SEQ",
+                 "Invalid programmable IRQ winner")
+
+
+    // --------------------------------------------------------
+    // Remove winner from external interrupt assertion
+    // before sending EOI.
+    // --------------------------------------------------------
+    irq_mask[best_id] = 1'b0;
+
+
+    // --------------------------------------------------------
+    // EOI current winner
+    //
+    // EOI ID = 0x10 + IRQ number
+    //
+    // Example:
+    // IRQ10 -> 0x1A
+    // IRQ11 -> 0x1B
+    // ...
+    // IRQ15 -> 0x1F
+    // --------------------------------------------------------
+    send_tr("eoi_random_winner", 1'b1, irq_mask,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, 16'hFC00,
+            1'b0, (8'h10 + best_id),
+            8'h00,
+            1'b0);
+
+
+    // --------------------------------------------------------
+    // Wait for next pending interrupt
+    // --------------------------------------------------------
+    repeat (3)
+      send_tr("wait_next_pending", 1'b1, irq_mask,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'hFC00,
+              1'b0, 8'h00,
+              8'h00,
+              1'b0);
 
   endtask
 
-  task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
+
+  // ==========================================================
+  // WRITE CTL
+  // ==========================================================
+  task write_ctl(
+    string name,
+    bit [15:0] addr,
+    bit [7:0] data
+  );
+
     send_tr(name, 1'b1, 16'h0000,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0000, 0,
-            8'h00, 0);
+            1'b1, addr, data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0, 8'h00,
+            8'h00,
+            1'b0);
+
   endtask
 
+
+  // ==========================================================
+  // SEND TRANSACTION
+  // ==========================================================
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_mask,
+    bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 1'b0;
-    tr.soc_mmr_read_addr_i = 16'h0000;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
 
     tr.active_lvl_pr_i = active_lvl;
 
-    tr.global_int_enable_bit_i   = enable_mask;
+    tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
@@ -2915,127 +4100,154 @@ class eoi_flow_seq extends uvm_sequence #(int_seq_item);
 
   task body();
 
+    // IRQ10 = 0x0400
+    // IRQ11 = 0x0800
+
+    // Reset
     send_tr("reset", 1'b0, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 8'h00,
-            16'h0000, 0,
-            8'h00, 0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000, 1'b0,
+            8'h00, 8'h00,
+            1'b0);
 
     repeat (3)
       send_tr("post_reset_idle", 1'b1, 16'h0000,
-              0, 16'h0000, 32'h0,
-              0, 8'h00,
-              16'h0000, 0,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000, 1'b0,
+              8'h00, 8'h00,
+              1'b0);
 
-    write_ctl("prog_irq5_ctl", 16'h1017, 8'h20);
-    write_ctl("prog_irq6_ctl", 16'h101B, 8'hE0);
+    // IRQ10 CTL = 0x90C0
+    // IRQ11 CTL = 0x90D0
+    write_ctl("prog_irq10_ctl", 16'h90C0, 8'h20);
+    write_ctl("prog_irq11_ctl", 16'h90D0, 8'hE0);
 
-    send_tr("assert_irq5_irq6", 1'b1, 16'h0060,
-            0, 16'h0000, 32'h0,
-            0, 8'h00,
-            16'h0060, 1,
-            8'h00, 0);
+    // Assert IRQ10 and IRQ11
+    // Both enabled
+    send_tr("assert_irq10_irq11", 1'b1, 16'h0C00,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0C00, 1'b1,
+            8'h00, 8'h00,
+            1'b0);
 
     repeat (3)
-      send_tr("wait_first_irq", 1'b1, 16'h0060,
-              0, 16'h0000, 32'h0,
-              0, 8'h00,
-              16'h0060, 0,
-              8'h00, 0);
+      send_tr("wait_first_irq", 1'b1, 16'h0C00,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0C00, 1'b0,
+              8'h00, 8'h00,
+              1'b0);
 
-    send_tr("ack_irq6", 1'b1, 16'h0060,
-            0, 16'h0000, 32'h0,
-            0, 8'h00,
-            16'h0060, 0,
-            8'h00, 1);
-
+    // IRQ11 has higher priority
+    // ACK is generated internally by DUT
     repeat (2)
-      send_tr("idle_after_ack6", 1'b1, 16'h0060,
-              0, 16'h0000, 32'h0,
-              0, 8'h00,
-              16'h0060, 0,
-              8'h00, 0);
+      send_tr("wait_after_internal_ack11", 1'b1, 16'h0C00,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0C00, 1'b0,
+              8'h00, 8'h00,
+              1'b0);
 
-    send_tr("eoi_irq6", 1'b1, 16'h0020,
-            0, 16'h0000, 32'h0,
-            1, 8'h16,
-            16'h0060, 0,
-            8'h00, 0);
+    // EOI IRQ11
+    send_tr("eoi_irq11", 1'b1, 16'h0400,
+            1'b0, 16'h0000, 8'h00,
+            1'b1, 16'h0000,
+            1'b1, 16'h0C00, 1'b0,
+            8'h00, 8'h1B,
+            1'b0);
 
     repeat (3)
-      send_tr("wait_next_irq5", 1'b1, 16'h0020,
-              0, 16'h0000, 32'h0,
-              0, 8'h00,
-              16'h0060, 0,
-              8'h00, 0);
+      send_tr("wait_next_irq10", 1'b1, 16'h0400,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0C00, 1'b0,
+              8'h00, 8'h00,
+              1'b0);
 
-    send_tr("ack_irq5_after_eoi", 1'b1, 16'h0020,
-            0, 16'h0000, 32'h0,
-            0, 8'h00,
-            16'h0060, 0,
-            8'h00, 1);
+    // EOI IRQ10
+    send_tr("eoi_irq10", 1'b1, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b1, 16'h0000,
+            1'b1, 16'h0C00, 1'b0,
+            8'h00, 8'h1A,
+            1'b0);
+
+    repeat (3)
+      send_tr("idle_after_eoi", 1'b1, 16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0C00, 1'b0,
+              8'h00, 8'h00,
+              1'b0);
 
   endtask
 
-  task write_ctl(string name, bit [15:0] addr, bit [7:0] data);
+  task write_ctl(
+    string name,
+    bit [15:0] addr,
+    bit [7:0] data
+  );
+
     send_tr(name, 1'b1, 16'h0000,
-            1, addr, {24'h0, data},
-            0, 8'h00,
-            16'h0000, 0,
-            8'h00, 0);
+            1'b1, addr, data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000, 1'b0,
+            8'h00, 8'h00,
+            1'b0);
+
   endtask
 
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_mask,
+    bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 1'b0;
-    tr.soc_mmr_read_addr_i = 16'h0000;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
 
     tr.active_lvl_pr_i = active_lvl;
 
-    tr.global_int_enable_bit_i   = enable_mask;
+    tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
   endtask
 
 endclass
-
 
 // ============================================================
 // RESET BASIC SEQUENCE
@@ -3062,14 +4274,15 @@ class reset_basic_seq extends zic_comman_base_seq;
       `uvm_fatal("RESET_SEQ", "Randomization failed")
 
     repeat (rst_cycles) begin
+
       send_tr("random_reset",
               1'b0, 16'h0000,
-              0, 16'h0000, 32'h0,
-              0, 16'h0000,
-              0, 8'h00,
-              16'h0000, 0,
-              8'h00,
-              0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'h0000, 1'b0,
+              8'h00, 8'h00,
+              1'b0);
+
     end
 
     idle(post_idle_cycles);
@@ -3106,82 +4319,116 @@ class mmr_basic_seq extends zic_comman_base_seq;
       `uvm_fatal("MMR_SEQ", "Randomization failed")
 
     // ============================================================
-    //  HIT ALL IRQ ADDRESSES ONCE
-    // For 16 interrupt design: IRQ0 to IRQ15
+    // READ ALL IRQ CTL ADDRESSES
+    // IRQ0-9 are RO
+    // IRQ10-15 are RW
     // ============================================================
     for (int i = 0; i < 16; i++) begin
 
-      ctl_data = $urandom_range(8'h01, 8'hFF);
+      if (i >= 10) begin
+        ctl_data = $urandom_range(8'h01, 8'hFF);
+        write_ctl(i, ctl_data);
+      end
 
-      // Write every IRQ CTL address once
-      write_ctl(i, ctl_data);
-
-      // Read every IRQ CTL address once
       send_tr($sformatf("read_irq%0d_ctl", i),
-              0, 48'h0,
-              0, 16'h0, 32'h0,
-              1, ctl_addr(i),
-              0, 8'h00,
-              VALID_IRQ_MASK, 0,
-              8'h00,
-              0);
+              1'b1, 16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b1, ctl_addr(i),
+              1'b0, 16'h0000, 1'b0,
+              8'h00, 8'h00,
+              1'b0);
 
       idle(1);
 
     end
 
     // ============================================================
-    //  HIT DATA VALUE 0x00
+    // HIT DATA VALUE 0x00
     // ============================================================
-    write_ctl(0, 8'h00);
+    write_ctl(10, 8'h00);
 
-    send_tr("read_zero_data_irq0",
-            0, 48'h0,
-            0, 16'h0, 32'h0,
-            1, ctl_addr(0),
-            0, 8'h00,
-            VALID_IRQ_MASK, 0,
-            8'h00,
-            0);
+    send_tr("read_zero_data_irq10",
+            1'b1, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b1, ctl_addr(10),
+            1'b0, 16'h0000, 1'b0,
+            8'h00, 8'h00,
+            1'b0);
 
     idle(1);
 
     // ============================================================
-    // HIT ALL 8-bit DATA VALUES 0x00 to 0xFF
+    // HIT DATA VALUE 0xFF
+    // ============================================================
+    write_ctl(15, 8'hFF);
+
+    send_tr("read_ff_data_irq15",
+            1'b1, 16'h0000,
+            1'b0, 16'h0000, 8'h00,
+            1'b1, ctl_addr(15),
+            1'b0, 16'h0000, 1'b0,
+            8'h00, 8'h00,
+            1'b0);
+
+    idle(1);
+
+    // ============================================================
+    // HIT ALL 8-BIT DATA VALUES
+    // Only writable CTL10-15
     // ============================================================
     for (int d = 0; d < 256; d++) begin
 
-      irq = d % 16;
+      irq = 10 + (d % 6);
 
-      write_ctl(irq, bit'(d[7:0]));
+      write_ctl(irq, d[7:0]);
 
       idle(1);
 
     end
 
     // ============================================================
-    //  RANDOM MMR STRESS
+    // RANDOM MMR STRESS
     // ============================================================
     repeat (num_ops) begin
 
-      irq      = $urandom_range(0, 15);
+      irq      = $urandom_range(10, 15);
       ctl_data = $urandom_range(8'h00, 8'hFF);
       rd_addr  = ctl_addr(irq);
 
       write_ctl(irq, ctl_data);
 
       send_tr("random_mmr_read",
-              0, 16'h0,
-              0, 16'h0, 32'h0,
-              1, rd_addr,
-              0, 8'h00,
-              VALID_IRQ_MASK, 0,
-              8'h00,
-              0);
+              1'b1, 16'h0000,
+              1'b0, 16'h0000, 8'h00,
+              1'b1, rd_addr,
+              1'b0, 16'h0000, 1'b0,
+              8'h00, 8'h00,
+              1'b0);
 
       idle($urandom_range(1, 3));
 
     end
+
+  endtask
+
+  function automatic bit [15:0] ctl_addr(int irq_id);
+
+    return 16'h9020 + (irq_id * 16'h0010);
+
+  endfunction
+
+  task write_ctl(
+    int irq_id,
+    bit [7:0] data
+  );
+
+    send_tr($sformatf("write_irq%0d_ctl", irq_id),
+            1'b1, 16'h0000,
+            1'b1, ctl_addr(irq_id), data,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000, 1'b0,
+            8'h00, 8'h00,
+            1'b0);
 
   endtask
 
@@ -3197,13 +4444,11 @@ class single_irq_seq extends zic_comman_base_seq;
 
   rand int irq;
   rand bit [7:0] irq_ctl;
-  rand int unsigned ack_delay;
   rand int unsigned eoi_delay;
 
   constraint c {
-    irq       inside {[0:15]};
+    irq       inside {[10:15]};
     irq_ctl   inside {[8'h01:8'hFF]};
-    ack_delay inside {[2:10]};
     eoi_delay inside {[1:5]};
   }
 
@@ -3220,57 +4465,48 @@ class single_irq_seq extends zic_comman_base_seq;
       `uvm_fatal("SINGLE_IRQ_SEQ", "Randomization failed")
 
     ext = 16'h0000;
-    en  = VALID_IRQ_MASK;
+    en  = 16'hFC00;
+
     ext[irq] = 1'b1;
 
     write_ctl(irq, irq_ctl);
 
     send_tr("single_irq_assert",
             1'b1, ext,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 1,
-            8'h00,
-            0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en, 1'b1,
+            8'h00, 8'h00,
+            1'b0);
 
-    idle(ack_delay, ext, en);
+    // Wait for internal ACK / interrupt acceptance
+    idle(5, ext, en);
 
-    send_tr("single_irq_ack",
-            1'b1, ext,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 0,
-            8'h00,
-            1);
-
+    // Keep IRQ active
     idle(eoi_delay, ext, en);
 
+    // Clear external interrupt and send EOI
     send_tr("single_irq_clear",
             1'b1, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 0,
-            8'h00,
-            0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en, 1'b0,
+            8'h00, 8'h00,
+            1'b0);
 
     send_tr("single_irq_eoi",
             1'b1, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            1, 8'h10 + irq[7:0],
-            en, 0,
-            8'h00,
-            0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, en, 1'b0,
+            8'h00, (8'h10 + irq),
+            1'b0);
 
     idle(3);
 
   endtask
 
 endclass
-
 
 // ============================================================
 // MULTI IRQ SEQUENCE
@@ -3279,13 +4515,13 @@ class multi_irq_seq extends zic_comman_base_seq;
 
   `uvm_object_utils(multi_irq_seq)
 
-  rand bit [7:0] irq_ctl [16];
+  rand bit [7:0] irq_ctl [6];
   rand int unsigned irq_count;
-  rand int unsigned ack_delay;
+  rand int unsigned eoi_delay;
 
   constraint c {
-    irq_count inside {[2:10]};
-    ack_delay inside {[3:10]};
+    irq_count inside {[2:6]};
+    eoi_delay inside {[3:10]};
 
     foreach (irq_ctl[i]) {
       irq_ctl[i] inside {[8'h01:8'hFF]};
@@ -3325,22 +4561,32 @@ class multi_irq_seq extends zic_comman_base_seq;
     bit found;
     bit [7:0] best_ctl;
 
-    best_id  = 0;
-    found    = 0;
+    best_id  = 10;
+    found    = 1'b0;
     best_ctl = 8'h00;
 
-    for (int i = 0; i < 16; i++) begin
+    for (int i = 10; i < 16; i++) begin
+
       if (mask[i]) begin
+
         if (!found) begin
-          found    = 1;
+          found    = 1'b1;
           best_id  = i;
-          best_ctl = irq_ctl[i];
+          best_ctl = irq_ctl[i-10];
         end
-        else if (higher_priority(irq_ctl[i], i, best_ctl, best_id)) begin
+        else if (higher_priority(
+                   irq_ctl[i-10],
+                   i,
+                   best_ctl,
+                   best_id)) begin
+
           best_id  = i;
-          best_ctl = irq_ctl[i];
+          best_ctl = irq_ctl[i-10];
+
         end
+
       end
+
     end
 
     return best_id;
@@ -3358,65 +4604,61 @@ class multi_irq_seq extends zic_comman_base_seq;
       `uvm_fatal("MULTI_IRQ_SEQ", "Randomization failed")
 
     ext = 16'h0000;
-    en  = VALID_IRQ_MASK;
+    en  = 16'hFC00;
 
-    for (int i = 0; i < 16; i++) begin
-      write_ctl(i, irq_ctl[i]);
+    // Program IRQ10-15
+    for (int i = 10; i < 16; i++) begin
+      write_ctl(i, irq_ctl[i-10]);
     end
 
+    // Generate random number of unique active IRQs
     repeat (irq_count) begin
-      irq = $urandom_range(0, 15);
+      irq = $urandom_range(10, 15);
       ext[irq] = 1'b1;
+    end
+
+    // Make sure at least two IRQs are active
+    if ($countones(ext) < 2) begin
+      ext[10] = 1'b1;
+      ext[11] = 1'b1;
     end
 
     best_id = find_best_id(ext);
 
     send_tr("multi_irq_assert",
             1'b1, ext,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 1,
-            8'h00,
-            0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en, 1'b1,
+            8'h00, 8'h00,
+            1'b0);
 
-    idle(ack_delay, ext, en);
+    // Wait for internal ACK
+    idle(eoi_delay, ext, en);
 
-    send_tr("multi_irq_ack",
-            1'b1, ext,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 0,
-            8'h00,
-            1);
-
-    idle(2, ext, en);
-
+    // Clear current external requests
     send_tr("multi_irq_clear",
             1'b1, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 0,
-            8'h00,
-            0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en, 1'b0,
+            8'h00, 8'h00,
+            1'b0);
 
+    // EOI selected winner
     send_tr("multi_irq_eoi",
             1'b1, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            1, 8'h10 + best_id[7:0],
-            en, 0,
-            8'h00,
-            0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, en, 1'b0,
+            8'h00, (8'h10 + best_id),
+            1'b0);
 
     idle(3);
 
   endtask
 
 endclass
-
 
 // ============================================================
 // PRIORITY RANGE STRESS SEQUENCE - 16 IRQ
@@ -3438,9 +4680,7 @@ class priority_range_stress_seq extends uvm_sequence #(int_seq_item);
 
       ext = 16'h0000;
 
-      for (int irq = (grp * 4);
-           irq < ((grp * 4) + 4) && irq < 16;
-           irq++) begin
+      for (int irq = 10; irq < 16; irq++) begin
 
         case (grp)
           0: ctl_val = 8'h10;
@@ -3452,10 +4692,13 @@ class priority_range_stress_seq extends uvm_sequence #(int_seq_item);
 
         send_tr("cfg_priority_range",
                 1'b1, 16'h0000,
-                1, 16'h1003 + (irq * 4), {24'h0, ctl_val},
-                0, 8'h00,
-                16'h0000, 0,
-                8'h00, 0);
+                1'b1,
+                16'h9020 + (irq * 16'h0010),
+                ctl_val,
+                1'b0, 16'h0000,
+                1'b0, 16'h0000, 1'b0,
+                8'h00, 8'h00,
+                1'b0);
 
         ext[irq] = 1'b1;
 
@@ -3463,18 +4706,20 @@ class priority_range_stress_seq extends uvm_sequence #(int_seq_item);
 
       send_tr("drive_priority_range",
               1'b1, ext,
-              0, 16'h0000, 32'h0,
-              0, 8'h00,
-              16'hFFFF, 1,
-              8'h00, 0);
+              1'b0, 16'h0000, 8'h00,
+              1'b0, 16'h0000,
+              1'b0, 16'hFC00, 1'b1,
+              8'h00, 8'h00,
+              1'b0);
 
       repeat (3)
         send_tr("wait_priority_range",
                 1'b1, ext,
-                0, 16'h0000, 32'h0,
-                0, 8'h00,
-                16'hFFFF, 0,
-                8'h00, 0);
+                1'b0, 16'h0000, 8'h00,
+                1'b0, 16'h0000,
+                1'b0, 16'hFC00, 1'b0,
+                8'h00, 8'h00,
+                1'b0);
 
     end
 
@@ -3483,46 +4728,45 @@ class priority_range_stress_seq extends uvm_sequence #(int_seq_item);
   task send_tr(
     string name,
     bit soc_rst,
-    bit [15:0] ext_int,
+    bit [15:0] ext_mask,
     bit wr_en,
     bit [15:0] wr_addr,
-    bit [31:0] wr_data,
+    bit [7:0] wr_data,
+    bit rd_en,
+    bit [15:0] rd_addr,
     bit eoi_valid,
-    bit [7:0] eoi_id,
-    bit [15:0] enable_mask,
+    bit [15:0] enable_bits,
     bit enable_valid,
+    bit [7:0] eoi_id,
     bit [7:0] active_lvl,
-    bit ack_valid
+    bit debug_valid
   );
 
     int_seq_item tr;
 
     tr = int_seq_item::type_id::create(name);
+
     start_item(tr);
 
     tr.soc_rst = soc_rst;
-    tr.ext_int = ext_int;
+    tr.ext_int = ext_mask;
 
     tr.soc_mmr_write_en_i   = wr_en;
     tr.soc_mmr_write_addr_i = wr_addr;
     tr.soc_mmr_write_data_i = wr_data;
 
-    tr.soc_mmr_read_en_i   = 1'b0;
-    tr.soc_mmr_read_addr_i = 16'h0000;
-
-    tr.soc_ack_read_valid_en = ack_valid;
+    tr.soc_mmr_read_en_i   = rd_en;
+    tr.soc_mmr_read_addr_i = rd_addr;
 
     tr.soc_eoi_valid_i = eoi_valid;
     tr.soc_eoi_id_i    = eoi_id;
 
     tr.active_lvl_pr_i = active_lvl;
 
-    tr.global_int_enable_bit_i   = enable_mask;
+    tr.global_int_enable_bit_i   = enable_bits;
     tr.global_int_enable_valid_i = enable_valid;
 
-    tr.debug_mode_valid_i = 1'b0;
-    tr.debug_mode_reset_i = 1'b0;
-    tr.debug_ndm_reset_i  = 1'b0;
+    tr.debug_mode_valid_i = debug_valid;
 
     finish_item(tr);
 
@@ -3530,8 +4774,9 @@ class priority_range_stress_seq extends uvm_sequence #(int_seq_item);
 
 endclass
 
+
 // ============================================================
-// EOI WITHOUT ACK SEQUENCE - 16 IRQ / soc_*
+// EOI WITHOUT ACK SEQUENCE - 16 IRQ
 // ============================================================
 class illegal_eoi_seq extends zic_comman_base_seq;
 
@@ -3543,56 +4788,58 @@ class illegal_eoi_seq extends zic_comman_base_seq;
 
   task body();
 
-    // Reset active-low
+    // IRQ10
+    // ext mask = 0x0400
+    // enable   = 0x0400
+    // EOI ID   = 0x1A
+
+    // Reset
     send_tr("reset",
             1'b0, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            16'h0000, 0,
-            8'h00,
-            0);
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000, 1'b0,
+            8'h00, 8'h00,
+            1'b0);
 
     idle(3);
 
-    // Program IRQ5
-    write_ctl(5, 8'hE0);
+    // Program IRQ10 CTL
+    write_ctl(10, 8'hE0);
 
-    // Assert IRQ5 and enable IRQ5
-    send_tr("assert_irq5_no_ack",
-            1'b1, 16'h0020,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            16'h0020, 1,
-            8'h00,
-            0);
+    // Assert IRQ10 and enable IRQ10
+    send_tr("assert_irq10_no_ack",
+            1'b1, 16'h0400,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0400, 1'b1,
+            8'h00, 8'h00,
+            1'b0);
 
-    idle(4, 16'h0020, 16'h0020);
+    // Do not wait for normal interrupt acceptance.
+    // Immediately issue EOI.
+    send_tr("eoi_without_ack_irq10",
+            1'b1, 16'h0400,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, 16'h0400, 1'b0,
+            8'h00, 8'h1A,
+            1'b0);
 
-    // EOI without ACK
-    send_tr("eoi_without_ack_irq5",
-            1'b1, 16'h0020,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            1, 8'h15,
-            16'h0020, 0,
-            8'h00,
-            0);
+    idle(5, 16'h0400, 16'h0400);
 
-    idle(5, 16'h0020, 16'h0020);
+    // IRQ10 remains asserted.
+    // The monitor/scoreboard should determine whether the DUT
+    // correctly rejects/ignores the illegal EOI.
+    send_tr("check_irq10_after_illegal_eoi",
+            1'b1, 16'h0400,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0400, 1'b0,
+            8'h00, 8'h00,
+            1'b0);
 
-    // ACK should still be possible if DUT did not wrongly clear IRQ5
-    send_tr("ack_irq5_after_illegal_eoi",
-            1'b1, 16'h0020,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            16'h0020, 0,
-            8'h00,
-            1);
-
-    idle(3, 16'h0020, 16'h0020);
+    idle(3, 16'h0400, 16'h0400);
 
   endtask
 
@@ -3601,7 +4848,8 @@ endclass
 
 // ============================================================
 // SAME IRQ REASSERT SEQUENCE - 16 IRQ / soc_*
-// IRQ5 assert -> ACK -> clear -> EOI -> assert again -> ACK -> EOI
+// IRQ10 assert -> internal ACK -> clear -> EOI
+// IRQ10 assert again -> internal ACK -> clear -> EOI
 // ============================================================
 class irq_reassert_seq extends zic_comman_base_seq;
 
@@ -3616,116 +4864,147 @@ class irq_reassert_seq extends zic_comman_base_seq;
     bit [15:0] ext;
     bit [15:0] en;
 
-    ext = 16'h0020; // IRQ5
-    en  = 16'h0020;
+    // IRQ10
+    ext = 16'h0400;
+    en  = 16'h0400;
 
-    // Reset active-low
+    // --------------------------------------------------------
+    // RESET
+    // --------------------------------------------------------
     send_tr("reset",
             1'b0, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            16'h0000, 0,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, 16'h0000,
+            1'b0,
             8'h00,
-            0);
+            8'h00,
+            1'b0);
 
     idle(3);
 
-    // Program IRQ5 high priority
-    write_ctl(5, 8'hE0);
+    // --------------------------------------------------------
+    // Program IRQ10 high priority
+    // CTL10 = 0x90C0
+    // --------------------------------------------------------
+    write_ctl(10, 8'hE0);
 
     // ========================================================
-    // First IRQ5 service
+    // FIRST IRQ10 SERVICE
     // ========================================================
-    send_tr("irq5_assert_first",
+    send_tr("irq10_assert_first",
             1'b1, ext,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 1,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en,
+            1'b1,
             8'h00,
-            0);
+            8'h00,
+            1'b0);
 
+    // Allow interrupt resolver/internal ACK to occur
     idle(5, ext, en);
 
-    send_tr("irq5_ack_first",
+    // ACK is generated internally.
+    // No ack_valid transaction is required.
+    send_tr("irq10_wait_after_ack_first",
             1'b1, ext,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 0,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en,
+            1'b0,
             8'h00,
-            1);
+            8'h00,
+            1'b0);
 
     idle(2, ext, en);
 
+    // --------------------------------------------------------
     // Clear external interrupt before EOI
-    send_tr("irq5_clear_first",
+    // --------------------------------------------------------
+    send_tr("irq10_clear_first",
             1'b1, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 0,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en,
+            1'b0,
             8'h00,
-            0);
+            8'h00,
+            1'b0);
 
     idle(2, 16'h0000, en);
 
-    send_tr("irq5_eoi_first",
+    // --------------------------------------------------------
+    // EOI IRQ10
+    // EOI ID = 8'h1A
+    // --------------------------------------------------------
+    send_tr("irq10_eoi_first",
             1'b1, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            1, 8'h15,
-            en, 0,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, en,
+            1'b0,
+            8'h1A,
             8'h00,
-            0);
+            1'b0);
 
     idle(4, 16'h0000, en);
 
     // ========================================================
-    // Reassert same IRQ5 again
+    // REASSERT SAME IRQ10
     // ========================================================
-    send_tr("irq5_reassert_second",
+    send_tr("irq10_reassert_second",
             1'b1, ext,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 1,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en,
+            1'b1,
             8'h00,
-            0);
+            8'h00,
+            1'b0);
 
     idle(5, ext, en);
 
-    send_tr("irq5_ack_second",
+    // Internal ACK
+    send_tr("irq10_wait_after_ack_second",
             1'b1, ext,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 0,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en,
+            1'b0,
             8'h00,
-            1);
+            8'h00,
+            1'b0);
 
     idle(2, ext, en);
 
-    send_tr("irq5_clear_second",
+    // --------------------------------------------------------
+    // Clear external interrupt
+    // --------------------------------------------------------
+    send_tr("irq10_clear_second",
             1'b1, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            0, 8'h00,
-            en, 0,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b0, en,
+            1'b0,
             8'h00,
-            0);
+            8'h00,
+            1'b0);
 
     idle(2, 16'h0000, en);
 
-    send_tr("irq5_eoi_second",
+    // --------------------------------------------------------
+    // EOI IRQ10
+    // --------------------------------------------------------
+    send_tr("irq10_eoi_second",
             1'b1, 16'h0000,
-            0, 16'h0000, 32'h0,
-            0, 16'h0000,
-            1, 8'h15,
-            en, 0,
+            1'b0, 16'h0000, 8'h00,
+            1'b0, 16'h0000,
+            1'b1, en,
+            1'b0,
+            8'h1A,
             8'h00,
-            0);
+            1'b0);
 
     idle(5);
 
@@ -3733,13 +5012,19 @@ class irq_reassert_seq extends zic_comman_base_seq;
 
 endclass
 
+
 // ============================================================
-// ALL INTERRUPTS HIGH AT SAME TIME SEQUENCE - 16 IRQ / soc_*
-// Purpose:
-//   - Assert IRQ0 to IRQ15 together
-//   - Enable IRQ0 to IRQ15 together
-//   - Program different priorities
-//   - Expected winner should be highest priority IRQ
+// ALL INTERRUPTS HIGH SEQUENCE - 16 IRQ
+//
+// Assert IRQ0-IRQ15 together
+// Enable IRQ0-IRQ15 together
+//
+// CTL0-CTL9 are RO, so only CTL10-CTL15 are programmed.
+//
+// Highest programmed priority:
+// IRQ15 = 0xFF
+// Expected highest programmable interrupt = IRQ15
+// Expected interrupt ID = 8'h1F
 // ============================================================
 class all_interrupts_high_seq extends zic_comman_base_seq;
 
@@ -3757,78 +5042,87 @@ class all_interrupts_high_seq extends zic_comman_base_seq;
     ext = 16'hFFFF;
     en  = 16'hFFFF;
 
-    // ------------------------------------------------------------
+    // --------------------------------------------------------
     // RESET
-    // ------------------------------------------------------------
+    // --------------------------------------------------------
     send_tr("reset",
             1'b0, 16'h0000,
-            1'b0, 16'h0000, 32'h0000_0000,
+            1'b0, 16'h0000, 8'h00,
             1'b0, 16'h0000,
-            1'b0, 8'h00,
-            16'h0000, 1'b0,
+            1'b0, 16'h0000,
+            1'b0,
+            8'h00,
             8'h00,
             1'b0);
 
     idle(3);
 
-    // ------------------------------------------------------------
-    // Program IRQ0 to IRQ15 with increasing level-priority values
-    // IRQ15 gets highest value, so expected ACK = 8'h1F
-    // ------------------------------------------------------------
-    for (int i = 0; i < 16; i++) begin
-      write_ctl(i, 8'h10 + (i * 8));
+    // --------------------------------------------------------
+    // Program only writable CTL registers: IRQ10-IRQ15
+    // --------------------------------------------------------
+    for (int i = 10; i < 16; i++) begin
+      write_ctl(i, 8'h10 + ((i - 10) * 8'h20));
     end
 
-    // ------------------------------------------------------------
-    // Assert all interrupts and enable all interrupts
-    // ------------------------------------------------------------
+    // Explicitly make IRQ15 highest priority
+    write_ctl(15, 8'hFF);
+
+    // --------------------------------------------------------
+    // Assert all interrupts and enable all
+    // --------------------------------------------------------
     send_tr("assert_all_interrupts_high",
             1'b1, ext,
-            1'b0, 16'h0000, 32'h0000_0000,
+            1'b0, 16'h0000, 8'h00,
             1'b0, 16'h0000,
-            1'b0, 8'h00,
-            en, 1'b1,
+            1'b0, en,
+            1'b1,
+            8'h00,
             8'h00,
             1'b0);
 
-    // Wait for priority resolver
+    // Wait for internal priority resolver / ACK
     idle(5, ext, en);
 
-    // ------------------------------------------------------------
-    // ACK highest interrupt
-    // Expected winner: IRQ15
-    // Expected ACK ID: 8'h1F
-    // ------------------------------------------------------------
-    send_tr("ack_all_interrupts_winner",
+    // --------------------------------------------------------
+    // ACK is internal.
+    // Wait for monitor/checker to observe IRQ15.
+    // --------------------------------------------------------
+    send_tr("wait_after_internal_ack",
             1'b1, ext,
-            1'b0, 16'h0000, 32'h0000_0000,
+            1'b0, 16'h0000, 8'h00,
             1'b0, 16'h0000,
-            1'b0, 8'h00,
-            en, 1'b0,
+            1'b0, en,
+            1'b0,
             8'h00,
-            1'b1);
+            8'h00,
+            1'b0);
 
     idle(3, ext, en);
 
-    // ------------------------------------------------------------
+    // --------------------------------------------------------
     // Clear all external interrupts
-    // ------------------------------------------------------------
+    // --------------------------------------------------------
     send_tr("clear_all_interrupts",
             1'b1, 16'h0000,
-            1'b0, 16'h0000, 32'h0000_0000,
+            1'b0, 16'h0000, 8'h00,
             1'b0, 16'h0000,
-            1'b0, 8'h00,
-            en, 1'b0,
+            1'b0, en,
+            1'b0,
+            8'h00,
             8'h00,
             1'b0);
 
+    // --------------------------------------------------------
     // EOI IRQ15
+    // ID = 8'h1F
+    // --------------------------------------------------------
     send_tr("eoi_irq15",
             1'b1, 16'h0000,
-            1'b0, 16'h0000, 32'h0000_0000,
+            1'b0, 16'h0000, 8'h00,
             1'b0, 16'h0000,
-            1'b1, 8'h1F,
-            en, 1'b0,
+            1'b1, en,
+            1'b0,
+            8'h1F,
             8'h00,
             1'b0);
 
@@ -3846,23 +5140,23 @@ class zic_full_regression_seq extends uvm_sequence #(int_seq_item);
 
   `uvm_object_utils(zic_full_regression_seq)
 
-  reset_basic_seq                   reset_seq;
-  mmr_basic_seq                     mmr_seq;
-  single_irq_seq                    single_seq;
-  multi_irq_seq                     multi_seq;
-  random_enable_mask_seq            enable_seq;
-  random_equal_priority_seq         equal_seq;
-  same_priority_random_seq          same_pri_seq;
-  dynamic_priority_override_seq     dyn_pri_seq;
-  random_eoi_progression_seq        eoi_seq;
+  reset_basic_seq                  reset_seq;
+  mmr_basic_seq                    mmr_seq;
+  single_irq_seq                   single_seq;
+  multi_irq_seq                    multi_seq;
+  random_enable_mask_seq           enable_seq;
+  random_equal_priority_seq        equal_seq;
+  same_priority_random_seq         same_pri_seq;
+  dynamic_priority_override_seq    dyn_pri_seq;
+  random_eoi_progression_seq       eoi_seq;
   random_all_16_irq_seq             all_irq_seq;
   random_interrupt_storm_seq        storm_seq;
   rand_storm_seq                    rand_storm;
   priority_range_stress_seq         pri_seq;
- random_active_level_priority_seq  active_lvl_seq;
+  random_active_level_priority_seq  active_lvl_seq;
   illegal_eoi_seq                   illegal_eoi_s;
   irq_reassert_seq                  reassert_seq;
- all_interrupts_high_seq           all_high_seq;
+  all_interrupts_high_seq            all_high_seq;
 
   function new(string name = "zic_full_regression_seq");
     super.new(name);
@@ -3870,93 +5164,164 @@ class zic_full_regression_seq extends uvm_sequence #(int_seq_item);
 
   task body();
 
-    `uvm_info("ZIC_REG_SEQ", "FULL ZIC 16-IRQ RANDOM REGRESSION STARTED", UVM_LOW)
+    `uvm_info("ZIC_REG_SEQ",
+              "FULL ZIC 16-IRQ RANDOM REGRESSION STARTED",
+              UVM_LOW)
 
+    // --------------------------------------------------------
+    // RESET
+    // --------------------------------------------------------
     repeat (10) begin
       reset_seq = reset_basic_seq::type_id::create("reset_seq");
       reset_seq.start(m_sequencer);
-    end 
+    end
 
+    // --------------------------------------------------------
+    // MMR
+    // --------------------------------------------------------
     repeat (20) begin
       mmr_seq = mmr_basic_seq::type_id::create("mmr_seq");
       mmr_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // SINGLE IRQ
+    // --------------------------------------------------------
     repeat (30) begin
       single_seq = single_irq_seq::type_id::create("single_seq");
       single_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // MULTI IRQ
+    // --------------------------------------------------------
     repeat (30) begin
       multi_seq = multi_irq_seq::type_id::create("multi_seq");
       multi_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // RANDOM ENABLE MASK
+    // --------------------------------------------------------
     repeat (30) begin
-      enable_seq = random_enable_mask_seq::type_id::create("enable_seq");
+      enable_seq =
+        random_enable_mask_seq::type_id::create("enable_seq");
       enable_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // EQUAL PRIORITY
+    // --------------------------------------------------------
     repeat (30) begin
-      equal_seq = random_equal_priority_seq::type_id::create("equal_seq");
+      equal_seq =
+        random_equal_priority_seq::type_id::create("equal_seq");
       equal_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // SAME PRIORITY RANDOM
+    // --------------------------------------------------------
     repeat (30) begin
-      same_pri_seq = same_priority_random_seq::type_id::create("same_pri_seq");
+      same_pri_seq =
+        same_priority_random_seq::type_id::create("same_pri_seq");
       same_pri_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // DYNAMIC PRIORITY
+    // --------------------------------------------------------
     repeat (30) begin
-      dyn_pri_seq = dynamic_priority_override_seq::type_id::create("dyn_pri_seq");
+      dyn_pri_seq =
+        dynamic_priority_override_seq::type_id::create("dyn_pri_seq");
       dyn_pri_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // EOI
+    // --------------------------------------------------------
     repeat (30) begin
-      eoi_seq = random_eoi_progression_seq::type_id::create("eoi_seq");
+      eoi_seq =
+        random_eoi_progression_seq::type_id::create("eoi_seq");
       eoi_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // ALL 16 IRQ
+    // --------------------------------------------------------
     repeat (10) begin
-      all_irq_seq = random_all_16_irq_seq::type_id::create("all_irq_seq");
+      all_irq_seq =
+        random_all_16_irq_seq::type_id::create("all_irq_seq");
       all_irq_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // PRIORITY RANGE
+    // --------------------------------------------------------
     repeat (20) begin
-      pri_seq = priority_range_stress_seq::type_id::create("pri_seq");
+      pri_seq =
+        priority_range_stress_seq::type_id::create("pri_seq");
       pri_seq.start(m_sequencer);
     end
-    
-    repeat(50) begin
-    active_lvl_seq = random_active_level_priority_seq::type_id::create("active_lvl_seq");
 
-    active_lvl_seq.start(m_sequencer);
+    // --------------------------------------------------------
+    // ACTIVE LEVEL PRIORITY
+    // --------------------------------------------------------
+    repeat (50) begin
+      active_lvl_seq =
+        random_active_level_priority_seq::type_id::create(
+          "active_lvl_seq");
+
+      active_lvl_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // ILLEGAL EOI
+    // --------------------------------------------------------
     repeat (20) begin
-      illegal_eoi_s = illegal_eoi_seq::type_id::create("illegal_eoi_s");
+      illegal_eoi_s =
+        illegal_eoi_seq::type_id::create("illegal_eoi_s");
       illegal_eoi_s.start(m_sequencer);
     end
-    
+
+    // --------------------------------------------------------
+    // SAME IRQ REASSERT
+    // --------------------------------------------------------
     repeat (20) begin
-      reassert_seq = irq_reassert_seq::type_id::create("reassert_seq");
+      reassert_seq =
+        irq_reassert_seq::type_id::create("reassert_seq");
       reassert_seq.start(m_sequencer);
     end
 
+    // --------------------------------------------------------
+    // ALL INTERRUPTS HIGH
+    // --------------------------------------------------------
     repeat (20) begin
-      all_high_seq = all_interrupts_high_seq::type_id::create("all_high_seq");
+      all_high_seq =
+        all_interrupts_high_seq::type_id::create("all_high_seq");
       all_high_seq.start(m_sequencer);
     end
-    
-    storm_seq = random_interrupt_storm_seq::type_id::create("storm_seq");
+
+    // --------------------------------------------------------
+    // RANDOM INTERRUPT STORM
+    // --------------------------------------------------------
+    storm_seq =
+      random_interrupt_storm_seq::type_id::create("storm_seq");
+
     storm_seq.storm_cycles = 500;
     storm_seq.start(m_sequencer);
 
-    rand_storm = rand_storm_seq::type_id::create("rand_storm");
-    rand_storm.storm_cycles = 1000;
-    rand_storm.start(m_sequencer); 
+    // --------------------------------------------------------
+    // RANDOM STORM
+    // --------------------------------------------------------
+    rand_storm =
+      rand_storm_seq::type_id::create("rand_storm");
 
-    `uvm_info("ZIC_REG_SEQ", "FULL ZIC 16-IRQ RANDOM REGRESSION COMPLETED", UVM_LOW)
+    rand_storm.storm_cycles = 1000;
+    rand_storm.start(m_sequencer);
+
+    `uvm_info("ZIC_REG_SEQ",
+              "FULL ZIC 16-IRQ RANDOM REGRESSION COMPLETED",
+              UVM_LOW)
 
   endtask
 

@@ -32,10 +32,6 @@ class int_scoreboard extends uvm_scoreboard;
   int read_rsp_fail_count;
 
 
-  // ============================================================
-  // CONSTRUCTOR
-  // ============================================================
-
   function new(
     string name = "int_scoreboard",
     uvm_component parent
@@ -47,10 +43,6 @@ class int_scoreboard extends uvm_scoreboard;
 
   endfunction
 
-
-  // ============================================================
-  // BUILD PHASE
-  // ============================================================
 
   function void build_phase(uvm_phase phase);
 
@@ -71,12 +63,7 @@ class int_scoreboard extends uvm_scoreboard;
   endfunction
 
 
-  // ============================================================
-  // WRITE
-  // ============================================================
-
   function void write(int_seq_item tr);
-
 
     // ==========================================================
     // MMR READ CHECK
@@ -92,7 +79,7 @@ class int_scoreboard extends uvm_scoreboard;
 
         read_rsp_pass_count++;
 
-        uvm_report_info(
+        `uvm_info(
           "MMR_READ_SCB",
           $sformatf(
             "PASS addr=0x%04h exp=0x%02h act=0x%02h",
@@ -101,23 +88,27 @@ class int_scoreboard extends uvm_scoreboard;
             tr.soc_mmr_read_data_o
           ),
           UVM_LOW
-        );
+        )
 
       end
       else begin
 
         read_rsp_fail_count++;
 
-        uvm_report_error(
+        `uvm_error(
           "MMR_READ_SCB",
           $sformatf(
-            "MMR READ FAIL: ADDR=0x%04h EXPECTED=0x%02h ACTUAL=0x%02h RSP=%0b",
+            "\nMMR READ FAIL"
+            "\nADDR     = 0x%04h"
+            "\nEXPECTED = 0x%02h"
+            "\nACTUAL   = 0x%02h"
+            "\nRSP      = %0b",
             tr.soc_mmr_read_addr_i,
             tr.exp_mmr_read_data,
             tr.soc_mmr_read_data_o,
             tr.soc_read_rsp_o
           )
-        );
+        )
 
       end
 
@@ -137,7 +128,7 @@ class int_scoreboard extends uvm_scoreboard;
 
         irq_pass_count++;
 
-        uvm_report_info(
+        `uvm_info(
           "IRQ_SCB",
           $sformatf(
             "PASS IRQ exp=%0b act=%0b",
@@ -145,21 +136,21 @@ class int_scoreboard extends uvm_scoreboard;
             tr.interrupt_request_o
           ),
           UVM_LOW
-        );
+        )
 
       end
       else begin
 
         irq_fail_count++;
 
-        uvm_report_error(
+        `uvm_error(
           "IRQ_SCB",
           $sformatf(
             "IRQ FAIL exp=%0b act=%0b",
             tr.exp_irq_req,
             tr.interrupt_request_o
           )
-        );
+        )
 
       end
 
@@ -168,18 +159,28 @@ class int_scoreboard extends uvm_scoreboard;
   endfunction
 
 
-  // ============================================================
-  // EXTRACT PHASE
-  // ============================================================
-
   function void extract_phase(uvm_phase phase);
 
     super.extract_phase(phase);
 
-    uvm_report_info(
+    `uvm_info(
       "SCB_REPORT",
       $sformatf(
-        "INTERRUPT CONTROLLER SCOREBOARD | MMR READ: COMPARE=%0d PASS=%0d FAIL=%0d | IRQ: COMPARE=%0d PASS=%0d FAIL=%0d",
+        "\n============================================"
+        "\n INTERRUPT CONTROLLER SCOREBOARD"
+        "\n============================================"
+        "\n"
+        "\nMMR READ"
+        "\n  COMPARE : %0d"
+        "\n  PASS    : %0d"
+        "\n  FAIL    : %0d"
+        "\n"
+        "\nIRQ"
+        "\n  COMPARE : %0d"
+        "\n  PASS    : %0d"
+        "\n  FAIL    : %0d"
+        "\n"
+        "\n============================================",
         read_rsp_count,
         read_rsp_pass_count,
         read_rsp_fail_count,
@@ -188,9 +189,8 @@ class int_scoreboard extends uvm_scoreboard;
         irq_fail_count
       ),
       UVM_LOW
-    );
+    )
 
   endfunction
-
 
 endclass

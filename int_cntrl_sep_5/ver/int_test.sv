@@ -75,12 +75,12 @@ class int_base_test extends uvm_test;
 //zic_seq_base seq;
 
 
-/////zic_full_regression_seq seq;
+zic_full_regression_seq seq;
 
 
 
 //tc001_mmr_single_rw_seq  seq;
-tc002_mmr_multiple_rw_seq   seq;
+//tc002_mmr_multiple_rw_seq   seq;
 //tc003_mmr_random_rw_seq seq;
 //tc004_mmr_random_stress_rw_seq seq;
 
@@ -141,7 +141,7 @@ tc002_mmr_multiple_rw_seq   seq;
 
   //  seq = tc001_mmr_single_rw_seq::type_id::create("seq");
 
-    seq = tc002_mmr_multiple_rw_seq::type_id::create("seq");
+  //  seq = tc002_mmr_multiple_rw_seq::type_id::create("seq");
    // seq = tc003_mmr_random_rw_seq::type_id::create("seq");
 
  //   seq = tc004_mmr_random_stress_rw_seq::type_id::create("seq");
@@ -293,7 +293,7 @@ tc002_mmr_multiple_rw_seq   seq;
 
   // seq = zic_seq_base::type_id::create("seq");
 
- /// seq = zic_full_regression_seq::type_id::create("seq");
+  seq = zic_full_regression_seq::type_id::create("seq");
   ////
    
   
