@@ -4,13 +4,16 @@ class int_seq_item extends uvm_sequence_item;
   // DUT OUTPUTS
   // ============================================================
 
-  logic [7:0] soc_mmr_read_data_o;
+  logic [7:0]  soc_mmr_read_data_o;
+  logic        soc_read_rsp_o;
 
-  logic       soc_read_rsp_o;
+  logic        interrupt_request_o;
+  logic [7:0]  highest_pending_lvl_pr_o;
 
-  logic       interrupt_request_o;
+  logic [7:0]  current_int_id_o;
 
-  logic [7:0] highest_pending_lvl_pr_o;
+  logic [31:0] trace_data_int_o;
+  logic [7:0]  trace_event_int_o;
 
 
   // ============================================================
@@ -70,15 +73,14 @@ class int_seq_item extends uvm_sequence_item;
   // EXPECTED VALUES
   // ============================================================
 
-  logic exp_irq_req;
+  logic        exp_valid;
+  logic        exp_irq_req;
+  logic [7:0]  exp_highest_lvl_pr;
+  logic [7:0]  exp_ack_id;
 
-  logic [7:0] exp_highest_lvl_pr;
-
-  logic exp_read_rsp;
-
-  logic [7:0] exp_mmr_read_data;
-
-  bit exp_mmr_read_valid;
+  logic        exp_read_rsp;
+  logic [7:0]  exp_mmr_read_data;
+  bit          exp_mmr_read_valid;
 
 
   // ============================================================
@@ -126,69 +128,73 @@ class int_seq_item extends uvm_sequence_item;
 
   `uvm_object_utils_begin(int_seq_item)
 
-    `uvm_field_int(soc_mmr_read_data_o,       UVM_ALL_ON)
-    `uvm_field_int(soc_read_rsp_o,             UVM_ALL_ON)
-    `uvm_field_int(interrupt_request_o,        UVM_ALL_ON)
-    `uvm_field_int(highest_pending_lvl_pr_o,   UVM_ALL_ON)
+    `uvm_field_int(soc_mmr_read_data_o,      UVM_ALL_ON)
+    `uvm_field_int(soc_read_rsp_o,            UVM_ALL_ON)
+    `uvm_field_int(interrupt_request_o,       UVM_ALL_ON)
+    `uvm_field_int(highest_pending_lvl_pr_o,  UVM_ALL_ON)
 
-    `uvm_field_int(soc_rst,                    UVM_ALL_ON)
+    `uvm_field_int(current_int_id_o,          UVM_ALL_ON)
+    `uvm_field_int(trace_data_int_o,           UVM_ALL_ON)
+    `uvm_field_int(trace_event_int_o,          UVM_ALL_ON)
 
-    `uvm_field_int(soc_mmr_write_en_i,         UVM_ALL_ON)
-    `uvm_field_int(soc_mmr_write_addr_i,       UVM_ALL_ON)
-    `uvm_field_int(soc_mmr_write_data_i,       UVM_ALL_ON)
+    `uvm_field_int(soc_rst,                   UVM_ALL_ON)
 
-    `uvm_field_int(soc_mmr_read_en_i,          UVM_ALL_ON)
-    `uvm_field_int(soc_mmr_read_addr_i,        UVM_ALL_ON)
+    `uvm_field_int(soc_mmr_write_en_i,        UVM_ALL_ON)
+    `uvm_field_int(soc_mmr_write_addr_i,      UVM_ALL_ON)
+    `uvm_field_int(soc_mmr_write_data_i,      UVM_ALL_ON)
 
-    `uvm_field_int(soc_eoi_valid_i,            UVM_ALL_ON)
-    `uvm_field_int(soc_eoi_id_i,               UVM_ALL_ON)
+    `uvm_field_int(soc_mmr_read_en_i,         UVM_ALL_ON)
+    `uvm_field_int(soc_mmr_read_addr_i,       UVM_ALL_ON)
 
-    `uvm_field_int(active_lvl_pr_i,            UVM_ALL_ON)
+    `uvm_field_int(soc_eoi_valid_i,           UVM_ALL_ON)
+    `uvm_field_int(soc_eoi_id_i,              UVM_ALL_ON)
 
-    `uvm_field_int(global_int_enable_bit_i,    UVM_ALL_ON)
-    `uvm_field_int(global_int_enable_valid_i,  UVM_ALL_ON)
+    `uvm_field_int(active_lvl_pr_i,           UVM_ALL_ON)
 
-    `uvm_field_int(ext_int0_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int1_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int2_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int3_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int4_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int5_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int6_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int7_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int8_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int9_i,                 UVM_ALL_ON)
-    `uvm_field_int(ext_int10_i,                UVM_ALL_ON)
-    `uvm_field_int(ext_int11_i,                UVM_ALL_ON)
-    `uvm_field_int(ext_int12_i,                UVM_ALL_ON)
-    `uvm_field_int(ext_int13_i,                UVM_ALL_ON)
-    `uvm_field_int(ext_int14_i,                UVM_ALL_ON)
-    `uvm_field_int(ext_int15_i,                UVM_ALL_ON)
+    `uvm_field_int(global_int_enable_bit_i,   UVM_ALL_ON)
+    `uvm_field_int(global_int_enable_valid_i, UVM_ALL_ON)
 
-    `uvm_field_int(ext_int,                    UVM_ALL_ON)
+    `uvm_field_int(ext_int0_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int1_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int2_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int3_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int4_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int5_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int6_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int7_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int8_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int9_i,                UVM_ALL_ON)
+    `uvm_field_int(ext_int10_i,               UVM_ALL_ON)
+    `uvm_field_int(ext_int11_i,               UVM_ALL_ON)
+    `uvm_field_int(ext_int12_i,               UVM_ALL_ON)
+    `uvm_field_int(ext_int13_i,               UVM_ALL_ON)
+    `uvm_field_int(ext_int14_i,               UVM_ALL_ON)
+    `uvm_field_int(ext_int15_i,               UVM_ALL_ON)
 
-    `uvm_field_int(debug_mode_valid_i,         UVM_ALL_ON)
+    `uvm_field_int(ext_int,                   UVM_ALL_ON)
 
-    `uvm_field_int(exp_irq_req,                UVM_ALL_ON)
-    `uvm_field_int(exp_highest_lvl_pr,         UVM_ALL_ON)
+    `uvm_field_int(debug_mode_valid_i,        UVM_ALL_ON)
 
-    `uvm_field_int(exp_read_rsp,               UVM_ALL_ON)
-    `uvm_field_int(exp_mmr_read_data,          UVM_ALL_ON)
-    `uvm_field_int(exp_mmr_read_valid,         UVM_ALL_ON)
+    `uvm_field_int(exp_valid,                 UVM_ALL_ON)
+    `uvm_field_int(exp_irq_req,               UVM_ALL_ON)
+    `uvm_field_int(exp_highest_lvl_pr,        UVM_ALL_ON)
+    `uvm_field_int(exp_ack_id,                UVM_ALL_ON)
 
-    `uvm_field_int(mon_cycle,                  UVM_ALL_ON)
+    `uvm_field_int(exp_read_rsp,              UVM_ALL_ON)
+    `uvm_field_int(exp_mmr_read_data,         UVM_ALL_ON)
+    `uvm_field_int(exp_mmr_read_valid,        UVM_ALL_ON)
 
-    `uvm_field_int(global_enable_actual,       UVM_ALL_ON)
-    `uvm_field_int(exp_global_enable,          UVM_ALL_ON)
-    `uvm_field_int(exp_global_enable_valid,    UVM_ALL_ON)
+    `uvm_field_int(mon_cycle,                 UVM_ALL_ON)
+
+    `uvm_field_int(global_enable_actual,      UVM_ALL_ON)
+    `uvm_field_int(exp_global_enable,         UVM_ALL_ON)
+    `uvm_field_int(exp_global_enable_valid,   UVM_ALL_ON)
 
   `uvm_object_utils_end
 
 
   function new(string name = "int_seq_item");
-
     super.new(name);
-
   endfunction
 
 endclass

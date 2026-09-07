@@ -12,8 +12,8 @@ package int_pkg;
   `include "int_seq1.sv"
 
 
-/*`include "tests/tc001_mmr_single_rw_seq.sv"
-  `include "tests/tc002_mmr_multiple_rw_seq.sv"
+   `include "tests/tc001_mmr_single_rw_seq.sv"
+/*  `include "tests/tc002_mmr_multiple_rw_seq.sv"
   `include "tests/tc003_mmr_random_rw_seq.sv"
   `include "tests/tc004_mmr_random_stress_rw_seq.sv"
   `include "tests/tc005_global_enable_single_seq.sv"
@@ -44,8 +44,8 @@ package int_pkg;
   
   
   
-*/
-    
+
+    */
 
   
   

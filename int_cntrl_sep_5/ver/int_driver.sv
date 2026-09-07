@@ -42,26 +42,26 @@ class int_driver extends uvm_driver #(int_seq_item);
 
   task drive_idle();
 
-    vif.soc_rst <= 1'b1;
+    vif.soc_rst = 1'b1;
 
-    vif.ext_int <= 16'h0000;
+    vif.ext_int = 16'h0000;
 
-    vif.soc_mmr_write_en_i   <= 1'b0;
-    vif.soc_mmr_write_addr_i <= 16'h0000;
-    vif.soc_mmr_write_data_i <= 8'h00;
+    vif.soc_mmr_write_en_i   = 1'b0;
+    vif.soc_mmr_write_addr_i = 16'h0000;
+    vif.soc_mmr_write_data_i = 8'h00;
 
-    vif.soc_mmr_read_en_i    <= 1'b0;
-    vif.soc_mmr_read_addr_i  <= 16'h0000;
+    vif.soc_mmr_read_en_i    = 1'b0;
+    vif.soc_mmr_read_addr_i  = 16'h0000;
 
-    vif.soc_eoi_valid_i <= 1'b0;
-    vif.soc_eoi_id_i    <= 8'h00;
+    vif.soc_eoi_valid_i = 1'b0;
+    vif.soc_eoi_id_i    = 8'h00;
 
-    vif.active_lvl_pr_i <= 8'h00;
+    vif.active_lvl_pr_i = 8'h00;
 
-    vif.global_int_enable_bit_i   <= 16'h0000;
-    vif.global_int_enable_valid_i <= 1'b0;
+    vif.global_int_enable_bit_i   = 16'h0000;
+    vif.global_int_enable_valid_i = 1'b0;
 
-    vif.debug_mode_valid_i <= 1'b0;
+    vif.debug_mode_valid_i = 1'b0;
 
   endtask
 
@@ -82,12 +82,12 @@ class int_driver extends uvm_driver #(int_seq_item);
 
     @(posedge vif.soc_clk);
 
-    vif.soc_rst <= 1'b0;
+    vif.soc_rst = 1'b0;
 
     repeat (5)
       @(posedge vif.soc_clk);
 
-    vif.soc_rst <= 1'b1;
+    vif.soc_rst = 1'b1;
 
     repeat (2)
       @(posedge vif.soc_clk);
@@ -109,67 +109,60 @@ class int_driver extends uvm_driver #(int_seq_item);
 
     @(posedge vif.soc_clk);
 
-    vif.soc_rst <= 1'b1;
+    vif.soc_rst = 1'b1;
 
-    // ----------------------------------------------------------
-    // External interrupt inputs
-    // ----------------------------------------------------------
-    vif.ext_int <= tr.ext_int;
+    vif.ext_int = tr.ext_int;
 
-    // ----------------------------------------------------------
-    // MMR write
-    // ----------------------------------------------------------
-    vif.soc_mmr_write_en_i   <= tr.soc_mmr_write_en_i;
-    vif.soc_mmr_write_addr_i <= tr.soc_mmr_write_addr_i;
-    vif.soc_mmr_write_data_i <= tr.soc_mmr_write_data_i;
+    vif.soc_mmr_write_en_i   = tr.soc_mmr_write_en_i;
+    vif.soc_mmr_write_addr_i = tr.soc_mmr_write_addr_i;
+    vif.soc_mmr_write_data_i = tr.soc_mmr_write_data_i;
 
-    // ----------------------------------------------------------
-    // MMR read
-    // ----------------------------------------------------------
-    vif.soc_mmr_read_en_i    <= tr.soc_mmr_read_en_i;
-    vif.soc_mmr_read_addr_i  <= tr.soc_mmr_read_addr_i;
+    vif.soc_mmr_read_en_i   = tr.soc_mmr_read_en_i;
+    vif.soc_mmr_read_addr_i = tr.soc_mmr_read_addr_i;
 
-    // ----------------------------------------------------------
-    // Global enable
-    // ----------------------------------------------------------
-    vif.global_int_enable_valid_i <=
+    vif.global_int_enable_valid_i =
       tr.global_int_enable_valid_i;
 
-    vif.global_int_enable_bit_i <=
+    vif.global_int_enable_bit_i =
       tr.global_int_enable_bit_i;
 
-    // ----------------------------------------------------------
-    // EOI
-    // ----------------------------------------------------------
-    vif.soc_eoi_valid_i <= tr.soc_eoi_valid_i;
-    vif.soc_eoi_id_i    <= tr.soc_eoi_id_i;
+    vif.soc_eoi_valid_i = tr.soc_eoi_valid_i;
+    vif.soc_eoi_id_i    = tr.soc_eoi_id_i;
 
-    // ----------------------------------------------------------
-    // Active level
-    // ----------------------------------------------------------
-    vif.active_lvl_pr_i <= tr.active_lvl_pr_i;
+    vif.active_lvl_pr_i =
+      tr.active_lvl_pr_i;
 
-    // ----------------------------------------------------------
-    // Debug
-    // ----------------------------------------------------------
-    vif.debug_mode_valid_i <=
+    vif.debug_mode_valid_i =
       tr.debug_mode_valid_i;
 
 
-    // ----------------------------------------------------------
-    // Hold one cycle
-    // ----------------------------------------------------------
+    `uvm_info(
+      "DRV",
+      $sformatf(
+        "DRIVE ext=%04h en=%04h en_valid=%0b wr=%0b wr_addr=%04h wr_data=%02h rd=%0b rd_addr=%04h eoi=%0b eoi_id=%02h active=%02h debug=%0b",
+        vif.ext_int,
+        vif.global_int_enable_bit_i,
+        vif.global_int_enable_valid_i,
+        vif.soc_mmr_write_en_i,
+        vif.soc_mmr_write_addr_i,
+        vif.soc_mmr_write_data_i,
+        vif.soc_mmr_read_en_i,
+        vif.soc_mmr_read_addr_i,
+        vif.soc_eoi_valid_i,
+        vif.soc_eoi_id_i,
+        vif.active_lvl_pr_i,
+        vif.debug_mode_valid_i
+      ),
+      UVM_LOW
+    );
+
+
     @(posedge vif.soc_clk);
 
-
-    // ----------------------------------------------------------
-    // Deassert pulse signals
-    // ----------------------------------------------------------
-
-    vif.soc_mmr_write_en_i        <= 1'b0;
-    vif.soc_mmr_read_en_i         <= 1'b0;
-    vif.global_int_enable_valid_i <= 1'b0;
-    vif.soc_eoi_valid_i           <= 1'b0;
+    vif.soc_mmr_write_en_i        = 1'b0;
+    vif.soc_mmr_read_en_i         = 1'b0;
+    vif.global_int_enable_valid_i = 1'b0;
+    vif.soc_eoi_valid_i           = 1'b0;
 
   endtask
 
