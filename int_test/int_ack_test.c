@@ -2,42 +2,26 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ *  ACK Correct ID
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Verify that ACK returns the interrupt ID that was actually
+ * selected by the interrupt controller.
  *
- * IRQ used:
+ * Test:
  *
- *     IRQ10
+ *     IRQ10 enabled
+ *     IRQ10 priority = 15
+ *     IRQ10 asserted by SV
  *
- * Priority:
+ * Expected:
  *
- *     15
+ *     current_int_id_o       = IRQ10_ID
+ *     soc_ack_int_id_o       = IRQ10_ID
+ *     soc_ack_read_valid_en  = 1
  *
- * CTL:
+ * Therefore:
  *
- *     0xF3
- *
- * Expected flow:
- *
- *     IRQ10 source
- *          |
- *          v
- *     pending[10]
- *          |
- *          v
- *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ *     ACK ID == Selected Interrupt ID
  *
  * ============================================================ */
 
@@ -47,6 +31,12 @@
  * ============================================================ */
 
 #define EXP_IRQ10_ENABLE_VALUE     0x01U
+
+/*
+ * IRQ10 priority = 15
+ *
+ * CTL = 0xF3
+ */
 #define EXP_IRQ10_CTL_VALUE        0xF3U
 
 
@@ -85,10 +75,9 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
+     * Keep existing configuration.
      *
-     *     0xFC000000
-     *
+     * 0xFC000000
      * ============================================================ */
 
     asm volatile (
@@ -129,7 +118,7 @@ int main(void)
 
 
     /* ============================================================
-     * Read IRQ10 ENABLE
+     * Read IRQ10 Enable
      * ============================================================ */
 
     actual_value = mmio_read(
@@ -157,7 +146,7 @@ int main(void)
 
 
     /* ============================================================
-     * Read IRQ10 CONTROL
+     * Read IRQ10 Control
      * ============================================================ */
 
     actual_value = mmio_read(
@@ -179,63 +168,76 @@ int main(void)
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
-     *
-     * This proves CPU is executing main() before the interrupt.
-     * ============================================================ */
-
-    info_print(0x3000);
-
-
-    /* ============================================================
      * Inform SV
      *
-     * SV should assert IRQ10 after receiving this handshake.
+     * SV should assert ONLY IRQ10.
      *
      * Expected:
      *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
+     *     IRQ10 becomes pending
+     *     IRQ10 wins arbitration
+     *     current_int_id_o = IRQ10_ID
      * ============================================================ */
 
     send_handshake_to_sv(1);
 
 
+    info_print(0x3000);
+
+
     /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
+     * Interrupt Acceptance
      *
-     * The following marker is intentionally placed after the
-     * handshake.
+     * CPU should receive the external interrupt and enter
+     * irq10_handler().
      *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
+     * At interrupt acceptance:
      *
-     * The definitive check is the handler marker:
+     *     current_int_id_o = IRQ10_ID
      *
-     *     0xA010
-     *
+     * ACK should correspond to the same ID.
      * ============================================================ */
 
     info_print(0x3010);
 
 
-    /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
-     * ============================================================ */
+    /*
+     * ============================================================
+     * ACK CHECK
+     *
+     * The actual ACK signaling is expected to be observed
+     * by the SV/UVM environment:
+     *
+     *     soc_ack_read_valid_en = 1
+     *
+     *     soc_ack_int_id_o = IRQ10_ID
+     *
+     *     current_int_id_o = IRQ10_ID
+     *
+     * Expected:
+     *
+     *     soc_ack_int_id_o == current_int_id_o
+     *
+     * ============================================================
+     */
 
     info_print(0x3020);
+
+
+    /*
+     * Execution returns here after the IRQ10 handler executes
+     * mret, if the handler is responsible for the return.
+     */
+
+
+    info_print(0x3333);
 
 
     /* ============================================================
      * Test Complete
      * ============================================================ */
 
-    info_print(0x3333);
-
-    info_print(0x7039);
+    info_print(0x7034);
 
 
 }

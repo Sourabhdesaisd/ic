@@ -88,7 +88,7 @@ int main() {
 //Load  -- Single VPN for DMEM
 
     //// mem page fault
-    addr=0x00013000;
+    addr=0x00016000;
 	ptr =(volatile uint32_t *)addr;
 	rd_data = *ptr;
 

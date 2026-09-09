@@ -90,7 +90,7 @@ int main() {
 ///write permission fault
 //
     
-    addr=0x00015000;
+    addr=0x00011000;
 	ptr =(volatile uint32_t *)addr;
 	*ptr=addr;
 

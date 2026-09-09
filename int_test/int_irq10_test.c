@@ -85,7 +85,6 @@ int main(void)
     if (actual_pinmux0 != EXP_GPIO_PINMUX0_VALUE)
     {
         error_print(0);
-        return 1;
     }
     else
     {
@@ -104,7 +103,6 @@ int main(void)
     if (actual_pinmux1 != EXP_GPIO_PINMUX1_VALUE)
     {
         error_print(1);
-        return 1;
     }
     else
     {
@@ -125,11 +123,6 @@ int main(void)
     );
 
 
-    mmio_write(
-        IRQ10_ATTR_REG_ADDR,
-        EXP_IRQ10_ATTR_VALUE
-    );
-
 
     mmio_write(
         IRQ10_CTL_REG_ADDR,
@@ -148,7 +141,6 @@ int main(void)
     if (actual_irq10_enable != EXP_IRQ10_ENABLE_VALUE)
     {
         error_print(2);
-        return 1;
     }
     else
     {
@@ -169,7 +161,6 @@ int main(void)
     if (actual_irq10_ctl != EXP_IRQ10_CTL_VALUE)
     {
         error_print(4);
-        return 1;
     }
     else
     {

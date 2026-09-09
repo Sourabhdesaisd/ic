@@ -2,42 +2,29 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ * Active Priority Threshold Pass
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Verify that an interrupt is accepted when its priority
+ * satisfies the active priority threshold rule.
  *
- * IRQ used:
+ * Test condition:
  *
- *     IRQ10
+ *     IRQ10 priority      = 15
+ *     active_lvl_pr_i     = 10
  *
- * Priority:
+ * Therefore:
  *
- *     15
+ *     IRQ10 priority > active threshold
  *
- * CTL:
+ * Expected:
  *
- *     0xF3
+ *     pending[10]        = 1
+ *     highest pending    = IRQ10
+ *     current interrupt  = IRQ10
+ *     interrupt request  = 1
+ *     IRQ10 handler      = entered
  *
- * Expected flow:
- *
- *     IRQ10 source
- *          |
- *          v
- *     pending[10]
- *          |
- *          v
- *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ * active_lvl_pr_i is driven/configured by SV/UVM.
  *
  * ============================================================ */
 
@@ -47,15 +34,15 @@
  * ============================================================ */
 
 #define EXP_IRQ10_ENABLE_VALUE     0x01U
+
+/*
+ * 0xF3:
+ *
+ * Priority = 15
+ *
+ * Use the same CTL encoding already used in previous tests.
+ */
 #define EXP_IRQ10_CTL_VALUE        0xF3U
-
-
-/* ============================================================
- * GPIO PINMUX
- * ============================================================ */
-
-#define EXP_GPIO_PINMUX0_VALUE     150994944U
-#define EXP_GPIO_PINMUX1_VALUE     585U
 
 
 int main(void)
@@ -85,10 +72,9 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
+     * Keep existing configuration.
      *
-     *     0xFC000000
-     *
+     * 0xFC000000
      * ============================================================ */
 
     asm volatile (
@@ -106,12 +92,12 @@ int main(void)
 
     mmio_write(
         GPIO_BASE_ADDR + GPIO_PINMUX0_ADDR,
-        EXP_GPIO_PINMUX0_VALUE
+        150994944U
     );
 
     mmio_write(
         GPIO_BASE_ADDR + GPIO_PINMUX1_ADDR,
-        EXP_GPIO_PINMUX1_VALUE
+        585U
     );
 
 
@@ -129,7 +115,7 @@ int main(void)
 
 
     /* ============================================================
-     * Read IRQ10 ENABLE
+     * Read IRQ10 Enable
      * ============================================================ */
 
     actual_value = mmio_read(
@@ -144,10 +130,13 @@ int main(void)
 
 
     /* ============================================================
-     * Configure IRQ10
+     * Configure IRQ10 Priority
+     *
+     * CTL = 0xF3
      *
      * Priority = 15
-     * CTL      = 0xF3
+     *
+     * This is the highest priority value used in the tests.
      * ============================================================ */
 
     mmio_write(
@@ -157,7 +146,7 @@ int main(void)
 
 
     /* ============================================================
-     * Read IRQ10 CONTROL
+     * Read IRQ10 CTL
      * ============================================================ */
 
     actual_value = mmio_read(
@@ -179,63 +168,54 @@ int main(void)
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
-     *
-     * This proves CPU is executing main() before the interrupt.
-     * ============================================================ */
-
-    info_print(0x3000);
-
-
-    /* ============================================================
      * Inform SV
      *
-     * SV should assert IRQ10 after receiving this handshake.
+     * SV/UVM should configure:
      *
-     * Expected:
+     *     active_lvl_pr_i = 10
      *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
+     * and then assert ONLY IRQ10.
+     *
      * ============================================================ */
 
     send_handshake_to_sv(1);
 
 
     /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
+     * Interrupt expected
      *
-     * The following marker is intentionally placed after the
-     * handshake.
+     * IRQ10 priority = 15
      *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
+     * active threshold = 10
      *
-     * The definitive check is the handler marker:
+     * Therefore IRQ10 satisfies the threshold rule.
      *
-     *     0xA010
+     * Expected:
+     *
+     *     interrupt_request_o = 1
+     *
+     *     current_int_id_o    = IRQ10_ID
+     *
+     *     IRQ10 handler       = entered
      *
      * ============================================================ */
 
-    info_print(0x3010);
+    info_print(0x3000);
 
 
     /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
+     * Execution resumes here after IRQ10 handler / mret.
      * ============================================================ */
 
-    info_print(0x3020);
+    info_print(0x3333);
 
 
     /* ============================================================
      * Test Complete
      * ============================================================ */
 
-    info_print(0x3333);
-
-    info_print(0x7039);
+    info_print(0x7029);
 
 
+    return 0;
 }

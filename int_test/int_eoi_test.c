@@ -2,42 +2,40 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ * EOI Correct ID
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Verify EOI completes service for the acknowledged interrupt.
  *
- * IRQ used:
+ * Test:
  *
- *     IRQ10
+ *     IRQ10 enabled
+ *     IRQ10 priority = 15
+ *     SV asserts IRQ10
  *
- * Priority:
+ * Expected sequence:
  *
- *     15
- *
- * CTL:
- *
- *     0xF3
- *
- * Expected flow:
- *
- *     IRQ10 source
+ *     IRQ10 pending
  *          |
  *          v
- *     pending[10]
+ *     IRQ10 selected
  *          |
  *          v
+ *     ACK IRQ10
+ *          |
+ *          v
+ *     EOI IRQ10
+ *          |
+ *          v
+ *     IRQ10 service completed
+ *
+ * SV/UVM should monitor:
+ *
+ *     soc_ack_int_id_o
+ *     soc_ack_read_valid_en
+ *     soc_eoi_valid_i
+ *     soc_eoi_id_i
  *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ *     current_int_id_o
  *
  * ============================================================ */
 
@@ -47,6 +45,12 @@
  * ============================================================ */
 
 #define EXP_IRQ10_ENABLE_VALUE     0x01U
+
+/*
+ * IRQ10 priority = 15
+ *
+ * CTL = 0xF3
+ */
 #define EXP_IRQ10_CTL_VALUE        0xF3U
 
 
@@ -85,10 +89,9 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
+     * Keep existing configuration.
      *
-     *     0xFC000000
-     *
+     * 0xFC000000
      * ============================================================ */
 
     asm volatile (
@@ -157,7 +160,7 @@ int main(void)
 
 
     /* ============================================================
-     * Read IRQ10 CONTROL
+     * Read IRQ10 CTL
      * ============================================================ */
 
     actual_value = mmio_read(
@@ -179,42 +182,35 @@ int main(void)
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
-     *
-     * This proves CPU is executing main() before the interrupt.
-     * ============================================================ */
-
-    info_print(0x3000);
-
-
-    /* ============================================================
      * Inform SV
      *
-     * SV should assert IRQ10 after receiving this handshake.
+     * SV should:
+     *
+     *     1. Assert ONLY IRQ10.
+     *     2. Wait for IRQ10 to become pending.
+     *     3. Allow IRQ10 to be selected.
      *
      * Expected:
      *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
+     *     current_int_id_o = IRQ10_ID
      * ============================================================ */
 
     send_handshake_to_sv(1);
 
 
+    info_print(0x3000);
+
+
     /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
+     * Interrupt Acceptance / ACK
      *
-     * The following marker is intentionally placed after the
-     * handshake.
+     * CPU should accept IRQ10.
      *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
+     * SV should observe:
      *
-     * The definitive check is the handler marker:
-     *
-     *     0xA010
+     *     current_int_id_o      = IRQ10_ID
+     *     soc_ack_read_valid_en = 1
+     *     soc_ack_int_id_o      = IRQ10_ID
      *
      * ============================================================ */
 
@@ -222,20 +218,52 @@ int main(void)
 
 
     /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
+     * EOI Phase
+     *
+     * After ACK, the acknowledged interrupt is IRQ10.
+     *
+     * The EOI interface must therefore contain:
+     *
+     *     soc_eoi_valid_i = 1
+     *     soc_eoi_id_i    = IRQ10_ID
+     *
+     * EOI should complete service of IRQ10.
+     *
      * ============================================================ */
 
     info_print(0x3020);
 
 
     /* ============================================================
-     * Test Complete
+     * After EOI
+     *
+     * Expected:
+     *
+     *     IRQ10 service completed
+     *     IRQ10 no longer active
+     *     interrupt_request_o deasserts
+     *
+     * if no other interrupt is pending.
+     *
      * ============================================================ */
+
+    info_print(0x3030);
+
+
+    /*
+     * Execution resumes here after the interrupt handler
+     * returns with mret.
+     */
+
 
     info_print(0x3333);
 
-    info_print(0x7039);
+
+    /* ============================================================
+     * Test Complete
+     * ============================================================ */
+
+    info_print(0x7035);
 
 
 }

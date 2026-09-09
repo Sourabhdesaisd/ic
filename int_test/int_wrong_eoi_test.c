@@ -2,42 +2,40 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ * Wrong EOI ID
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Verify that an incorrect EOI ID does not incorrectly clear
+ * another interrupt.
  *
- * IRQ used:
+ * Test configuration:
  *
- *     IRQ10
+ *     IRQ10 = Priority 15
+ *     IRQ11 = Priority 13
  *
- * Priority:
+ * Both IRQ10 and IRQ11 are enabled.
  *
- *     15
+ * SV generates both interrupts.
  *
- * CTL:
+ * Expected initial arbitration:
  *
- *     0xF3
+ *     IRQ10 selected
+ *     because 15 > 13
  *
- * Expected flow:
+ * IRQ10 becomes the current/acknowledged interrupt.
  *
- *     IRQ10 source
- *          |
- *          v
- *     pending[10]
- *          |
- *          v
- *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ * Then an incorrect EOI is issued using IRQ11 ID.
+ *
+ * Expected:
+ *
+ *     EOI ID = IRQ11
+ *     Current ID = IRQ10
+ *
+ * Therefore the EOI must NOT complete IRQ10.
+ *
+ * IRQ10 must remain active/current according to the
+ * implementation.
+ *
+ * IRQ11 must not be incorrectly cleared by the wrong EOI.
  *
  * ============================================================ */
 
@@ -46,16 +44,18 @@
  * Expected values
  * ============================================================ */
 
-#define EXP_IRQ10_ENABLE_VALUE     0x01U
-#define EXP_IRQ10_CTL_VALUE        0xF3U
+#define EXP_IRQ_ENABLE_VALUE      0x01U
+
+#define EXP_IRQ10_CTL_VALUE       0xF3U
+#define EXP_IRQ11_CTL_VALUE       0xD3U
 
 
 /* ============================================================
  * GPIO PINMUX
  * ============================================================ */
 
-#define EXP_GPIO_PINMUX0_VALUE     150994944U
-#define EXP_GPIO_PINMUX1_VALUE     585U
+#define EXP_GPIO_PINMUX0_VALUE    150994944U
+#define EXP_GPIO_PINMUX1_VALUE    585U
 
 
 int main(void)
@@ -85,10 +85,9 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
+     * Keep existing configuration.
      *
-     *     0xFC000000
-     *
+     * 0xFC000000
      * ============================================================ */
 
     asm volatile (
@@ -120,24 +119,22 @@ int main(void)
 
     /* ============================================================
      * Enable IRQ10
+     *
+     * Priority = 15
      * ============================================================ */
 
     mmio_write(
         IRQ10_ENABLE_REG_ADDR,
-        EXP_IRQ10_ENABLE_VALUE
+        EXP_IRQ_ENABLE_VALUE
     );
 
-
-    /* ============================================================
-     * Read IRQ10 ENABLE
-     * ============================================================ */
 
     actual_value = mmio_read(
         IRQ10_ENABLE_REG_ADDR
     );
 
 
-    if (actual_value != EXP_IRQ10_ENABLE_VALUE)
+    if (actual_value != EXP_IRQ_ENABLE_VALUE)
         error_print(0);
     else
         info_print(1);
@@ -147,7 +144,7 @@ int main(void)
      * Configure IRQ10
      *
      * Priority = 15
-     * CTL      = 0xF3
+     * CTL = 0xF3
      * ============================================================ */
 
     mmio_write(
@@ -155,10 +152,6 @@ int main(void)
         EXP_IRQ10_CTL_VALUE
     );
 
-
-    /* ============================================================
-     * Read IRQ10 CONTROL
-     * ============================================================ */
 
     actual_value = mmio_read(
         IRQ10_CTL_REG_ADDR
@@ -172,6 +165,53 @@ int main(void)
 
 
     /* ============================================================
+     * Enable IRQ11
+     *
+     * Priority = 13
+     * ============================================================ */
+
+    mmio_write(
+        IRQ11_ENABLE_REG_ADDR,
+        EXP_IRQ_ENABLE_VALUE
+    );
+
+
+    actual_value = mmio_read(
+        IRQ11_ENABLE_REG_ADDR
+    );
+
+
+    if (actual_value != EXP_IRQ_ENABLE_VALUE)
+        error_print(2);
+    else
+        info_print(3);
+
+
+    /* ============================================================
+     * Configure IRQ11
+     *
+     * Priority = 13
+     * CTL = 0xD3
+     * ============================================================ */
+
+    mmio_write(
+        IRQ11_CTL_REG_ADDR,
+        EXP_IRQ11_CTL_VALUE
+    );
+
+
+    actual_value = mmio_read(
+        IRQ11_CTL_REG_ADDR
+    );
+
+
+    if (actual_value != EXP_IRQ11_CTL_VALUE)
+        error_print(3);
+    else
+        info_print(4);
+
+
+    /* ============================================================
      * Configuration Complete
      * ============================================================ */
 
@@ -179,63 +219,89 @@ int main(void)
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
-     *
-     * This proves CPU is executing main() before the interrupt.
-     * ============================================================ */
-
-    info_print(0x3000);
-
-
-    /* ============================================================
      * Inform SV
      *
-     * SV should assert IRQ10 after receiving this handshake.
+     * SV should assert BOTH:
      *
-     * Expected:
+     *     IRQ10
+     *     IRQ11
      *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
+     * Both interrupts must remain pending.
+     *
+     * Expected arbitration:
+     *
+     *     IRQ10 priority = 15
+     *     IRQ11 priority = 13
+     *
+     * Therefore:
+     *
+     *     IRQ10 selected
      * ============================================================ */
 
     send_handshake_to_sv(1);
 
 
+    info_print(0x3000);
+
+
     /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
+     * IRQ10 CURRENT / ACKNOWLEDGED
      *
-     * The following marker is intentionally placed after the
-     * handshake.
+     * Expected:
      *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
+     *     current_int_id_o = IRQ10_ID
      *
-     * The definitive check is the handler marker:
+     *     ACK ID           = IRQ10_ID
      *
-     *     0xA010
-     *
+     * IRQ11 remains pending.
      * ============================================================ */
 
     info_print(0x3010);
 
 
     /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
+     * WRONG EOI
+     *
+     * Current interrupt:
+     *
+     *     IRQ10
+     *
+     * Incorrect EOI:
+     *
+     *     IRQ11
+     *
+     * The EOI ID does NOT match the current interrupt.
+     *
+     
+     *
      * ============================================================ */
 
     info_print(0x3020);
+
+
+    /*
+     * ------------------------------------------------------------
+     * Expected after WRONG EOI:
+     *
+     *     IRQ10 must NOT be completed by the IRQ11 EOI.
+     *
+     *     IRQ11 must NOT be incorrectly cleared.
+     *
+     *     No stale/incorrect state transition should occur.
+     *
+     * Exact current/request behavior depends on the IC RTL
+     * specification.
+     * ------------------------------------------------------------
+     */
+
+    info_print(0x3030);
 
 
     /* ============================================================
      * Test Complete
      * ============================================================ */
 
-    info_print(0x3333);
-
-    info_print(0x7039);
+    info_print(0x7036);
 
 
 }

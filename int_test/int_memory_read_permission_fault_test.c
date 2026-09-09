@@ -86,7 +86,7 @@ int main() {
 
 //// read permission fault
     //Load  -- Single VPN for DMEM
-	addr=0x00014000;
+	addr=0x00013000;
 	ptr =(volatile uint32_t *)addr;
 	rd_data = *ptr;
 	//Disabling prefetch and timeout

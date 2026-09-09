@@ -2,11 +2,10 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ *  Interrupt MEPC Capture
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Verify that MEPC contains the architecturally expected
+ * interrupted/resume PC when an external interrupt is taken.
  *
  * IRQ used:
  *
@@ -20,24 +19,25 @@
  *
  *     0xF3
  *
- * Expected flow:
+ * Test flow:
  *
- *     IRQ10 source
- *          |
- *          v
- *     pending[10]
- *          |
- *          v
- *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ *     main()
+ *       |
+ *       | controlled execution point
+ *       |
+ *       +----> SV asserts IRQ10
+ *                   |
+ *                   v
+ *              CPU interrupt entry
+ *                   |
+ *                   v
+ *                 MEPC
+ *                   |
+ *                   v
+ *             irq10_handler()
+ *                   |
+ *                   v
+ *              read MEPC
  *
  * ============================================================ */
 
@@ -58,9 +58,14 @@
 #define EXP_GPIO_PINMUX1_VALUE     585U
 
 
+
+/* ============================================================
+ * Main
+ * ============================================================ */
+
 int main(void)
 {
-    uint32_t actual_value;
+    uint32_t main_resume_pc;
 
 
     /* ============================================================
@@ -85,10 +90,9 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
+     * Keep your existing required value:
      *
      *     0xFC000000
-     *
      * ============================================================ */
 
     asm volatile (
@@ -129,18 +133,18 @@ int main(void)
 
 
     /* ============================================================
-     * Read IRQ10 ENABLE
+     * Verify IRQ10 Enable
      * ============================================================ */
 
-    actual_value = mmio_read(
-        IRQ10_ENABLE_REG_ADDR
-    );
-
-
-    if (actual_value != EXP_IRQ10_ENABLE_VALUE)
+    if (mmio_read(IRQ10_ENABLE_REG_ADDR) !=
+        EXP_IRQ10_ENABLE_VALUE)
+    {
         error_print(0);
+    }
     else
+    {
         info_print(1);
+    }
 
 
     /* ============================================================
@@ -157,76 +161,68 @@ int main(void)
 
 
     /* ============================================================
-     * Read IRQ10 CONTROL
+     * Verify IRQ10 Control
      * ============================================================ */
 
-    actual_value = mmio_read(
-        IRQ10_CTL_REG_ADDR
-    );
-
-
-    if (actual_value != EXP_IRQ10_CTL_VALUE)
+    if (mmio_read(IRQ10_CTL_REG_ADDR) !=
+        EXP_IRQ10_CTL_VALUE)
+    {
         error_print(1);
+    }
     else
+    {
         info_print(2);
+    }
 
-
-    /* ============================================================
-     * Configuration Complete
-     * ============================================================ */
 
     info_print(0x2222);
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
+     * CONTROLLED INTERRUPT POINT
      *
-     * This proves CPU is executing main() before the interrupt.
+     * This marker identifies the point in the test where the
+     * interrupt source is allowed to become active.
      * ============================================================ */
 
     info_print(0x3000);
 
 
-    /* ============================================================
-     * Inform SV
+    /*
+     * Tell SV that CPU is ready.
      *
-     * SV should assert IRQ10 after receiving this handshake.
-     *
-     * Expected:
-     *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
-     * ============================================================ */
-
+     * SV should assert IRQ10 after this handshake.
+     */
     send_handshake_to_sv(1);
 
 
-    /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
+    /*
+     * This is the controlled application execution point.
      *
-     * The following marker is intentionally placed after the
-     * handshake.
-     *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
-     *
-     * The definitive check is the handler marker:
-     *
-     *     0xA010
-     *
-     * ============================================================ */
-
+     * SV should assert IRQ10 around this point.
+     */
     info_print(0x3010);
 
 
+    /*
+     * Keep a visible instruction sequence after the handshake.
+     *
+     * The actual MEPC value must be determined from the
+     * instruction/PC trace and CPU interrupt-entry behavior.
+     */
+    info_print(0x3020);
+
+
+    info_print(0x3030);
+
+
     /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
+     * After interrupt handler returns with MRET
+     *
+     * Execution should resume according to MEPC.
      * ============================================================ */
 
-    info_print(0x3020);
+    info_print(0x3040);
 
 
     /* ============================================================
@@ -235,7 +231,7 @@ int main(void)
 
     info_print(0x3333);
 
-    info_print(0x7039);
+    info_print(0x7042);
 
 
 }

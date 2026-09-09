@@ -2,42 +2,32 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ *  Repeated ISR
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Verify that the same interrupt source can invoke its ISR
+ * repeatedly.
  *
- * IRQ used:
+ * IRQ:
  *
  *     IRQ10
  *
  * Priority:
  *
- *     15
+ *     5
  *
  * CTL:
  *
- *     0xF3
+ *     0x53
  *
- * Expected flow:
+ * Test:
  *
- *     IRQ10 source
- *          |
- *          v
- *     pending[10]
- *          |
- *          v
- *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ *     Event 1 -> IRQ10 ISR -> EOI -> MRET
+ *     Event 2 -> IRQ10 ISR -> EOI -> MRET
+ *     Event 3 -> IRQ10 ISR -> EOI -> MRET
+ *
+ * Expected:
+ *
+ *     Exactly one ISR entry for each valid IRQ10 event.
  *
  * ============================================================ */
 
@@ -47,12 +37,7 @@
  * ============================================================ */
 
 #define EXP_IRQ10_ENABLE_VALUE     0x01U
-#define EXP_IRQ10_CTL_VALUE        0xF3U
-
-
-/* ============================================================
- * GPIO PINMUX
- * ============================================================ */
+#define EXP_IRQ10_CTL_VALUE        0x53U
 
 #define EXP_GPIO_PINMUX0_VALUE     150994944U
 #define EXP_GPIO_PINMUX1_VALUE     585U
@@ -88,7 +73,6 @@ int main(void)
      * Keep your required value:
      *
      *     0xFC000000
-     *
      * ============================================================ */
 
     asm volatile (
@@ -128,26 +112,22 @@ int main(void)
     );
 
 
-    /* ============================================================
-     * Read IRQ10 ENABLE
-     * ============================================================ */
-
     actual_value = mmio_read(
         IRQ10_ENABLE_REG_ADDR
     );
 
 
     if (actual_value != EXP_IRQ10_ENABLE_VALUE)
-        error_print(0);
+        error_print(10);
     else
-        info_print(1);
+        info_print(10);
 
 
     /* ============================================================
      * Configure IRQ10
      *
-     * Priority = 15
-     * CTL      = 0xF3
+     * Priority = 5
+     * CTL      = 0x53
      * ============================================================ */
 
     mmio_write(
@@ -156,19 +136,15 @@ int main(void)
     );
 
 
-    /* ============================================================
-     * Read IRQ10 CONTROL
-     * ============================================================ */
-
     actual_value = mmio_read(
         IRQ10_CTL_REG_ADDR
     );
 
 
     if (actual_value != EXP_IRQ10_CTL_VALUE)
-        error_print(1);
+        error_print(11);
     else
-        info_print(2);
+        info_print(11);
 
 
     /* ============================================================
@@ -179,63 +155,108 @@ int main(void)
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
-     *
-     * This proves CPU is executing main() before the interrupt.
+     * EVENT 1 : Prepare
      * ============================================================ */
 
-    info_print(0x3000);
+    info_print(0x3001);
 
 
-    /* ============================================================
-     * Inform SV
+    /*
+     * Inform SV that Event 1 can be generated.
      *
-     * SV should assert IRQ10 after receiving this handshake.
+     * SV:
      *
-     * Expected:
-     *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
-     * ============================================================ */
+     *     assert IRQ10
+     *     wait for ISR
+     *     clear/deassert IRQ10
+     */
 
     send_handshake_to_sv(1);
 
 
     /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
-     *
-     * The following marker is intentionally placed after the
-     * handshake.
-     *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
-     *
-     * The definitive check is the handler marker:
+     * EVENT 1 : Normal Execution After ISR
+     * ============================================================ */
+
+    info_print(0x3011);
+
+
+    /*
+     * At this point expected ISR sequence was:
      *
      *     0xA010
+     *     0xA011
      *
-     * ============================================================ */
-
-    info_print(0x3010);
-
-
-    /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
-     * ============================================================ */
-
-    info_print(0x3020);
+     * exactly once.
+     */
 
 
     /* ============================================================
-     * Test Complete
+     * EVENT 2 : Prepare
      * ============================================================ */
 
-    info_print(0x3333);
+   
 
-    info_print(0x7039);
+    /*
+     * second IRQ10 event.
+     */
+
+   
+
+    /* ============================================================
+     * EVENT 2 : Normal Execution After ISR
+     * ============================================================ */
+
+   
+
+    /*
+     * Expected:
+     *
+     *     Second 0xA010
+     *     Second 0xA011
+     *
+     * exactly once.
+     */
+
+
+    /* ============================================================
+     * EVENT 3 : Prepare
+     * ============================================================ */
+
+   
+
+    /*
+     * generate the third IRQ10 event.
+     */
+
+
+
+    /* ============================================================
+     * EVENT 3 : Normal Execution After ISR
+     * ============================================================ */
+
+    info_print(0x3013);
+
+
+    /*
+     * Expected:
+     *
+     *     Third 0xA010
+     *     Third 0xA011
+     *
+     * exactly once.
+     */
+
+
+    /* ============================================================
+     * Final Checkpoint
+     * ============================================================ */
+
+    info_print(0x4000);
+
+
+
+    info_print(0x7050);
 
 
 }

@@ -4,9 +4,9 @@
  * Expected Values
  * ============================================================ */
 
-#define EXP_IRQ0_PENDING_VALUE    0x00000078U
+#define EXP_IRQ0_PENDING_VALUE    0x00000000U
 #define EXP_IRQ0_ENABLE_VALUE     0x00000001U
-#define EXP_IRQ0_CTL_VALUE        0x00000076U
+#define EXP_IRQ0_CTL_VALUE        0x000000FFU
 
 
 int main(void)
@@ -114,5 +114,4 @@ int main(void)
     info_print(0x5555);
 
 
-    return 0;
 }

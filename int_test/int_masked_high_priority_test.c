@@ -2,42 +2,25 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ *  Masked Higher Priority IRQ
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Test:
  *
- * IRQ used:
+ *     IRQ10 = Priority 15, DISABLED
+ *     IRQ11 = Priority 5,  ENABLED
  *
- *     IRQ10
+ * Both IRQ10 and IRQ11 are asserted by SV.
  *
- * Priority:
+ * Since IRQ10 is disabled, it must be excluded from
+ * arbitration even though it has the higher priority.
  *
- *     15
+ * Expected:
  *
- * CTL:
- *
- *     0xF3
- *
- * Expected flow:
- *
- *     IRQ10 source
- *          |
- *          v
- *     pending[10]
- *          |
- *          v
- *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ *     IRQ10 -> masked / not eligible
+ *     IRQ11 -> eligible
+ *     current_int_id_o = IRQ11
+ *     interrupt_request_o = 1
+ *     IRQ11 handler entered
  *
  * ============================================================ */
 
@@ -46,8 +29,11 @@
  * Expected values
  * ============================================================ */
 
-#define EXP_IRQ10_ENABLE_VALUE     0x01U
+#define EXP_IRQ10_ENABLE_VALUE     0x00U
+#define EXP_IRQ11_ENABLE_VALUE     0x01U
+
 #define EXP_IRQ10_CTL_VALUE        0xF3U
+#define EXP_IRQ11_CTL_VALUE        0x53U
 
 
 /* ============================================================
@@ -85,10 +71,9 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
+     * Keep existing configuration.
      *
-     *     0xFC000000
-     *
+     * 0xFC000000
      * ============================================================ */
 
     asm volatile (
@@ -119,7 +104,14 @@ int main(void)
 
 
     /* ============================================================
-     * Enable IRQ10
+     * IRQ10
+     *
+     * Higher priority = 15
+     *
+     * But IRQ10 is DISABLED.
+     *
+     * ENABLE = 0
+     * CTL    = 0xF3
      * ============================================================ */
 
     mmio_write(
@@ -127,15 +119,9 @@ int main(void)
         EXP_IRQ10_ENABLE_VALUE
     );
 
-
-    /* ============================================================
-     * Read IRQ10 ENABLE
-     * ============================================================ */
-
     actual_value = mmio_read(
         IRQ10_ENABLE_REG_ADDR
     );
-
 
     if (actual_value != EXP_IRQ10_ENABLE_VALUE)
         error_print(0);
@@ -143,32 +129,60 @@ int main(void)
         info_print(1);
 
 
-    /* ============================================================
-     * Configure IRQ10
-     *
-     * Priority = 15
-     * CTL      = 0xF3
-     * ============================================================ */
-
     mmio_write(
         IRQ10_CTL_REG_ADDR,
         EXP_IRQ10_CTL_VALUE
     );
 
-
-    /* ============================================================
-     * Read IRQ10 CONTROL
-     * ============================================================ */
-
     actual_value = mmio_read(
         IRQ10_CTL_REG_ADDR
     );
-
 
     if (actual_value != EXP_IRQ10_CTL_VALUE)
         error_print(1);
     else
         info_print(2);
+
+
+    /* ============================================================
+     * IRQ11
+     *
+     * Lower priority = 5
+     *
+     * IRQ11 is ENABLED.
+     *
+     * ENABLE = 1
+     * CTL    = 0x53
+     * ============================================================ */
+
+    mmio_write(
+        IRQ11_ENABLE_REG_ADDR,
+        EXP_IRQ11_ENABLE_VALUE
+    );
+
+    actual_value = mmio_read(
+        IRQ11_ENABLE_REG_ADDR
+    );
+
+    if (actual_value != EXP_IRQ11_ENABLE_VALUE)
+        error_print(2);
+    else
+        info_print(3);
+
+
+    mmio_write(
+        IRQ11_CTL_REG_ADDR,
+        EXP_IRQ11_CTL_VALUE
+    );
+
+    actual_value = mmio_read(
+        IRQ11_CTL_REG_ADDR
+    );
+
+    if (actual_value != EXP_IRQ11_CTL_VALUE)
+        error_print(3);
+    else
+        info_print(4);
 
 
     /* ============================================================
@@ -179,63 +193,77 @@ int main(void)
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
-     *
-     * This proves CPU is executing main() before the interrupt.
-     * ============================================================ */
-
-    info_print(0x3000);
-
-
-    /* ============================================================
      * Inform SV
      *
-     * SV should assert IRQ10 after receiving this handshake.
+     * SV should now:
+     *
+     *     1. Assert IRQ10.
+     *     2. Assert IRQ11.
+     *
+     * Both should be pending.
+     *
+     * Configuration:
+     *
+     *     IRQ10:
+     *         priority = 15
+     *         enable   = 0
+     *
+     *     IRQ11:
+     *         priority = 5
+     *         enable   = 1
      *
      * Expected:
      *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
+     *     IRQ10 excluded from arbitration.
+     *     IRQ11 selected.
      * ============================================================ */
 
     send_handshake_to_sv(1);
 
 
-    /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
-     *
-     * The following marker is intentionally placed after the
-     * handshake.
-     *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
-     *
-     * The definitive check is the handler marker:
-     *
-     *     0xA010
-     *
-     * ============================================================ */
-
-    info_print(0x3010);
+    info_print(0x3000);
 
 
     /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
+     * Expected Arbitration
+     *
+     * Both sources asserted:
+     *
+     *     pending[10] = 1
+     *     pending[11] = 1
+     *
+     * Eligible:
+     *
+     *     IRQ10 = NO
+     *     IRQ11 = YES
+     *
+     * Therefore:
+     *
+     *     current_int_id_o = IRQ11_ID
+     *
+     *     interrupt_request_o = 1
+     *
+     * IRQ10 must NOT be serviced.
+     * IRQ11 must be serviced.
      * ============================================================ */
 
-    info_print(0x3020);
+    info_print(0x3011);
+
+
+    /*
+     * Execution returns here after IRQ11 handler executes
+     * and performs mret.
+     */
+
+
+    info_print(0x3333);
 
 
     /* ============================================================
      * Test Complete
      * ============================================================ */
 
-    info_print(0x3333);
-
-    info_print(0x7039);
+    info_print(0x7032);
 
 
 }

@@ -2,42 +2,41 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ *  Repeated ACK Protection
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Verify that a repeated/unexpected ACK while an interrupt is
+ * already acknowledged/in service does not:
  *
- * IRQ used:
+ *     - duplicate interrupt service
+ *     - change current interrupt ID
+ *     - corrupt pending state
+ *     - incorrectly acknowledge another interrupt
  *
- *     IRQ10
  *
- * Priority:
+ * Test:
  *
- *     15
+ *     IRQ10 enabled
+ *     IRQ10 priority = 15
  *
- * CTL:
+ * SV generates IRQ10.
  *
- *     0xF3
+ * First ACK:
  *
- * Expected flow:
+ *     ACK ID = IRQ10_ID
  *
- *     IRQ10 source
- *          |
- *          v
- *     pending[10]
- *          |
- *          v
- *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ * IRQ10 is now acknowledged / in service.
+ *
+ * Second ACK:
+ *
+ *     ACK ID = IRQ10_ID
+ *
+ * while IRQ10 is still in service.
+ *
+ * Expected:
+ *
+ *     No duplicate service.
+ *     Current interrupt ID remains valid.
+ *     No additional handler entry.
  *
  * ============================================================ */
 
@@ -47,6 +46,12 @@
  * ============================================================ */
 
 #define EXP_IRQ10_ENABLE_VALUE     0x01U
+
+/*
+ * IRQ10 priority = 15
+ *
+ * CTL = 0xF3
+ */
 #define EXP_IRQ10_CTL_VALUE        0xF3U
 
 
@@ -85,10 +90,9 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
+     * Keep existing configuration.
      *
-     *     0xFC000000
-     *
+     * 0xFC000000
      * ============================================================ */
 
     asm volatile (
@@ -128,10 +132,6 @@ int main(void)
     );
 
 
-    /* ============================================================
-     * Read IRQ10 ENABLE
-     * ============================================================ */
-
     actual_value = mmio_read(
         IRQ10_ENABLE_REG_ADDR
     );
@@ -156,10 +156,6 @@ int main(void)
     );
 
 
-    /* ============================================================
-     * Read IRQ10 CONTROL
-     * ============================================================ */
-
     actual_value = mmio_read(
         IRQ10_CTL_REG_ADDR
     );
@@ -179,63 +175,38 @@ int main(void)
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
-     *
-     * This proves CPU is executing main() before the interrupt.
-     * ============================================================ */
-
-    info_print(0x3000);
-
-
-    /* ============================================================
      * Inform SV
      *
-     * SV should assert IRQ10 after receiving this handshake.
+     * SV should assert ONLY IRQ10.
      *
      * Expected:
      *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
+     *     IRQ10 becomes pending
+     *     IRQ10 is selected
      * ============================================================ */
 
     send_handshake_to_sv(1);
 
 
-    /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
-     *
-     * The following marker is intentionally placed after the
-     * handshake.
-     *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
-     *
-     * The definitive check is the handler marker:
-     *
-     *     0xA010
-     *
-     * ============================================================ */
+    info_print(0x3000);
 
-    info_print(0x3010);
 
+  
 
     /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
-     * ============================================================ */
+     * Repeated ACK Check
+          * ============================================================ */
 
-    info_print(0x3020);
+    info_print(0x3030);
 
 
     /* ============================================================
      * Test Complete
+     *
+     *
      * ============================================================ */
 
-    info_print(0x3333);
-
-    info_print(0x7039);
+    info_print(0x7037);
 
 
 }

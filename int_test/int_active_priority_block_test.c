@@ -2,42 +2,42 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ * Active Priority Threshold Block
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Test condition:
  *
- * IRQ used:
+ *     IRQ10 priority      = 5
+ *     active_lvl_pr_i     = 10
  *
- *     IRQ10
+ * Therefore:
  *
- * Priority:
+ *     5 < 10
  *
- *     15
+ * IRQ10 must NOT be delivered while the active priority
+ * threshold is 10.
  *
- * CTL:
+ * Expected while blocked:
  *
- *     0xF3
+ *     pending[10]        = 1
+ *     current_int_id     = IRQ10 / implementation dependent
+ *     interrupt_request  = 0
  *
- * Expected flow:
  *
- *     IRQ10 source
- *          |
- *          v
- *     pending[10]
- *          |
- *          v
- *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ * Then SV changes:
+ *
+ *     active_lvl_pr_i = 3
+ *
+ * Now:
+ *
+ *     5 > 3
+ *
+ * IRQ10 becomes eligible.
+ *
+ * Expected:
+ *
+ *     interrupt_request = 1
+ *     current_int_id    = IRQ10
+ *     IRQ10 handler      = entered
  *
  * ============================================================ */
 
@@ -47,15 +47,17 @@
  * ============================================================ */
 
 #define EXP_IRQ10_ENABLE_VALUE     0x01U
-#define EXP_IRQ10_CTL_VALUE        0xF3U
 
-
-/* ============================================================
- * GPIO PINMUX
- * ============================================================ */
-
-#define EXP_GPIO_PINMUX0_VALUE     150994944U
-#define EXP_GPIO_PINMUX1_VALUE     585U
+/*
+ * IRQ10 priority = 5
+ *
+ * CTL encoding:
+ *
+ *     0x53
+ *
+ * Priority = 5
+ */
+#define EXP_IRQ10_CTL_VALUE        0x53U
 
 
 int main(void)
@@ -85,10 +87,9 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
+     * Keep existing configuration.
      *
-     *     0xFC000000
-     *
+     * 0xFC000000
      * ============================================================ */
 
     asm volatile (
@@ -106,12 +107,12 @@ int main(void)
 
     mmio_write(
         GPIO_BASE_ADDR + GPIO_PINMUX0_ADDR,
-        EXP_GPIO_PINMUX0_VALUE
+        150994944U
     );
 
     mmio_write(
         GPIO_BASE_ADDR + GPIO_PINMUX1_ADDR,
-        EXP_GPIO_PINMUX1_VALUE
+        585U
     );
 
 
@@ -119,7 +120,7 @@ int main(void)
 
 
     /* ============================================================
-     * Enable IRQ10
+     * Enable ONLY IRQ10
      * ============================================================ */
 
     mmio_write(
@@ -144,10 +145,11 @@ int main(void)
 
 
     /* ============================================================
-     * Configure IRQ10
+     * Configure IRQ10 priority
      *
-     * Priority = 15
-     * CTL      = 0xF3
+     * CTL = 0x53
+     *
+     * Priority = 5
      * ============================================================ */
 
     mmio_write(
@@ -157,7 +159,7 @@ int main(void)
 
 
     /* ============================================================
-     * Read IRQ10 CONTROL
+     * Read IRQ10 CTL
      * ============================================================ */
 
     actual_value = mmio_read(
@@ -179,63 +181,103 @@ int main(void)
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
-     *
-     * This proves CPU is executing main() before the interrupt.
-     * ============================================================ */
-
-    info_print(0x3000);
-
-
-    /* ============================================================
      * Inform SV
      *
-     * SV should assert IRQ10 after receiving this handshake.
+     * SV should:
      *
-     * Expected:
+     *     1. Configure active_lvl_pr_i = 10
+     *     2. Assert ONLY IRQ10
      *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
+     * IRQ10 priority = 5
+     *
+     * Therefore:
+     *
+     *     5 < 10
+     *
+     * IRQ10 must be blocked.
      * ============================================================ */
 
     send_handshake_to_sv(1);
 
 
+    info_print(0x3000);
+
+
     /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
+     * BLOCKED PHASE
      *
-     * The following marker is intentionally placed after the
-     * handshake.
+     * SV should verify:
      *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
+     *     pending[10]        = 1
+     *     interrupt_request  = 0
      *
-     * The definitive check is the handler marker:
+     * CPU must NOT enter irq10_handler() at this point.
      *
-     *     0xA010
+     * The pending interrupt must be retained.
      *
      * ============================================================ */
 
     info_print(0x3010);
 
 
-    /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
-     * ============================================================ */
+    /*
+     * ------------------------------------------------------------
+     * IMPORTANT
+     *
+     * Do not generate another interrupt here.
+     *
+     * SV should now change:
+     *
+     *     active_lvl_pr_i = 3
+     *
+     * while keeping IRQ10 pending.
+     *
+     * ------------------------------------------------------------
+     */
+
 
     info_print(0x3020);
+
+
+    /* ============================================================
+     * ELIGIBLE PHASE
+     *
+     * New condition:
+     *
+     *     IRQ10 priority = 5
+     *     active_lvl_pr_i = 3
+     *
+     * Therefore:
+     *
+     *     5 > 3
+     *
+     * IRQ10 must now become eligible.
+     *
+     * Expected:
+     *
+     *     interrupt_request_o = 1
+     *     current_int_id_o    = IRQ10
+     *     IRQ10 handler       = entered
+     *
+     * ============================================================ */
+
+    info_print(0x3030);
+
+
+    /*
+     * Execution reaches here after irq10_handler()
+     * executes mret.
+     */
+
+
+    info_print(0x3333);
 
 
     /* ============================================================
      * Test Complete
      * ============================================================ */
 
-    info_print(0x3333);
-
-    info_print(0x7039);
+    info_print(0x7030);
 
 
 }

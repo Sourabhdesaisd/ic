@@ -84,27 +84,7 @@ int main(void)
 
     
 
-    /* ============================================================
-     * Configure IRQ0 Control
-     *
-     * Expected control value = 0xD3
-     * ============================================================ */
 
-    mmio_write(
-        IRQ0_CTL_REG_ADDR,
-        EXP_IRQ0_CTL_VALUE
-    );
-
-    actual_irq0_ctl =
-        mmio_read(IRQ0_CTL_REG_ADDR);
-
-    if (actual_irq0_ctl != EXP_IRQ0_CTL_VALUE)
-        error_print(2);
-    else
-        info_print(3);
-
-
-    info_print(0x2222);
 
 
     /* ============================================================

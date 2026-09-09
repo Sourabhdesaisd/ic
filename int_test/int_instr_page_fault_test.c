@@ -177,7 +177,8 @@ int main() {
 	//Invalidate/flush TLB
 	asm volatile ("sfence.vma");
 
-    page3(); // ints page fault
+ //   page3(); // ints page fault
+    page6(); // ints page fault
 
  ///same
  //Invalidate/flush TLB

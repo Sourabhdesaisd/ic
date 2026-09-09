@@ -32,6 +32,9 @@ int main(void)
     asm volatile (
         "li t0, 0x8\n"
         "csrrs x0, mstatus, t0\n"
+        :
+        :
+        : "t0", "memory"
     );
 
 
@@ -42,6 +45,9 @@ int main(void)
     asm volatile (
         "li t0, 0xFC000000\n"
         "csrrs x0, mie, t0\n"
+        :
+        :
+        : "t0", "memory"
     );
 
 
@@ -49,32 +55,64 @@ int main(void)
 
 
     /* ============================================================
-     * Trigger Instruction Memory Address Decode Error
+     * Prepare dynamic recovery address
      *
-     * Load invalid instruction address into t0.
+     * We calculate the address of the recovery point dynamically
+     * and store it in mscratch.
      *
-     * jr t0 will change the PC to 0x0009_0000.
+     * Therefore there is:
      *
-     * This address is outside the valid IMEM range.
+     *     NO hardcoded recovery address
+     *     NO MEPC + 4
+     *     NO extern variable
      * ============================================================ */
 
     asm volatile (
-        "li t0, 0x00090000\n"
+        /*
+         * Get address of local recovery label.
+         *
+         * The assembler/linker resolves this address.
+         */
+        "la t1, 1f\n"
+
+        /*
+         * Save recovery PC in mscratch.
+         */
+        "csrw mscratch, t1\n"
+
+        /*
+         * Load invalid instruction memory address.
+         */
+        "li t0, %[invalid_addr]\n"
+
+        /*
+         * Jump to invalid instruction memory.
+         *
+         * This causes IRQ9.
+         */
         "jr t0\n"
+
+        /*
+         * ========================================================
+         * Recovery point
+         *
+         * IRQ9 handler will set:
+         *
+         *     MEPC = MSCRATCH
+         *
+         * MRET will therefore return here.
+         * ========================================================
+         */
+        "1:\n"
+        :
+        : [invalid_addr] "i" (INVALID_IMEM_ADDR)
+        : "t0", "t1", "memory"
     );
 
 
-    /*
-     * Execution should return here after IRQ9 handler.
-     *
-     * Handler:
-     *
-     *     MEPC = MEPC + 4
-     *
-     * Therefore the CPU skips the faulting jump instruction
-     * and continues with the next valid instruction.
-     */
-
+    /* ============================================================
+     * Execution comes here after IRQ9 handler + MRET
+     * ============================================================ */
 
     info_print(0x3333);
 
@@ -83,10 +121,15 @@ int main(void)
      * Test complete
      * ============================================================ */
 
-    send_handshake_to_sv(1);
+    send_handshake_to_sv();
 
 
     info_print(0x9009);
+
+
+    /* ============================================================
+     * Stop execution
+     * ============================================================ */
 
 
 }

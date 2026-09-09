@@ -2,42 +2,17 @@
 
 
 /* ============================================================
- *  Interrupt Request to CPU
+ * TC025 : Single Pending Interrupt
  *
- * Verify that interrupt_request_o from the interrupt controller
- * causes the CPU to leave normal sequential execution and enter
- * the interrupt handler/vector.
+ * Verify that when exactly one interrupt is eligible:
  *
- * IRQ used:
+ *     pending      = IRQ10
+ *     highest      = IRQ10
+ *     current ID   = IRQ10
+ *     request      = 1
+ *     handler      = IRQ10 handler
  *
- *     IRQ10
- *
- * Priority:
- *
- *     15
- *
- * CTL:
- *
- *     0xF3
- *
- * Expected flow:
- *
- *     IRQ10 source
- *          |
- *          v
- *     pending[10]
- *          |
- *          v
- *     interrupt_request_o
- *          |
- *          v
- *     CPU interrupt entry
- *          |
- *          v
- *     interrupt vector
- *          |
- *          v
- *     irq10_handler()
+ * No other IRQ should be selected.
  *
  * ============================================================ */
 
@@ -46,16 +21,15 @@
  * Expected values
  * ============================================================ */
 
-#define EXP_IRQ10_ENABLE_VALUE     0x01U
-#define EXP_IRQ10_CTL_VALUE        0xF3U
+#define EXP_IRQ_ENABLE_VALUE      0x01U
 
-
-/* ============================================================
- * GPIO PINMUX
- * ============================================================ */
-
-#define EXP_GPIO_PINMUX0_VALUE     150994944U
-#define EXP_GPIO_PINMUX1_VALUE     585U
+/*
+ * IRQ10 control:
+ *
+ * Priority = 1
+ * Keep the same encoding used in previous tests.
+ */
+#define EXP_IRQ10_CTL_VALUE       0xF3U
 
 
 int main(void)
@@ -85,10 +59,9 @@ int main(void)
     /* ============================================================
      * Enable Machine External Interrupt
      *
-     * Keep your required value:
+     * Keep existing configuration.
      *
-     *     0xFC000000
-     *
+     * 0xFC000000
      * ============================================================ */
 
     asm volatile (
@@ -106,12 +79,12 @@ int main(void)
 
     mmio_write(
         GPIO_BASE_ADDR + GPIO_PINMUX0_ADDR,
-        EXP_GPIO_PINMUX0_VALUE
+        150994944U
     );
 
     mmio_write(
         GPIO_BASE_ADDR + GPIO_PINMUX1_ADDR,
-        EXP_GPIO_PINMUX1_VALUE
+        585U
     );
 
 
@@ -119,25 +92,23 @@ int main(void)
 
 
     /* ============================================================
-     * Enable IRQ10
+     * Enable ONLY IRQ10
+     *
+     * Other IRQs are not enabled by this test.
      * ============================================================ */
 
     mmio_write(
         IRQ10_ENABLE_REG_ADDR,
-        EXP_IRQ10_ENABLE_VALUE
+        EXP_IRQ_ENABLE_VALUE
     );
 
-
-    /* ============================================================
-     * Read IRQ10 ENABLE
-     * ============================================================ */
 
     actual_value = mmio_read(
         IRQ10_ENABLE_REG_ADDR
     );
 
 
-    if (actual_value != EXP_IRQ10_ENABLE_VALUE)
+    if (actual_value != EXP_IRQ_ENABLE_VALUE)
         error_print(0);
     else
         info_print(1);
@@ -146,8 +117,9 @@ int main(void)
     /* ============================================================
      * Configure IRQ10
      *
-     * Priority = 15
-     * CTL      = 0xF3
+     * IRQ10 CTL is RW.
+     *
+     * Priority = 1
      * ============================================================ */
 
     mmio_write(
@@ -155,10 +127,6 @@ int main(void)
         EXP_IRQ10_CTL_VALUE
     );
 
-
-    /* ============================================================
-     * Read IRQ10 CONTROL
-     * ============================================================ */
 
     actual_value = mmio_read(
         IRQ10_CTL_REG_ADDR
@@ -179,63 +147,50 @@ int main(void)
 
 
     /* ============================================================
-     * Normal CPU Execution Marker
-     *
-     * This proves CPU is executing main() before the interrupt.
-     * ============================================================ */
-
-    info_print(0x3000);
-
-
-    /* ============================================================
      * Inform SV
      *
-     * SV should assert IRQ10 after receiving this handshake.
+     * SV must:
+     *
+     *     1. Assert ONLY IRQ10 source.
+     *     2. Keep IRQ11-IRQ15 inactive.
+     *     3. Keep all other interrupt sources inactive.
      *
      * Expected:
      *
-     *     IRQ10 source = active
-     *     pending[10] = 1
-     *     interrupt_request_o = 1
+     *     pending[10]       = 1
+     *     highest_pending   = IRQ10
+     *     current_int_id    = IRQ10 ID
+     *     interrupt_request = 1
+     *     IRQ10 handler     = entered
      * ============================================================ */
 
     send_handshake_to_sv(1);
 
 
+    info_print(0x3000);
+
+
     /* ============================================================
-     * CPU SHOULD BE INTERRUPTED
+     * Interrupt Service
      *
-     * The following marker is intentionally placed after the
-     * handshake.
+     * CPU should enter IRQ10 handler.
      *
-     * Depending on the exact timing of your SV source assertion,
-     * the CPU may or may not execute this before taking the
-     * interrupt.
-     *
-     * The definitive check is the handler marker:
+     * IRQ10 handler should print:
      *
      *     0xA010
      *
+     * and perform ACK/EOI according to the IC implementation.
+     *
+     * After mret, execution returns here.
      * ============================================================ */
 
-    info_print(0x3010);
-
-
-    /* ============================================================
-     * If interrupt service completes with mret, execution returns
-     * here.
-     * ============================================================ */
-
-    info_print(0x3020);
+    info_print(0x3333);
 
 
     /* ============================================================
      * Test Complete
      * ============================================================ */
 
-    info_print(0x3333);
-
-    info_print(0x7039);
-
+    info_print(0x7007);
 
 }
