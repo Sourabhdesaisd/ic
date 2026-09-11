@@ -126,10 +126,10 @@ wire                  vmon_rst_mxx_reg_out      ;
 */
 //              POSTBOOT ANALOG REGISTER OUT
 
-wire      [31:0]      analog_postboot_reg0            ;
-wire      [31:0]      analog_postboot_reg1            ;
-wire      [31:0]      analog_postboot_reg2            ;
-wire      [31:0]      analog_postboot_reg3            ;
+wire      [50:0]      analog_postboot_reg0            ;
+wire      [50:0]      analog_postboot_reg1            ;
+wire      [16:0]      analog_postboot_reg2            ;
+wire      [11:0]      analog_postboot_reg3            ;
 wire      [11:0]      analog_postboot_reg4            ;
 
 
